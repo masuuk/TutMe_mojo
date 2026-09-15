@@ -1,0 +1,40 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mojo 1.0 · Drill 09 · Ownership &amp; References</title><link rel="stylesheet" href="../styles.css"><link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><defs><linearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22><stop offset=%220%22 stop-color=%22%235bd4ff%22/><stop offset=%221%22 stop-color=%22%232f8fe0%22/></linearGradient></defs><rect width=%2240%22 height=%2240%22 rx=%2210%22 fill=%22url(%23g)%22/><g fill=%22none%22 stroke=%22%2306101c%22 stroke-width=%222.4%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 transform=%22translate(8 8)%22><path d=%22M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z%22/><path d=%22M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z%22/></g></svg>"></head><body>
+<nav><div class="wrap navin"><a class="brand" href="../index.html"><span class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/></svg></span><span>TutMe🔥 <span style="color:#5bd4ff">Learning Hub</span></span></a>
+<div class="navlinks"><a class="pill" href="../index.html">Home</a><a class="pill" href="../mojo_v1/index.html">Fundamentals</a><a class="pill" href="../data-science/index.html">Data Science</a><a class="pill" href="../applications/index.html">Applications</a><a class="pill" href="../praxis/index.html">Praxis</a></div></div></nav>
+<main><section><div class="wrap hero"><span class="eyebrow">PRAXIS · CH 07</span><h1>Drill 09 · Ownership &amp; References</h1><p class="lead">Write functions that take values by default, `mut` and `var`, and reason about who owns what.</p><div class="card big"><h3>Your task</h3><p>Write `def add(mut x: Int, y: Int): x += y` and call it from `main` — confirm mutation persists only on the `mut` argument. Create a `String` and a function that takes it by `var` (owned), transfer it with `^`, then confirm the source is no longer usable. Add a function returning a `ref` and explain its lifetime rule. Use `origin_of()` on a binding to read its origin.</p><div class="notice">Based on <a href="../mojo_v1/mojo-07-ownership.html" style="color:#5bd4ff">Chapter 7 · Ownership, References &amp; Value Semantics</a>. Do the problem before looking for a solution or answering the checkpoint. If you forget syntax, use the <a href="../mojo_v1/index.html" style="color:#5bd4ff">Mojo Library</a>.</div></div>
+<div class="card big quiz" data-quiz><h3>Checkpoint · multiple choice</h3><p class="q">When a function parameter is declared `mut x: Int`, what does mutating `x` inside the function do to the caller?</p>
+<label class="opt"><input type="radio" name="d9q1" value="a">Nothing — it works on a private copy.</label>
+<label class="opt" data-correct="true"><input type="radio" name="d9q1" value="b">The caller's variable is also changed, because `mut` passes a mutable reference.</label>
+<label class="opt"><input type="radio" name="d9q1" value="c">It transfers ownership away from the caller permanently.</label>
+<label class="opt"><input type="radio" name="d9q1" value="d">It only works if the caller also uses `ref`.</label>
+<div class="actions qactions"><button type="button" class="btn check">Check answer</button><button type="button" class="btn reset">Try again</button></div><p class="feedback"></p>
+<div class="explain" hidden><strong>Why:</strong> `mut` (like `inout`) is a mutable reference: the function sees and can modify the caller's storage, and the change survives the call.</div></div>
+<details class="solution"><summary>Solution</summary><p>Reference code demonstrating arguments by value, `mut`, `var` (owned), `ref` returns, and `origin_of()`.</p><pre class="code">def add(mut x: Int, y: Int):
+    x += y               # mut: caller sees the change
+
+def consume(var s: String):
+    print(s)             # owned - may transfer/mutate freely
+
+def double() -&gt; Int:
+    var c = 21
+    ref r = c            # ref binding aliases c
+    r *= 2
+    return c             # 42
+
+def main():
+    var a = 1
+    add(a, 2)            # a becomes 3 (mut)
+    print(a)             # 3
+
+    var s = String("owned value")
+    consume(s^)          # s is transferred out
+    # print(s)           # ERROR - no longer owned here
+
+    var r = double()
+    print(r)
+
+    var b = 10
+    print(origin_of(b))  # prints bindings that b is borrowed from</pre></details>
+<div class="actions"><a class="btn" href="index.html">← Praxis</a><a class="btn primary" href="../mojo_v1/mojo-07-ownership.html">Review chapter →</a></div></div></section></main><footer><div class="wrap">TutMe🔥 · A structured path from syntax → fundamentals → applications → practice.</div></footer>
+<script defer src="praxis.js"></script></body></html>

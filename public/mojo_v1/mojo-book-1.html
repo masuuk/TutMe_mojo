@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mojo 1.0 Textbook · The Complete Offline Book</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --font-sans:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --bg-primary:#0b0d15;--bg-secondary:#12162b;--bg-card:rgba(255,255,255,0.04);
+  --text-primary:#ffffff;--text-secondary:#d8def0;--text-muted:#a8b6d4;
+  --accent-1:#6c5ce7;--accent-2:#00b4d8;--accent-3:#f77f00;
+  --accent-gradient:linear-gradient(135deg,#6c5ce7,#00b4d8,#f77f00);
+  --border-color:rgba(255,255,255,0.18);--radius:16px;--radius-sm:8px;
+  --transition:0.3s cubic-bezier(0.4,0,0.2,1);--max-width:1100px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.7;overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+::selection{background:rgba(108,92,231,0.4);color:#fff;}
+::-webkit-scrollbar{width:8px;}
+::-webkit-scrollbar-track{background:var(--bg-primary);}
+::-webkit-scrollbar-thumb{background:var(--accent-1);border-radius:10px;}
+
+.progress{position:fixed;top:0;left:0;height:3px;background:var(--accent-gradient);z-index:100;width:0%;transition:width .1s;}
+
+.header{position:sticky;top:0;z-index:100;height:64px;background:rgba(11,13,21,0.85);backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between;padding:0 5vw;}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.05rem;}
+.logo-icon{width:32px;height:32px;border-radius:var(--radius-sm);background:var(--accent-gradient);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;}
+.logo span{color:var(--text-secondary);font-weight:400;}
+.logo .mojo{background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.chip{font-family:var(--font-mono);font-size:0.75rem;color:var(--accent-2);border:1px solid rgba(0,180,216,0.25);padding:4px 12px;border-radius:100px;}
+
+.hero{max-width:var(--max-width);margin:0 auto;padding:6rem 24px 4rem;}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent-2);background:rgba(0,180,216,0.12);padding:4px 16px;border-radius:100px;border:1px solid rgba(0,180,216,0.15);margin-bottom:16px;}
+h1{font-size:clamp(2.4rem,5vw,3.6rem);font-weight:800;letter-spacing:-0.03em;line-height:1.1;margin-bottom:16px;}
+h1 .highlight{background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.dek{font-size:1.15rem;color:var(--text-secondary);max-width:640px;line-height:1.8;margin-bottom:32px;}
+.meta{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:40px;}
+.meta span{font-family:var(--font-mono);font-size:0.78rem;color:var(--text-muted);background:var(--bg-card);border:1px solid var(--border-color);padding:6px 14px;border-radius:100px;}
+.cta{display:inline-flex;align-items:center;gap:10px;font-weight:600;background:var(--accent-gradient);color:#fff;padding:14px 28px;border-radius:100px;transition:var(--transition);}
+.cta:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(108,92,231,0.35);}
+
+.toc{max-width:var(--max-width);margin:0 auto;padding:0 24px 6rem;}
+.toc h2{font-size:1.4rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:24px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;}
+.card{position:relative;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius);padding:24px;transition:var(--transition);display:flex;flex-direction:column;gap:8px;}
+.card:hover{background:rgba(255,255,255,0.08);border-color:var(--accent-1);transform:translateY(-3px);}
+.card .num{font-family:var(--font-mono);font-size:0.75rem;color:var(--accent-2);letter-spacing:0.06em;}
+.card .title{font-size:1.05rem;font-weight:600;line-height:1.35;}
+.card .desc{font-size:0.88rem;color:var(--text-muted);line-height:1.6;flex:1;}
+.card .go{font-family:var(--font-mono);font-size:0.78rem;color:var(--accent-2);opacity:0;transition:var(--transition);}
+.card:hover .go{opacity:1;}
+
+.footer{border-top:1px solid var(--border-color);padding:2rem 5vw;text-align:center;color:var(--text-muted);font-size:0.85rem;}
+
+@media(max-width:600px){
+  .hero{padding:4rem 24px 3rem;}
+  .grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<nav style="position:sticky;top:0;z-index:999;display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:#16324f;padding:10px 20px;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;font-size:0.88rem;box-shadow:0 2px 10px rgba(0,0,0,0.25);">
+  <a href="../index.html" style="color:#fff;font-weight:700;text-decoration:none;">📚 TutMe</a>
+  <a href="../mojo_v1/index.html" style="color:#9fd3ff;text-decoration:none;">🔥 Mojo lessons</a> <a href="mojo-book-2.html" style="color:#ffd39f;text-decoration:none;">📗 Book 2 · Data Science &amp; AI</a>
+  <a href="../index.html" style="color:#9fd3ff;text-decoration:none;">🏠 Home</a>
+</nav>
+<div class="progress" id="progress"></div>
+
+<header class="header">
+  <a class="logo" href="mojo-book-1.html">
+    <span class="logo-icon">M</span>
+    <span><span class="mojo">Mojo</span> <span>Textbook</span></span>
+  </a>
+  <span class="chip">Mojo 1.0.0 · verified Aug 2026</span>
+</header>
+
+<section class="hero">
+  <span class="kicker">The Complete Offline Book</span>
+  <h1>Learn <span class="highlight">Mojo 1.0</span> from first run to FFI</h1>
+  <p class="dek">A self-contained HTML textbook for the Mojo programming language — every chapter written against the official 1.0 documentation. Fifteen chapters, plain files, no server required.</p>
+  <div class="meta">
+    <span>15 chapters</span>
+    <span>Mojo 1.0.0 syntax</span>
+    <span>100% offline</span>
+    <span>Python-dev friendly</span>
+  </div>
+  <a class="cta" href="mojo-01-intro.html">Start reading — Chapter 1 →</a>
+</section>
+
+<section class="toc">
+  <h2>Table of Contents</h2>
+  <div class="grid">
+    <a class="card" href="mojo-01-intro.html">
+      <span class="num">CH 01</span>
+      <span class="title">Introduction &amp; Getting Started</span>
+      <span class="desc">What Mojo is, why it exists, and your first program — install with uv or Pixi, run hello world.</span>
+      <span class="go">read chapter →</span>
+    </a>
+    <a class="card" href="mojo-02-basics.html">
+      <span class="num">CH 02</span>
+      <span class="title">Language Basics</span>
+      <span class="desc">var declarations, scopes and shadowing, copy vs move with ^, reference bindings, comptime constants.</span>
+      <span class="go">read chapter →</span>
+    </a>
+    <a class="card" href="mojo-03-types.html">
+      <span class="num">CH 03</span>
+      <span class="title">Types &amp; Values</span>
+      <span class="desc">Numerics, Bool, String, SIMD, Tuple; List/Dict/Set/Optional; t-string interpolation; the Boolable trait.</span>
+      <span class="go">read chapter →</span>
+    </a>
+    <a class="card" href="mojo-04-functions.html">
+      <span class="num">CH 04</span>
+      <span class="title">Functions</span>
+      <span class="desc">Anatomy of a def, parameters vs arguments, out/mut/ref conventions, overloading, raises.</span>
+      <span class="go">read chapter →</span>
+    </a>
+    <a class="card" href="mojo-05-operators.html">
+      <span class="num">CH 05</span>
+      <span class="title">Operators &amp; Control Flow</span>
+      <span class="desc">The full operator table, integer division semantics, if/while/for, expression-oriented statements.</span>
+      <span class="go">read chapter →</span>
+    </a>
+    <a class="card" href="mojo-06-structs.html">
+      <span class="num">CH 06</span>
+      <span class="title">Structs &amp; Traits</span>
+      <span class="desc">Structs with out-self constructors, @fieldwise_init, traits and conformance, operator overloading.</span>
+      <span class="go">read chapter →</span>
+    </a>
+    <a class="card" href="mojo-07-ownership.html">
+      <span class="num">CH 07</span>
+      <span class="title">Ownership, References &amp; Value Semantics</span>
+      <span class="desc">The ownership model, lifetimes and origins, ref bindings, explicit pointers, value semantics.</span>
+      <span class="go">read chapter →</span>
+    </a>
+    <a class="card" href="mojo-08-metaprogramming.html">
+      <span class="num">CH 08</span>
+      <span class="title">Metaprogramming</span>
+      <span class="desc">Compile-time parameters, where clauses, comptime if/for, thin lambdas, closures and capture lists, reflection.</span>
+      <span class="go">read chapter →</span>
+    </a>
+    <a class="card" href="mojo-09-syntax-tour.html">
+      <span class="num">CH 09</span>
+      <span class="title">Mojo vs Python: A Side-by-Side Syntax Tour</span>
+      <span class="desc">Everyday Python and its Mojo 1.0 counterpart — plus the cheat sheet for migrating your muscle memory.</span>
+      <span class="go">read chapter →</span>
+    </a>
+    <a class="card" href="mojo-10-errors.html">
+      <span class="num">CH 10</span>
+      <span class="title">Errors &amp; Context Managers</span>
+      <span class="desc">Errors as values, typed errors, the Never type, parametric raises, stack traces, and the with statement.</span>
+      <span class="go">read chapter →</span>
+    </a>
+    <a class="card" href="mojo-11-interop.html">
+      <span class="num">CH 11</span>
+      <span class="title">Python &amp; C Interop</span>
+      <span class="desc">PythonObject and import_module, PyInit bindings back to Python, external_call, OwnedDLHandle, C memory safety.</span>
+      <span class="go">read chapter →</span>
+    </a>
+    <a class="card" href="mojo-12-modules.html">
+      <span class="num">CH 12</span>
+      <span class="title">Modules, Packages &amp; Toolchain</span>
+      <span class="desc">Modules and packages, .mojoc precompiles, compilation targets and GPUs, -D defines, debug gating, C hosting.</span>
+      <span class="go">read chapter →</span>
+    </a>
+    <a class="card" href="mojo-13-closures.html">
+      <span class="num">CH 13</span>
+      <span class="title">Closures &amp; Lambda Expressions</span>
+      <span class="desc">Nested functions with capture lists — imm, mut, var, ref and move-captures with ^ — plus single-expression lambdas and thin C-ABI callbacks.</span>
+      <span class="go">read chapter →</span>
+    </a>
+    <a class="card" href="mojo-14-literals.html">
+      <span class="num">CH 14</span>
+      <span class="title">Literals, Expressions &amp; Statements</span>
+      <span class="desc">Integer bases and t-strings, tuples and comprehensions, the walrus operator, comptime expressions, loop bindings, try/with, and comptime if/for.</span>
+      <span class="go">read chapter →</span>
+    </a>
+    <a class="card" href="mojo-15-docstrings.html">
+      <span class="num">CH 15</span>
+      <span class="title">Docstrings</span>
+      <span class="desc">Placement rules, labeled sections (Args, Parameters, Returns, Raises), custom labels, @doc_hidden, and the compiler's docstring validation modes.</span>
+      <span class="go">read chapter →</span>
+    </a>
+  </div>
+</section>
+
+<footer class="footer">
+  Mojo 1.0 Textbook — an offline reference built from the official Mojo 1.0.0 documentation.
+</footer>
+
+<script>
+const progress = document.getElementById('progress');
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  progress.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+});
+</script>
+
+</body>
+</html>

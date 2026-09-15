@@ -1,0 +1,1635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fundamentals of Programming with Mojo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --bg: #faf9fe;
+            --surface: #ffffff;
+            --text: #1e1b2e;
+            --text-secondary: #4b456b;
+            --border: #e4e0f0;
+            --accent: #7c3aed;
+            --accent-light: #ede9fe;
+            --code-bg: #f4f2fb;
+            --radius: 12px;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(124, 58, 237, 0.06);
+            --sidebar-width: 260px;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            display: flex;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        /* ── dark mode ──
+           Everything flows through the custom properties, so the whole theme
+           is one override block. Code-token and pill colours that are hardcoded
+           for the light theme get dark-appropriate restatements below. */
+        html[data-theme="dark"] {
+            color-scheme: dark;
+            --bg: #141221;
+            --surface: #1d1a2e;
+            --text: #e8e4f8;
+            --text-secondary: #a89fc9;
+            --border: #322c4a;
+            --accent: #a78bfa;
+            --accent-light: #2c2547;
+            --code-bg: #17142a;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+        }
+        html[data-theme="dark"] .code-block .comment { color: #7e8794; }
+        html[data-theme="dark"] .code-block .keyword  { color: #c4b5fd; }
+        html[data-theme="dark"] .code-block .string   { color: #6ee7b7; }
+        html[data-theme="dark"] .code-block .number   { color: #fbbf24; }
+        html[data-theme="dark"] .code-block .func     { color: #93c5fd; }
+        html[data-theme="dark"] .code-block .type     { color: #fdba74; }
+        html[data-theme="dark"] .code-block .op       { color: #f87171; }
+        html[data-theme="dark"] .pill.medium { background: #423608; color: #fbbf24; }
+        html[data-theme="dark"] .pill.hard   { background: #450a0a; color: #fca5a5; }
+
+        #theme-toggle {
+            position: fixed;
+            right: 1.1rem;
+            bottom: 1.1rem;
+            z-index: 50;
+            width: 2.6rem;
+            height: 2.6rem;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            font-size: 1.05rem;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+        }
+        #theme-toggle:hover { border-color: var(--accent); }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            background: var(--code-bg);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+        }
+        .code-block {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            line-height: 1.7;
+            background: var(--code-bg);
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            margin: 0.75rem 0 1.25rem;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            color: var(--text);
+            /* preserve source formatting — without this the browser collapses
+               the newlines and indentation that make up the code layout */
+            white-space: pre;
+        }
+        .code-block .comment {
+            color: #6b7280;
+            font-style: italic;
+        }
+        .code-block .keyword {
+            color: #7c3aed;
+            font-weight: 600;
+        }
+        .code-block .string {
+            color: #059669;
+        }
+        .code-block .number {
+            color: #d97706;
+        }
+        .code-block .func {
+            color: #2563eb;
+        }
+        .code-block .type {
+            color: #b45309;
+        }
+        .code-block .op {
+            color: #dc2626;
+        }
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.9rem;
+            margin: 1.2rem 0;
+        }
+        .project-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1rem 1.1rem;
+            box-shadow: var(--shadow);
+        }
+        .project-card h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+        }
+        .project-card p {
+            margin: 0.25rem 0;
+            font-size: 0.85rem;
+        }
+        .pill {
+            display: inline-block;
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            padding: 0.1rem 0.55rem;
+            border-radius: 999px;
+            margin-bottom: 0.4rem;
+        }
+        .pill.easy {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+        .pill.medium {
+            background: #fef3c7;
+            color: #b45309;
+        }
+        .pill.hard {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        /* ── sidebar ── */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 2rem 1.25rem;
+            overflow-y: auto;
+            box-shadow: var(--shadow);
+            z-index: 100;
+        }
+        .sidebar .logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .sidebar .logo span {
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.55rem;
+            font-weight: 600;
+            padding: 0.1rem 0.6rem;
+            border-radius: 999px;
+            letter-spacing: 0.03em;
+        }
+        .sidebar .sub {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.8rem;
+        }
+        .sidebar .toc {
+            list-style: none;
+        }
+        .sidebar .toc li {
+            margin-bottom: 0.15rem;
+        }
+        .sidebar .toc a {
+            display: block;
+            padding: 0.3rem 0.6rem;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border-radius: var(--radius);
+            transition: 0.15s;
+        }
+        .sidebar .toc a:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .sidebar .toc .chapter {
+            font-weight: 600;
+            color: var(--text);
+            margin-top: 0.8rem;
+            padding: 0.2rem 0.6rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+        }
+        .sidebar .toc .chapter:first-of-type {
+            margin-top: 0;
+        }
+        .sidebar .toc a.active {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+        .sidebar #sidebar-toggle {
+            position: absolute;
+            top: 1.15rem;
+            right: 1rem;
+            width: 2rem;
+            height: 2rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--code-bg);
+            color: var(--accent);
+            font-size: 0.95rem;
+            line-height: 1;
+            cursor: pointer;
+            z-index: 2;
+        }
+        .sidebar #sidebar-toggle:hover {
+            background: var(--accent-light);
+        }
+        .sidebar {
+            transition: width 0.2s ease;
+        }
+        .sidebar.minimized {
+            width: 3.5rem;
+            padding: 1rem 0.5rem;
+        }
+        .sidebar.minimized .logo,
+        .sidebar.minimized .sub,
+        .sidebar.minimized .toc {
+            display: none;
+        }
+        .sidebar.minimized #sidebar-toggle {
+            left: 0.75rem;
+            right: auto;
+            top: 1.2rem;
+        }
+        .main {
+            transition: margin-left 0.2s ease;
+        }
+        .sidebar.minimized ~ .main {
+            margin-left: 3.5rem;
+        }
+
+        /* ── sidebar: black with green terminal accents ── */
+        .sidebar {
+            background: linear-gradient(180deg, #0a0f0b 0%, #050806 100%);
+            border-right: 1px solid rgba(52, 211, 153, 0.3);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+            scrollbar-color: rgba(52, 211, 153, 0.45) transparent;
+        }
+        .sidebar .logo {
+            color: #6ee7b7;
+        }
+        .sidebar .logo span {
+            background: #34d399;
+            color: #05200f;
+        }
+        .sidebar .sub {
+            color: #a7f3d0;
+            border-bottom: 1px solid rgba(52, 211, 153, 0.3);
+        }
+        .sidebar .toc a {
+            color: #d1fae5;
+        }
+        .sidebar .toc a:hover {
+            background: rgba(52, 211, 153, 0.15);
+            color: #6ee7b7;
+        }
+        .sidebar .toc .chapter {
+            color: #34d399;
+        }
+        .sidebar code {
+            background: rgba(52, 211, 153, 0.14);
+            color: #6ee7b7;
+            padding: 0 0.3rem;
+            font-size: 0.8em;
+        }
+        .sidebar .toc a.active {
+            background: rgba(52, 211, 153, 0.18);
+            color: #6ee7b7;
+        }
+        .sidebar #sidebar-toggle {
+            background: rgba(52, 211, 153, 0.12);
+            color: #6ee7b7;
+            border-color: rgba(52, 211, 153, 0.4);
+        }
+        .sidebar #sidebar-toggle:hover {
+            background: #34d399;
+            color: #05200f;
+        }
+
+        /* ── main ── */
+        .main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 2.5rem 3rem 4rem;
+            max-width: 880px;
+        }
+        .main h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.5rem;
+        }
+        .main .lead {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 1rem;
+        }
+        .main h2 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin: 2rem 0 0.5rem;
+            padding-top: 0.3rem;
+        }
+        .main h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 1.5rem 0 0.3rem;
+        }
+        .main p {
+            margin: 0.6rem 0;
+            color: var(--text-secondary);
+        }
+        .main ul,
+        .main ol {
+            margin: 0.5rem 0 1rem 1.3rem;
+            color: var(--text-secondary);
+        }
+        .main .note {
+            background: var(--accent-light);
+            padding: 0.7rem 1.2rem;
+            border-radius: var(--radius);
+            border-left: 4px solid var(--accent);
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+        .main .note strong {
+            color: var(--accent);
+        }
+        .main table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin: 1rem 0;
+        }
+        .main table th,
+        .main table td {
+            padding: 0.4rem 0.6rem;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+        .main table th {
+            background: var(--code-bg);
+            font-weight: 600;
+        }
+        .main h4 {
+            margin: 1.4rem 0 0.4rem;
+            font-size: 1rem;
+            color: var(--accent);
+        }
+        .main details {
+            margin: 0.75rem 0;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--surface);
+            padding: 0.5rem 1rem;
+        }
+        .main details summary {
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--accent);
+            padding: 0.2rem 0;
+        }
+        .main details[open] summary {
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 0.4rem;
+        }
+        .main details .code-block {
+            background: var(--code-bg);
+        }
+
+        @media (max-width: 720px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 1rem;
+            }
+            .sidebar.minimized {
+                width: 100%;
+                padding: 1rem;
+            }
+            .sidebar #sidebar-toggle {
+                top: 0.9rem;
+                right: 1rem;
+            }
+            .sidebar.minimized #sidebar-toggle {
+                left: auto;
+                right: 1rem;
+            }
+            .sidebar .toc {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.1rem 0.3rem;
+            }
+            .sidebar .toc .chapter {
+                display: none;
+            }
+            .sidebar .toc li {
+                margin: 0;
+            }
+            .sidebar .toc a {
+                padding: 0.15rem 0.6rem;
+                font-size: 0.7rem;
+            }
+            .main {
+                margin-left: 0;
+                padding: 1.5rem 1rem;
+            }
+            .sidebar.minimized ~ .main {
+                margin-left: 0;
+            }
+            .main h1 {
+                font-size: 1.8rem;
+            }
+            .main h2 {
+                font-size: 1.3rem;
+            }
+        }
+        @media print {
+            .sidebar #sidebar-toggle {
+                display: none;
+            }
+            .sidebar {
+                position: static;
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                box-shadow: none;
+            }
+            .main {
+                margin-left: 0;
+                padding: 1.5rem;
+            }
+            .code-block {
+                break-inside: avoid;
+            }
+        }
+        /* scrollbar */
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(52, 211, 153, 0.45);
+            border-radius: 999px;
+        }
+    </style>
+</head>
+<body>
+
+    <button id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
+
+    <!-- ═══ SIDEBAR ═══ -->
+    <nav class="sidebar" id="sidebar">
+        <button id="sidebar-toggle" type="button" aria-label="Toggle navigation" aria-expanded="true" title="Minimize navigation">«</button>
+        <div class="logo">◈ Mojo <span>1.0</span></div>
+        <div class="sub">an introduction to computer programming</div>
+        <ul class="toc">
+            <li class="chapter">Core</li>
+            <li><a href="#ch1">1. How Computers Work</a></li>
+            <li><a href="#ch2">2. Hello, Mojo</a></li>
+            <li><a href="#ch3">3. Variables &amp; Types</a></li>
+            <li><a href="#ch4">4. Control Flow</a></li>
+
+            <li class="chapter">Functions &amp; Types</li>
+            <li><a href="#ch5">5. Functions (<code>def</code>)</a></li>
+            <li><a href="#ch6">6. Parameters &amp; Generics</a></li>
+            <li><a href="#ch7">7. Structs &amp; Methods</a></li>
+            <li><a href="#ch8">8. Traits</a></li>
+
+            <li class="chapter">Data &amp; Memory</li>
+            <li><a href="#ch9">9. Collections</a></li>
+            <li><a href="#ch10">10. Ownership &amp; Conventions</a></li>
+            <li><a href="#ch11">11. Errors &amp; Testing</a></li>
+
+            <li class="chapter">Practice</li>
+            <li><a href="#ch12">12. Python Interop &amp; Compilation</a></li>
+            <li><a href="#ch13">13. A Small Program</a></li>
+            <li><a href="#ch14">14. Your Learning Path</a></li>
+
+            <li class="chapter">Reference</li>
+            <li><a href="#ch15">15. Quick Reference</a></li>
+        </ul>
+    </nav>
+
+    <!-- ═══ MAIN ═══ -->
+    <main class="main" id="main">
+
+        <h1>Fundamentals of Programming with Mojo</h1>
+        <div class="lead">
+            An introduction to computer programming. Start with the machine — bits, bytes,
+            memory, and the CPU — then learn to command it with Mojo, a compiled language.
+            Every example follows the official Mojo 1.0 reference: <code>def</code>,
+            <code>var</code>, <code>mut</code>/<code>out</code>, and the typed collections
+            (<code>List</code>, <code>Dict</code>, <code>Set</code>) from the
+            <code>collections</code> module.
+        </div>
+
+        <!-- ─── CHAPTER 1 ─── -->
+        <h2 id="ch1">1. How Computers Work</h2>
+        <p>
+            Before writing a single program, meet the machine. At the bottom of every
+            computer is one idea: it stores and manipulates <strong>two</strong> values.
+            Everything else — numbers, letters, pictures, sound, the page you are reading —
+            is a layer of meaning built on top.
+        </p>
+        <h3>Bits &amp; bytes</h3>
+        <p>
+            A <strong>bit</strong> (short for <em>binary digit</em>) is the smallest unit of
+            information: a switch that is either <em>off</em> or <em>on</em>. We write those
+            two states as <code>0</code> and <code>1</code>. Inside a modern processor there
+            are billions of microscopic switches that flip between them billions of times
+            per second.
+        </p>
+        <p>
+            Bits are grouped to carry more meaning: <strong>8 bits make one byte</strong>.
+            A byte can represent <code>2<sup>8</sup> = 256</code> different patterns, counted
+            as <code>0</code> through <code>255</code>. Each bit position is worth a power of
+            two:
+        </p>
+        <div class="code-block">  128   64   32   16    8    4    2    1      <span class="comment"># place value</span>
+    1    1    0    0    0    1    1    0      <span class="comment"># the bits  11000110</span>
+<span class="comment"># 11000110 = 128 + 64 + 4 + 2 = 198</span></div>
+        <p>
+            Binary counting looks strange at first: 0, 1, 10, 11, 100, 101, 110, 111.
+            After 1 you carry over, just as decimal counting carries after 9. With enough
+            bytes you can represent any number, any text, any image. The work is always in
+            the <em>interpretation</em>: the byte <code>01000001</code> might be the integer
+            <code>65</code>, the letter <code>A</code>, or one red channel of a pixel,
+            depending on context.
+        </p>
+        <p>
+            Bytes scale up quickly: a kilobyte (KB) is roughly a thousand bytes, a megabyte
+            (MB) a million, a gigabyte (GB) a billion. This page of text is a few KB; a photo
+            is a few MB; an hour of video can be several GB.
+        </p>
+        <h3>Bytes as characters</h3>
+        <p>
+            Text was one of the first things people agreed to encode. A convention called
+            ASCII maps each common character to a byte value:
+        </p>
+        <table>
+            <thead>
+                <tr><th>Character</th><th>Decimal</th><th>Binary</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>!</code></td><td>33</td><td><code>00100001</code></td></tr>
+                <tr><td><code>0</code></td><td>48</td><td><code>00110000</code></td></tr>
+                <tr><td><code>A</code></td><td>65</td><td><code>01000001</code></td></tr>
+                <tr><td><code>B</code></td><td>66</td><td><code>01000010</code></td></tr>
+                <tr><td><code>a</code></td><td>97</td><td><code>01100001</code></td></tr>
+            </tbody>
+        </table>
+        <p>
+            So the word <code>Hello</code> is simply the byte sequence
+            <code>72 101 108 108 111</code>. When your program prints text, it is really
+            writing 0s and 1s that the device decodes back into letters.
+        </p>
+        <h3>Memory</h3>
+        <p>
+            A running program needs a place to keep its data. Random‑access memory (RAM) is
+            a long row of byte‑sized boxes, each with a numbered <strong>address</strong>.
+            The CPU can read or write any box by address:
+        </p>
+        <div class="code-block"><span class="comment">address   value   meaning</span>
+  1000      72     <span class="string">"H"</span>
+  1001     101     <span class="string">"e"</span>
+  1002     108     <span class="string">"l"</span>
+  1003     108     <span class="string">"l"</span>
+  1004     111     <span class="string">"o"</span></div>
+        <p>
+            Both your program's <strong>code</strong> and its <strong>data</strong> live in
+            memory while it runs. RAM is fast but volatile — it forgets everything when the
+            power goes off. That is why you also have storage (a hard drive or SSD), which
+            keeps files even when the machine is off. A program on disk is loaded into RAM,
+            then executed from there.
+        </p>
+        <h3>The CPU</h3>
+        <p>
+            The central processing unit (CPU) executes instructions one at a time in a
+            fetch‑decode‑execute cycle: it <em>fetches</em> the next instruction from memory,
+            <em>decodes</em> what it means, and <em>executes</em> it. Instructions are tiny
+            operations — load a byte, add two numbers, compare values, jump to another part
+            of the program when a comparison is true. A 3 gigahertz CPU carries out roughly
+            three billion of these cycles per second.
+        </p>
+        <p>
+            Loops, decisions, and function calls are not magic — they are combinations of
+            jumps and comparisons that a programmer's words describe.
+        </p>
+        <h3>From human to machine</h3>
+        <p>
+            Nobody wants to write <code>01000001</code> by hand. A <strong>programming
+            language</strong> lets humans express logic in words, and a <strong>compiler</strong>
+            translates those words into the exact bytes a CPU understands. Mojo is such a
+            compiled language: when you run <code>mojo run</code>, the source is compiled and
+            only then does the CPU execute it. The rest of this book teaches you to write
+            that source.
+        </p>
+        <div class="note">
+            <strong>🔹</strong> Three things to remember: a bit is <code>0</code> or
+            <code>1</code>, eight bits make a byte, and a byte's meaning depends on the
+            context that interprets it.
+        </div>
+
+        <!-- ─── CHAPTER 2 ─── -->
+        <h2 id="ch2">2. Hello, Mojo</h2>
+        <p>
+            Chapter 1 ended with how a computer runs a program: the compiler turns source
+            text into instructions, and the CPU carries them out. Let's write such a program.
+            Mojo is a <strong>statically typed</strong> compiled language, which means every
+            value has a type the compiler checks before the program runs.
+        </p>
+        <div class="code-block"><span class="keyword">def</span> <span class="func">main</span>():
+    <span class="keyword">print</span>(<span class="string">"Hello, Mojo 1.0!"</span>)
+    <span class="keyword">var</span> x: <span class="type">Int</span> = 42
+    <span class="keyword">print</span>(<span class="string">"The answer is"</span>, x)</div>
+        <p>
+            Running this file compiles it and runs <code>main()</code>. Every program
+            defines <code>def main():</code> as its entry point.
+        </p>
+        <div class="note">
+            <strong>✦</strong> In Mojo 1.0 there is <strong>one</strong> function keyword:
+            <code>def</code>. A <code>def</code> with typed annotations is compiled to
+            native code. Variables use <code>var</code>.
+        </div>
+
+        <!-- ─── CHAPTER 3 ─── -->
+        <h2 id="ch3">3. Variables &amp; Types</h2>
+        <p>
+            Mojo is statically typed but supports type inference. Every binding uses
+            <code>var</code>.
+        </p>
+        <div class="code-block"><span class="keyword">var</span> name: <span class="type">String</span> = <span class="string">"Mojo"</span>   <span class="comment"># String</span>
+<span class="keyword">var</span> version = 1.0                          <span class="comment"># Float64 inferred</span>
+
+<span class="keyword">var</span> counter: <span class="type">Int</span> = 0          <span class="comment"># mutable</span>
+counter += 1
+
+<span class="keyword">var</span> is_fast: <span class="type">Bool</span> = <span class="keyword">True</span>
+<span class="keyword">var</span> pi: <span class="type">Float32</span> = 3.14159
+<span class="keyword">var</span> byte: <span class="type">UInt8</span> = 255</div>
+        <p>
+            Built‑in scalar types include <code>Int</code>, <code>Float32</code>,
+            <code>Float64</code>, <code>Bool</code>, <code>String</code>, and fixed‑width
+            unsigned types such as <code>UInt8</code>/<code>UInt16</code>. Numbers convert
+            explicitly — Mojo never converts implicitly:
+        </p>
+        <div class="code-block"><span class="keyword">var</span> n: <span class="type">Int</span> = 10
+<span class="keyword">var</span> x: <span class="type">Float64</span> = <span class="type">Float64</span>(n)  <span class="comment"># explicit conversion</span></div>
+        <p>
+            Constant values that must be known at compile time use <code>comptime</code>.
+            It can never change at runtime:
+        </p>
+        <div class="code-block"><span class="keyword">comptime</span> MAX_ITER = <span class="number">100</span>   <span class="comment"># compile-time constant</span></div>
+        <div class="note">
+            <strong>⚡</strong> Prefer <code>comptime</code> for compile‑time constants and
+            <code>var</code> for runtime bindings. Read‑only access (sharing a value without
+            copying) is expressed with <code>ref</code> — see Chapter 10.
+        </div>
+
+        <!-- ─── CHAPTER 4 ─── -->
+        <h2 id="ch4">4. Control Flow</h2>
+        <p>
+            Programs decide and repeat. Both are <em>compound statements</em> — a header
+            line ending in <code>:</code> followed by an indented body. Mojo branches with
+            the <code>if</code>/<code>elif</code>/<code>else</code> statement and loops
+            with the <code>for</code> and <code>while</code> statements, plus
+            <code>continue</code> (skip this iteration) and <code>break</code> (leave the
+            loop) to steer them. The example below shows each in action; the sections
+            that follow take the loop statements in depth.
+        </p>
+        <div class="code-block"><span class="keyword">var</span> x = 10
+<span class="keyword">if</span> x &gt; 5:
+    <span class="keyword">print</span>(<span class="string">"x is large"</span>)
+<span class="keyword">elif</span> x &lt; 0:
+    <span class="keyword">print</span>(<span class="string">"x is negative"</span>)
+<span class="keyword">else</span>:
+    <span class="keyword">print</span>(<span class="string">"x is small"</span>)
+
+<span class="comment"># for loop over a range</span>
+<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">5</span>):
+    <span class="keyword">print</span>(<span class="string">"i ="</span>, i)
+
+<span class="comment"># while loop</span>
+<span class="keyword">var</span> n = <span class="number">3</span>
+<span class="keyword">while</span> n &gt; <span class="number">0</span>:
+    <span class="keyword">print</span>(<span class="string">"n ="</span>, n)
+    n -= <span class="number">1</span>
+
+<span class="comment"># continue / break</span>
+<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>):
+    <span class="keyword">if</span> i == <span class="number">3</span>:
+        <span class="keyword">continue</span>
+    <span class="keyword">if</span> i == <span class="number">6</span>:
+        <span class="keyword">break</span>
+    <span class="keyword">print</span>(i)   <span class="comment"># 0 1 2 4 5</span></div>
+
+        <p>
+            Computers earn their keep by repeating. A loop runs a block of code once per
+            element or once per condition — and everything else a program does (searching,
+            summing, retrying, simulating) is a loop wearing a different coat. Mojo has
+            two loop statements: <code>for</code> (once per item) and <code>while</code>
+            (once per condition), plus <code>break</code> and <code>continue</code> to
+            steer them — and a compile-time variant, <code>comptime for</code>, that
+            unrolls its body into separate code before the program ever runs.
+        </p>
+
+        <h3>4.1 <code>for</code>: once per item</h3>
+        <p>
+            A <code>for</code> loop walks anything iterable: a <code>range</code> of numbers,
+            a <code>List</code>, or the <code>List</code> that <code>split()</code> returns. The loop variable is
+            an <em>immutable reference</em> by default — you can read it, not write it.
+        </p>
+        <div class="code-block"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">3</span>):        <span class="comment"># 0, 1, 2 — range(3) excludes 3</span>
+    <span class="keyword">print</span>(i)
+
+<span class="keyword">var</span> names: List[String] = [<span class="string">"ada"</span>, <span class="string">"grace"</span>, <span class="string">"linus"</span>]
+<span class="keyword">for</span> name <span class="keyword">in</span> names:          <span class="comment"># iterate any List</span>
+    <span class="keyword">print</span>(<span class="string">"hello,"</span>, name)
+
+<span class="keyword">for</span> part <span class="keyword">in</span> <span class="string">"a,b,c"</span>.split(<span class="string">","</span>):  <span class="comment"># split() hands back an iterable List</span>
+    <span class="keyword">print</span>(part)</div>
+        <p>
+            Need to modify items as you go? Ask for a mutable copy with
+            <code>for var item in xs</code>, or write straight back into the collection
+            with <code>for ref item in xs</code> — the same ownership conventions you will
+            meet again in <code>ref</code> bindings (Chapter&nbsp;10).
+        </p>
+
+        <h3>4.2 <code>while</code>: once per condition</h3>
+        <p>
+            A <code>for</code> loop knows how many steps it will take; a
+            <code>while</code> loop does not — it runs until its condition turns false.
+            That is exactly right when the trip count is discovered along the way:
+            countdowns, retry logic, numerical iteration until convergence.
+        </p>
+        <div class="code-block"><span class="keyword">var</span> n = <span class="number">5</span>
+<span class="keyword">while</span> n &gt; <span class="number">0</span>:
+    <span class="keyword">print</span>(n)
+    n -= <span class="number">1</span>                  <span class="comment"># the update is the whole trick — forget it and the loop never ends</span>
+<span class="keyword">print</span>(<span class="string">"liftoff"</span>)</div>
+
+        <h3>4.3 <code>break</code> and <code>continue</code></h3>
+        <p>
+            <code>break</code> leaves the loop immediately; <code>continue</code> skips to
+            the next iteration. Together they keep loop bodies flat: instead of wrapping
+            everything in an <code>if</code>, you exit early.
+        </p>
+        <div class="code-block"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">100</span>):
+    <span class="keyword">if</span> i % <span class="number">2</span> == <span class="number">1</span>:
+        <span class="keyword">continue</span>           <span class="comment"># odd? skip it</span>
+    <span class="keyword">if</span> i &gt; <span class="number">8</span>:
+        <span class="keyword">break</span>              <span class="comment"># past 8? we are done</span>
+    <span class="keyword">print</span>(i)               <span class="comment"># prints 0 2 4 6 8</span></div>
+
+        <h3>4.4 The three classic patterns</h3>
+        <p>
+            Nearly every loop you will ever write is one of three shapes. Learn them here
+            and you will recognise them everywhere — including inside the
+            <code>Series</code> program of Chapter&nbsp;13.
+        </p>
+        <div class="code-block"><span class="comment"># 1. Accumulate — fold many values into one</span>
+<span class="keyword">var</span> total = <span class="number">0</span>
+<span class="keyword">for</span> x <span class="keyword">in</span> [<span class="number">120</span>, <span class="number">132</span>, <span class="number">145</span>]:
+    total += x                  <span class="comment"># 397</span>
+
+<span class="comment"># 2. Search — stop at the first match</span>
+<span class="keyword">var</span> found = <span class="number">-1</span>
+<span class="keyword">for</span> i <span class="keyword">in</span> range(len(names)):
+    <span class="keyword">if</span> names[i] == <span class="string">"grace"</span>:
+        found = i
+        <span class="keyword">break</span>              <span class="comment"># 1 — no need to keep looking</span>
+
+<span class="comment"># 3. Nested — a loop inside a loop walks a grid</span>
+<span class="keyword">for</span> row <span class="keyword">in</span> range(<span class="number">3</span>):
+    <span class="keyword">for</span> col <span class="keyword">in</span> range(<span class="number">3</span>):
+        <span class="keyword">print</span>(row, col)   <span class="comment"># all nine pairs, row by row</span></div>
+        <p>
+            <strong>⚡</strong> Prefer <code>for</code> when you can — it cannot run
+            forever. Reach for <code>while</code> only when the number of trips is
+            genuinely unknown ahead of time, and always make sure something inside the
+            body moves the condition toward false.
+        </p>
+
+        <!-- ─── CHAPTER 5 ─── -->
+        <h2 id="ch5">5. Functions (<code>def</code>)</h2>
+        <p>
+            Every function is a <code>def</code>. Type annotations are optional, but they
+            unlock native compilation, better errors, and safer code.
+        </p>
+        <div class="code-block"><span class="comment"># typed function</span>
+<span class="keyword">def</span> <span class="func">add</span>(a: <span class="type">Int</span>, b: <span class="type">Int</span>) -&gt; <span class="type">Int</span>:
+    <span class="keyword">return</span> a + b
+
+<span class="comment"># default arguments</span>
+<span class="keyword">def</span> <span class="func">greet</span>(name: <span class="type">String</span> = <span class="string">"world"</span>):
+    <span class="keyword">print</span>(<span class="string">"Hello,"</span>, name)
+
+<span class="comment"># multiple returns use destructuring</span>
+<span class="keyword">def</span> <span class="func">minmax</span>(a: <span class="type">Int</span>, b: <span class="type">Int</span>) -&gt; <span class="type">Int</span>:
+    <span class="keyword">return</span> a <span class="keyword">if</span> a &lt; b <span class="keyword">else</span> b
+
+<span class="keyword">def</span> <span class="func">main</span>():
+    <span class="keyword">var</span> total = <span class="func">add</span>(<span class="number">3</span>, <span class="number">4</span>)   <span class="comment"># 7</span>
+    <span class="keyword">print</span>(total)
+    <span class="func">greet</span>(<span class="string">"Mojo"</span>)         <span class="comment"># Hello, Mojo</span></div>
+        <p>
+            The full signature grammar: parameters and return type first, then the
+            <code>raises</code> effect if the function can throw:
+        </p>
+        <div class="code-block"><span class="keyword">def</span> <span class="func">invert</span>(x: <span class="type">Float64</span>) <span class="keyword">raises</span> -&gt; <span class="type">Float64</span>:
+    <span class="comment"># body</span>
+    <span class="keyword">return</span> <span class="number">1.0</span> / x</div>
+
+        <!-- ─── CHAPTER 6 ─── -->
+        <h2 id="ch6">6. Parameters &amp; Generics</h2>
+        <p>
+            Mojo separates <strong>parameters</strong> (compile time, in <code>[...]</code>)
+            from <strong>arguments</strong> (runtime, in <code>(...)</code>). Parameters let
+            the compiler specialize code before it runs — the compiler works on your behalf.
+        </p>
+        <div class="code-block"><span class="comment"># N is a compile-time parameter; value arrives at runtime</span>
+<span class="keyword">def</span> <span class="func">expand</span>[N: <span class="type">Int</span>](value: <span class="type">Int</span>) -&gt; <span class="type">Int</span>:
+    <span class="keyword">var</span> total: <span class="type">Int</span> = <span class="number">0</span>
+    <span class="keyword">for</span> i <span class="keyword">in</span> range(N):
+        total += value
+    <span class="keyword">return</span> total
+
+<span class="keyword">def</span> <span class="func">main</span>():
+    <span class="keyword">print</span>(<span class="func">expand</span>[<span class="number">5</span>](<span class="number">3</span>))   <span class="comment"># 15</span></div>
+        <p>
+            Generic functions accept any type that satisfies a trait constraint. Here
+            <code>Intable</code> means "convertible to <code>Int</code>":
+        </p>
+        <div class="code-block"><span class="keyword">def</span> <span class="func">identity</span>[T: <span class="type">Intable</span>](x: T) -&gt; <span class="type">Int</span>:
+    <span class="keyword">return</span> <span class="type">Int</span>(x)
+
+<span class="keyword">def</span> <span class="func">main</span>():
+    <span class="keyword">print</span>(<span class="func">identity</span>(<span class="number">42</span>))          <span class="comment"># 42</span>
+    <span class="keyword">print</span>(<span class="func">identity</span>(<span class="number">7.5</span>))         <span class="comment"># 7</span></div>
+        <p>
+            Traits can be composed with <code>&amp;</code> to require several capabilities,
+            and <code>comptime</code> members make constants part of a type's contract
+            (see Chapter 8).
+        </p>
+
+        <!-- ─── CHAPTER 7 ─── -->
+        <h2 id="ch7">7. Structs &amp; Methods</h2>
+        <p>
+            A <code>struct</code> defines a value type with methods — like a class in an
+            object-oriented language, but without inheritance. Fields are declared with
+            <code>var</code>.
+        </p>
+        <div class="code-block"><span class="keyword">from</span> std.math <span class="keyword">import</span> sqrt
+
+<span class="keyword">struct</span> <span class="type">Point</span>:
+    <span class="keyword">var</span> x: <span class="type">Float64</span>
+    <span class="keyword">var</span> y: <span class="type">Float64</span>
+
+    <span class="keyword">def</span> <span class="func">__init__</span>(<span class="keyword">out</span> self, x: <span class="type">Float64</span>, y: <span class="type">Float64</span>):
+        self.x = x
+        self.y = y
+
+    <span class="keyword">def</span> <span class="func">move_by</span>(<span class="keyword">mut</span> self, dx: <span class="type">Float64</span>, dy: <span class="type">Float64</span>):
+        self.x += dx
+        self.y += dy
+
+    <span class="keyword">def</span> <span class="func">distance</span>(self, other: <span class="type">Point</span>) -&gt; <span class="type">Float64</span>:
+        <span class="keyword">var</span> dx = self.x - other.x
+        <span class="keyword">var</span> dy = self.y - other.y
+        <span class="keyword">return</span> sqrt(dx * dx + dy * dy)
+
+<span class="keyword">def</span> <span class="func">main</span>():
+    <span class="keyword">var</span> p1 = <span class="type">Point</span>(<span class="number">0.0</span>, <span class="number">0.0</span>)
+    <span class="keyword">var</span> p2 = <span class="type">Point</span>(<span class="number">3.0</span>, <span class="number">4.0</span>)
+    <span class="keyword">print</span>(p1.distance(p2))    <span class="comment"># 5.0</span>
+    p1.move_by(<span class="number">1.0</span>, <span class="number">1.0</span>)
+    <span class="keyword">print</span>(p1.x)              <span class="comment"># 1.0</span></div>
+        <div class="note">
+            <strong>🔹</strong> Method receivers say what they do: <code>__init__</code> uses
+            <code>out self</code>, mutating methods use <code>mut self</code>, and read‑only
+            methods use plain <code>self</code>.
+        </div>
+        <p>
+            When every field is initialized from a parameter, the <code>@fieldwise_init</code>
+            decorator synthesizes the initializer for you:
+        </p>
+        <div class="code-block"><span class="keyword">@fieldwise_init</span>
+<span class="keyword">struct</span> <span class="type">Pixel</span>:
+    <span class="keyword">var</span> r: <span class="type">UInt8</span>
+    <span class="keyword">var</span> g: <span class="type">UInt8</span>
+    <span class="keyword">var</span> b: <span class="type">UInt8</span>
+
+<span class="keyword">def</span> <span class="func">main</span>():
+    <span class="keyword">var</span> px = <span class="type">Pixel</span>(<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>)   <span class="comment"># a red pixel</span></div>
+        <p>
+            <code>Self</code> names the enclosing type inside a struct — handy for returning
+            a new instance:
+        </p>
+        <div class="code-block"><span class="keyword">struct</span> <span class="type">Meters</span>:
+    <span class="keyword">var</span> value: <span class="type">Float64</span>
+
+    <span class="keyword">def</span> <span class="func">__init__</span>(<span class="keyword">out</span> self, value: <span class="type">Float64</span>):
+        self.value = value
+
+    <span class="keyword">def</span> <span class="func">scaled</span>(self, factor: <span class="type">Float64</span>) -&gt; <span class="type">Self</span>:
+        <span class="keyword">return</span> <span class="type">Self</span>(self.value * factor)
+
+<span class="keyword">def</span> <span class="func">main</span>():
+    <span class="keyword">var</span> m = <span class="type">Meters</span>(<span class="number">10.0</span>)
+    <span class="keyword">print</span>(m.scaled(<span class="number">2.0</span>).value)    <span class="comment"># 20.0</span></div>
+
+        <!-- ─── CHAPTER 8 ─── -->
+        <h2 id="ch8">8. Traits</h2>
+        <p>
+            A <code>trait</code> describes a capability. Conforming structs must implement
+            its required methods; the compiler checks every conformance.
+        </p>
+        <div class="code-block"><span class="keyword">trait</span> <span class="type">Shape</span>:
+    <span class="keyword">def</span> <span class="func">area</span>(self) -&gt; <span class="type">Float64</span>: ...        <span class="comment"># required</span>
+
+    <span class="keyword">def</span> <span class="func">describe</span>(self) -&gt; <span class="type">String</span>:          <span class="comment"># provided</span>
+        <span class="keyword">return</span> <span class="string">"a shape"</span>
+
+<span class="keyword">@fieldwise_init</span>
+<span class="keyword">struct</span> <span class="type">Circle</span>(<span class="type">Shape</span>):
+    <span class="keyword">var</span> radius: <span class="type">Float64</span>
+
+    <span class="keyword">def</span> <span class="func">area</span>(self) -&gt; <span class="type">Float64</span>:
+        <span class="keyword">return</span> <span class="number">3.141592653589793</span> * self.radius * self.radius
+
+    <span class="keyword">def</span> <span class="func">describe</span>(self) -&gt; <span class="type">String</span>:
+        <span class="keyword">return</span> <span class="type">String</span>(<span class="string">t"a circle of radius {self.radius}"</span>)
+
+<span class="keyword">@fieldwise_init</span>
+<span class="keyword">struct</span> <span class="type">Square</span>(<span class="type">Shape</span>):
+    <span class="keyword">var</span> side: <span class="type">Float64</span>
+
+    <span class="keyword">def</span> <span class="func">area</span>(self) -&gt; <span class="type">Float64</span>:
+        <span class="keyword">return</span> self.side * self.side
+
+<span class="keyword">def</span> <span class="func">print_area</span>[T: <span class="type">Shape</span>](shape: T):
+    <span class="keyword">print</span>(shape.describe(), <span class="string">"=&gt;"</span>, shape.area())
+
+<span class="keyword">def</span> <span class="func">main</span>():
+    <span class="func">print_area</span>(<span class="type">Circle</span>(<span class="number">2.0</span>))      <span class="comment"># a circle ... =&gt; 12.566...</span>
+    <span class="func">print_area</span>(<span class="type">Square</span>(<span class="number">3.0</span>))      <span class="comment"># a shape =&gt; 9.0</span></div>
+        <p>
+            In a trait body, <code>...</code> marks a <em>required</em> method — conforming
+            types must implement it. A method with a real body is a <em>provided</em>
+            default. Traits may include <code>comptime</code> members: associated types,
+            required values, and constants. Static methods use <code>@staticmethod</code>:
+        </p>
+        <div class="code-block"><span class="keyword">struct</span> <span class="type">MathUtils</span>:
+    <span class="keyword">@staticmethod</span>
+    <span class="keyword">def</span> <span class="func">square</span>(x: <span class="type">Int</span>) -&gt; <span class="type">Int</span>:
+        <span class="keyword">return</span> x * x
+
+<span class="keyword">def</span> <span class="func">main</span>():
+    <span class="keyword">print</span>(<span class="type">MathUtils</span>.square(<span class="number">9</span>))   <span class="comment"># 81</span></div>
+
+        <!-- ─── CHAPTER 9 ─── -->
+        <h2 id="ch9">9. Collections</h2>
+        <p>
+            Everyday data lives in the <code>std.collections</code> module — bring it in
+            with <code>from std.collections import List, Dict, Set</code> — and display
+            literals build the values directly.
+        </p>
+        <div class="code-block"><span class="keyword">from</span> std.collections <span class="keyword">import</span> List, Dict, Set
+<span class="keyword">var</span> evens: <span class="type">List</span>[<span class="type">Int</span>] = [<span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">8</span>]
+evens.append(<span class="number">10</span>)                          <span class="comment"># grows the list</span>
+
+<span class="comment"># read elements</span>
+<span class="keyword">print</span>(evens[<span class="number">0</span>])                        <span class="comment"># 2</span>
+<span class="keyword">print</span>(<span class="func">len</span>(evens))                      <span class="comment"># 5</span>
+
+<span class="comment"># iterate by value</span>
+<span class="keyword">for</span> value <span class="keyword">in</span> evens:
+    <span class="keyword">print</span>(value)
+
+<span class="comment"># iterate by index</span>
+<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="func">len</span>(evens)):
+    <span class="keyword">print</span>(evens[i])</div>
+        <div class="code-block"><span class="keyword">var</span> ages: <span class="type">Dict</span>[<span class="type">String</span>, <span class="type">Int</span>] = {<span class="string">"Ada"</span>: <span class="number">36</span>, <span class="string">"Grace"</span>: <span class="number">33</span>}
+
+<span class="keyword">print</span>(ages[<span class="string">"Ada"</span>])                     <span class="comment"># 36</span>
+ages[<span class="string">"Lin"</span>] = <span class="number">32</span>                     <span class="comment"># insert or update</span>
+
+<span class="comment"># iterate entries (key, value)</span>
+<span class="keyword">for</span> entry <span class="keyword">in</span> ages.items():
+    <span class="keyword">print</span>(entry.key, <span class="string">"-"</span>, entry.value)</div>
+        <div class="note">
+            <strong>📚</strong> <code>List</code> and <code>Dict</code> are generic:
+            <code>List[Float64]</code>, <code>Dict[String, List[Int]]</code>. Use
+            <code>var xs: List[Int] = []</code> for an empty collection.
+        </div>
+
+        <!-- ─── CHAPTER 10 ─── -->
+        <h2 id="ch10">10. Ownership &amp; Conventions</h2>
+        <p>
+            Mojo is memory‑safe without garbage collection. Every argument declares how it
+            joins the function — the convention appears before the argument name. With no
+            convention, the argument is an immutable read‑only reference and the caller
+            keeps ownership. The options:
+        </p>
+        <table>
+            <thead>
+                <tr><th>Convention</th><th>Meaning</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>(imm)</code> — default</td><td>Immutable read‑only reference; caller keeps ownership.</td></tr>
+                <tr><td><code>mut</code></td><td>Read‑write reference; changes are visible to the caller.</td></tr>
+                <tr><td><code>var</code></td><td>Owned copy (or a move when passed with <code>^</code>).</td></tr>
+                <tr><td><code>out</code></td><td>The function's return slot; replaces <code>-&gt;</code>.</td></tr>
+                <tr><td><code>deinit</code></td><td>Takes ownership and destroys the value (<code>self</code> in <code>__deinit__</code>).</td></tr>
+                <tr><td><code>ref</code></td><td>Reference with an explicit origin specifier.</td></tr>
+            </tbody>
+        </table>
+        <div class="code-block"><span class="comment"># default (imm): read-only, no copy</span>
+<span class="keyword">def</span> <span class="func">length</span>[T: <span class="type">Copyable</span>](s: <span class="type">List</span>[T]) -&gt; <span class="type">Int</span>:
+    <span class="keyword">return</span> <span class="func">len</span>(s)
+
+<span class="comment"># mut: changes reach the caller</span>
+<span class="keyword">def</span> <span class="func">double_it</span>(<span class="keyword">mut</span> x: <span class="type">Int</span>):
+    x *= <span class="number">2</span>
+
+<span class="comment"># var: owned copy (or move with ^)</span>
+<span class="keyword">def</span> <span class="func">consume</span>(<span class="keyword">var</span> s: <span class="type">String</span>):
+    s += <span class="string">"!"</span>
+    <span class="keyword">print</span>(s)
+
+<span class="comment"># out: return slot instead of -></span>
+<span class="keyword">def</span> <span class="func">make_int</span>(<span class="keyword">out</span> result: <span class="type">Int</span>):
+    result = <span class="number">42</span>
+
+<span class="keyword">def</span> <span class="func">main</span>():
+    <span class="keyword">var</span> n = <span class="number">5</span>
+    <span class="func">double_it</span>(n)               <span class="comment"># mutated in place</span>
+    <span class="keyword">print</span>(n)                  <span class="comment"># 10</span>
+
+    <span class="keyword">var</span> greeting = <span class="string">"Hello"</span>
+    <span class="func">consume</span>(greeting)          <span class="comment"># Hello! (copied)</span>
+    <span class="func">consume</span>(greeting^)         <span class="comment"># Hello! (moved; greeting unusable after)</span>
+
+    <span class="keyword">var</span> x = <span class="func">make_int</span>()    <span class="comment"># out fills the return slot</span>
+    <span class="keyword">print</span>(x)                  <span class="comment"># 42</span></div>
+
+        <!-- ─── CHAPTER 11 ─── -->
+        <h2 id="ch11">11. Errors &amp; Testing</h2>
+        <p>
+            A function that can fail declares <code>raises</code>. Use
+            <code>raise Error(...)</code> to signal failure and <code>try</code> /
+            <code>except</code> to handle it.
+        </p>
+        <div class="code-block"><span class="keyword">def</span> <span class="func">parse_level</span>(text: <span class="type">String</span>) <span class="keyword">raises</span> -&gt; <span class="type">Int</span>:
+    <span class="keyword">if</span> text == <span class="string">"low"</span>:
+        <span class="keyword">return</span> <span class="number">1</span>
+    <span class="keyword">if</span> text == <span class="string">"high"</span>:
+        <span class="keyword">return</span> <span class="number">3</span>
+    <span class="keyword">raise</span> <span class="type">Error</span>(<span class="string">"unknown level"</span>)
+
+<span class="keyword">def</span> <span class="func">main</span>():
+    <span class="keyword">try</span>:
+        <span class="keyword">var</span> level = <span class="func">parse_level</span>(<span class="string">"mid"</span>)
+        <span class="keyword">print</span>(level)
+    <span class="keyword">except</span> e:
+        <span class="keyword">print</span>(<span class="string">"Error caught:"</span>, e)</div>
+        <p>
+            Tests are plain functions. <code>assert</code> verifies a condition; with
+            <code>-D ASSERT</code> the checks are compiled out of release builds:
+        </p>
+        <div class="code-block"><span class="keyword">def</span> <span class="func">add</span>(a: <span class="type">Int</span>, b: <span class="type">Int</span>) -&gt; <span class="type">Int</span>:
+    <span class="keyword">return</span> a + b
+
+<span class="keyword">def</span> <span class="func">test_add</span>():
+    <span class="keyword">assert</span>(<span class="func">add</span>(<span class="number">2</span>, <span class="number">3</span>) == <span class="number">5</span>)
+    <span class="keyword">assert</span>(<span class="func">add</span>(<span class="number">-2</span>, <span class="number">2</span>) == <span class="number">0</span>)
+    <span class="keyword">print</span>(<span class="string">"add passes"</span>)</div>
+
+        <!-- ─── CHAPTER 12 ─── -->
+        <h2 id="ch12">12. Python Interop &amp; Compilation</h2>
+        <p>
+            Mojo can run Python code too. Import any Python package with
+            <code>Python.import_module</code> and use it directly:
+        </p>
+        <div class="code-block"><span class="keyword">from</span> std.python <span class="keyword">import</span> Python
+
+<span class="keyword">def</span> <span class="func">main</span>():
+    <span class="keyword">var</span> np = <span class="type">Python</span>.import_module(<span class="string">"numpy"</span>)
+    <span class="keyword">var</span> data = np.random.randn(<span class="number">1000</span>)
+    <span class="keyword">print</span>(<span class="string">"mean:"</span>, np.mean(data))
+    <span class="keyword">print</span>(<span class="string">"std :"</span>, np.std(data))</div>
+        <p>
+            Template strings (the <code>t</code> prefix) interpolate values at runtime and
+            are the idiomatic way to build output:
+        </p>
+        <div class="code-block"><span class="keyword">var</span> name = <span class="string">"Ada"</span>
+<span class="keyword">print</span>(<span class="string">t"Hello, {name}!"</span>)   <span class="comment"># Hello, Ada!</span></div>
+        <p>
+            Remember what compilation means from Chapter 1, now in practice: typed
+            <code>def</code> functions are compiled, <code>comptime</code> work happens
+            before the program runs, and parameters make the compiler generate a specialized
+            copy of a generic function for each usage. What you write is essentially what the
+            processor executes.
+        </p>
+
+        <!-- ─── CHAPTER 13 ─── -->
+        <h2 id="ch13">13. A Small Program</h2>
+        <p>
+            A running example that ties the course together: a <code>Series</code> struct
+            that records values and reports their mean and standard deviation.
+        </p>
+        <div class="code-block"><span class="keyword">from</span> std.math <span class="keyword">import</span> sqrt
+
+<span class="keyword">struct</span> <span class="type">Series</span>:
+    <span class="keyword">var</span> data: <span class="type">List</span>[<span class="type">Float64</span>]
+
+    <span class="keyword">def</span> <span class="func">__init__</span>(<span class="keyword">out</span> self):
+        self.data = []
+
+    <span class="keyword">def</span> <span class="func">push</span>(<span class="keyword">mut</span> self, x: <span class="type">Float64</span>):
+        self.data.append(x)
+
+    <span class="keyword">def</span> <span class="func">mean</span>(self) -&gt; <span class="type">Float64</span>:
+        <span class="keyword">var</span> total = <span class="number">0.0</span>
+        <span class="keyword">for</span> x <span class="keyword">in</span> self.data:
+            total += x
+        <span class="keyword">return</span> total / <span class="type">Float64</span>(<span class="func">len</span>(self.data))
+
+    <span class="keyword">def</span> <span class="func">stddev</span>(self) -&gt; <span class="type">Float64</span>:
+        <span class="keyword">var</span> m = self.mean()
+        <span class="keyword">var</span> total = <span class="number">0.0</span>
+        <span class="keyword">for</span> x <span class="keyword">in</span> self.data:
+            total += (x - m) * (x - m)
+        <span class="keyword">return</span> sqrt(total / <span class="type">Float64</span>(<span class="func">len</span>(self.data)))
+
+<span class="keyword">def</span> <span class="func">main</span>():
+    <span class="keyword">var</span> s = <span class="type">Series</span>()
+    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">8</span>):
+        s.push(<span class="type">Float64</span>(i))
+
+    <span class="keyword">print</span>(<span class="string">"mean   ="</span>, s.mean())
+    <span class="keyword">print</span>(<span class="string">"stddev ="</span>, s.stddev())</div>
+        <p>
+            After this chapter you have used: <code>struct</code> and methods,
+            <code>def</code> signatures with <code>out self</code>/<code>mut self</code>,
+            <code>List</code> with <code>append</code>, <code>for</code> loops, explicit
+            type conversion, and <code>t"..."</code> output. That is a complete programming
+            loop in Mojo 1.0.
+        </p>
+
+        <!-- ─── CHAPTER 14 ─── -->
+        <h2 id="ch14">14. Your Learning Path</h2>
+        <p>
+            Fundamentals first, then practice. A suggested order:
+        </p>
+        <ol>
+            <li>Re‑read Chapters 2–5 and type every example — do not copy‑paste.</li>
+            <li>Build the <code>Series</code> program from Chapter 13 from memory.</li>
+            <li>Add a <code>median()</code> method. It needs sorted data — try it.</li>
+            <li>Define your own <code>trait</code> (Chapter 8) and make two structs conform.</li>
+            <li>Read Mojo code on GitHub and trace the <code>def</code>/<code>var</code>/<code>mut</code>/<code>out</code> rhythm.</li>
+        </ol>
+        <p>
+            Then take on projects — each teaches more Mojo deeper ideas:
+        </p>
+        <div class="project-grid">
+            <div class="project-card">
+                <span class="pill easy">Easy</span>
+                <h4>Knowledge Checker</h4>
+                <p>Quiz app using a <code>List</code> of questions and a score counter.</p>
+            </div>
+            <div class="project-card">
+                <span class="pill easy">Easy</span>
+                <h4>Data Cleaner</h4>
+                <p>A <code>Series</code>-style pipeline that filters and normalizes numbers.</p>
+            </div>
+            <div class="project-card">
+                <span class="pill medium">Medium</span>
+                <h4>Budget Tracker</h4>
+                <p>Track income/expenses with a <code>Dict</code> keyed by category.</p>
+            </div>
+            <div class="project-card">
+                <span class="pill medium">Medium</span>
+                <h4>Ride Fare Estimator</h4>
+                <p>Price calculator using <code>struct</code>s, traits, and <code>raises</code>.</p>
+            </div>
+            <div class="project-card">
+                <span class="pill hard">Hard</span>
+                <h4>Mini Stats Library</h4>
+                <p>Mean, median, stddev, and slope — your own <code>Stats</code> struct.</p>
+            </div>
+            <div class="project-card">
+                <span class="pill hard">Hard</span>
+                <h4>Python–Mojo Bridge</h4>
+                <p>Load real CSV data with <code>pandas</code> via interop and analyze it in Mojo.</p>
+            </div>
+        </div>
+
+        <h3>Hints &amp; Solutions</h3>
+        <p>
+            Try each exercise for real before peeking — the workout matters more than the
+            answer. Each hint begins with an approach, then a working solution using only
+            Mojo 1.0. Click a summary to expand it.
+        </p>
+
+        <h4>Series exercises (Chapter 13)</h4>
+
+        <details>
+            <summary>Challenge 1 · median() — hint first</summary>
+            <p>
+                Sort a copy of the data first. With an odd count, the median is the middle
+                value; with an even count it is the average of the two middle values. All you
+                need is <code>append</code>, index read and write, <code>len</code>,
+                <code>%</code>, and the <code>&gt;&gt;</code> shift to halve — no library call.
+            </p>
+            <p><strong>Solution.</strong> Add this method to <code>Series</code>:</p>
+            <div class="code-block"><pre><code><span class="keyword">def</span> <span class="func">median</span>(self) -&gt; <span class="type">Float64</span>:
+    <span class="comment"># copy the data first so the original stays untouched</span>
+    <span class="keyword">var</span> s: <span class="type">List</span>[<span class="type">Float64</span>] = []
+    <span class="keyword">for</span> x <span class="keyword">in</span> self.data:
+        s.append(x)
+
+    <span class="comment"># a simple selection sort — swaps the smallest value into place</span>
+    <span class="keyword">var</span> n = <span class="func">len</span>(s)
+    <span class="keyword">for</span> i <span class="keyword">in</span> range(n):
+        <span class="keyword">var</span> smallest = i
+        <span class="keyword">for</span> j <span class="keyword">in</span> range(i, n):
+            <span class="keyword">if</span> s[j] &lt; s[smallest]:
+                smallest = j
+        <span class="keyword">if</span> smallest != i:
+            <span class="keyword">var</span> tmp = s[i]
+            s[i] = s[smallest]
+            s[smallest] = tmp
+
+    <span class="keyword">var</span> mid = n &gt;&gt; <span class="number">1</span>
+    <span class="keyword">if</span> n % <span class="number">2</span> == <span class="number">1</span>:
+        <span class="keyword">return</span> s[mid]
+    <span class="keyword">return</span> (s[mid - <span class="number">1</span>] + s[mid]) / <span class="number">2.0</span></code></pre></div>
+            <p>
+                Check yourself: for the values 0…7 used in Chapter 13, the median is the
+                average of 3 and 4. Build the series exactly as in that chapter — push each
+                value in a loop — then <code>s.median()</code> should print <code>3.5</code>.
+                Your <code>median()</code> must leave <code>self.data</code> in
+                <code>push</code> order; the method only sorts its own copy.
+            </p>
+        </details>
+
+        <details>
+            <summary>Challenge 2 · your own trait — hint first</summary>
+            <p>
+                Pick one capability both structs share. Declare it as a <em>required</em>
+                method ending in <code>...</code>, then put shared behavior in a
+                <em>provided</em> method that calls the required one. Instances of either
+                struct can then use both methods.
+            </p>
+            <p><strong>Solution.</strong> A trait that gives anything a printable greeting for free:</p>
+            <div class="code-block"><pre><code><span class="keyword">trait</span> <span class="type">Named</span>:
+    <span class="comment"># required: every conformance must provide this</span>
+    <span class="keyword">def</span> <span class="func">name</span>(self) -&gt; <span class="type">String</span>: ...
+    <span class="comment"># provided: shared behavior, built on the required method</span>
+    <span class="keyword">def</span> <span class="func">greeting</span>(self) -&gt; <span class="type">String</span>:
+        <span class="keyword">return</span> <span class="type">String</span>(<span class="string">t"Hello, {self.name()}!"</span>)
+
+<span class="keyword">@fieldwise_init</span>
+<span class="keyword">struct</span> <span class="type">City</span>(<span class="type">Named</span>):
+    <span class="keyword">var</span> title: <span class="type">String</span>
+    <span class="keyword">def</span> <span class="func">name</span>(self) -&gt; <span class="type">String</span>:
+        <span class="keyword">return</span> self.title
+
+<span class="keyword">@fieldwise_init</span>
+<span class="keyword">struct</span> <span class="type">Robot</span>(<span class="type">Named</span>):
+    <span class="keyword">var</span> id: <span class="type">Int</span>
+    <span class="keyword">def</span> <span class="func">name</span>(self) -&gt; <span class="type">String</span>:
+        <span class="keyword">return</span> <span class="type">String</span>(<span class="string">t"Robot-{self.id}"</span>)
+
+<span class="keyword">def</span> <span class="func">main</span>():
+    <span class="keyword">var</span> c = <span class="type">City</span>(<span class="string">"Oslo"</span>)
+    <span class="keyword">var</span> r = <span class="type">Robot</span>(<span class="number">7</span>)
+    <span class="keyword">print</span>(c.greeting())   <span class="comment"># Hello, Oslo!</span>
+    <span class="keyword">print</span>(r.greeting())   <span class="comment"># Hello, Robot-7!</span></code></pre></div>
+            <p>
+                Note the two sides of a trait: conforming structs are responsible for the
+                <code>...</code> methods; the rest of the behavior is written once and shared.
+            </p>
+        </details>
+
+        <h4>Project hints</h4>
+
+        <details>
+            <summary>Knowledge Checker — hint &amp; starter</summary>
+            <p>
+                Keep three lists in parallel — questions, answers, guesses — and compare them
+                by index. A <code>score</code> counter ticks up on each match. Extend it later
+                by swapping the hard-coded guesses for real user input.
+            </p>
+            <div class="code-block"><pre><code><span class="keyword">var</span> questions: <span class="type">List</span>[<span class="type">String</span>] = [
+    <span class="string">"2 + 2 = ?"</span>, <span class="string">"4 * 3 = ?"</span>,
+]
+<span class="keyword">var</span> answers: <span class="type">List</span>[<span class="type">Int</span>] = [<span class="number">4</span>, <span class="number">12</span>]
+<span class="keyword">var</span> guesses: <span class="type">List</span>[<span class="type">Int</span>] = [<span class="number">4</span>, <span class="number">10</span>]
+
+<span class="keyword">var</span> score = <span class="number">0</span>
+<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="func">len</span>(questions)):
+    <span class="keyword">if</span> guesses[i] == answers[i]:
+        score += <span class="number">1</span>
+        <span class="keyword">print</span>(questions[i], <span class="string">"-&gt; correct"</span>)
+    <span class="keyword">else</span>:
+        <span class="keyword">print</span>(questions[i], <span class="string">"-&gt; missed"</span>)
+<span class="keyword">print</span>(<span class="string">"score:"</span>, score, <span class="string">"of"</span>, <span class="func">len</span>(questions))   <span class="comment"># 1 of 2</span></code></pre></div>
+        </details>
+
+        <details>
+            <summary>Data Cleaner — hint &amp; starter</summary>
+            <p>
+                Three passes: filter out invalid values, find the min and max in one scan,
+                then rescale every value to 0…1 with <code>(x - lo) / (hi - lo)</code>.
+            </p>
+            <div class="code-block"><pre><code><span class="keyword">var</span> data: <span class="type">List</span>[<span class="type">Float64</span>] = [<span class="number">1.0</span>, <span class="number">2.5</span>, <span class="number">0.0</span>, <span class="number">9.0</span>, <span class="number">4.0</span>]
+
+<span class="comment"># 1) keep only positive values</span>
+<span class="keyword">var</span> clean: <span class="type">List</span>[<span class="type">Float64</span>] = []
+<span class="keyword">for</span> x <span class="keyword">in</span> data:
+    <span class="keyword">if</span> x &gt; <span class="number">0.0</span>:
+        clean.append(x)
+
+<span class="comment"># 2) lowest and highest in one pass</span>
+<span class="keyword">var</span> lo = clean[<span class="number">0</span>]
+<span class="keyword">var</span> hi = clean[<span class="number">0</span>]
+<span class="keyword">for</span> x <span class="keyword">in</span> clean:
+    <span class="keyword">if</span> x &lt; lo:
+        lo = x
+    <span class="keyword">if</span> x &gt; hi:
+        hi = x
+
+<span class="comment"># 3) rescale to 0..1</span>
+<span class="keyword">var</span> scaled: <span class="type">List</span>[<span class="type">Float64</span>] = []
+<span class="keyword">for</span> x <span class="keyword">in</span> clean:
+    scaled.append((x - lo) / (hi - lo))
+<span class="keyword">print</span>(scaled)   <span class="comment"># [0.0, 0.2777, 1.0, 0.4444]</span></code></pre></div>
+        </details>
+
+        <details>
+            <summary>Budget Tracker — hint &amp; starter</summary>
+            <p>
+                One <code>Dict</code> for income, one for expenses. Sum each dict's values
+                with <code>items()</code>; the balance is income minus expenses. Add
+                categories by inserting into the dicts.
+            </p>
+            <div class="code-block"><pre><code><span class="keyword">var</span> income: <span class="type">Dict</span>[<span class="type">String</span>, <span class="type">Float64</span>] = {<span class="string">"salary"</span>: <span class="number">2400.0</span>}
+<span class="keyword">var</span> expenses: <span class="type">Dict</span>[<span class="type">String</span>, <span class="type">Float64</span>] = {
+    <span class="string">"rent"</span>: <span class="number">900.0</span>,
+    <span class="string">"food"</span>: <span class="number">300.0</span>,
+}
+
+<span class="keyword">var</span> total_in = <span class="number">0.0</span>
+<span class="keyword">for</span> entry <span class="keyword">in</span> income.items():
+    total_in += entry.value
+
+<span class="keyword">var</span> total_out = <span class="number">0.0</span>
+<span class="keyword">for</span> entry <span class="keyword">in</span> expenses.items():
+    total_out += entry.value
+
+<span class="keyword">print</span>(<span class="string">"saved:"</span>, total_in - total_out)   <span class="comment"># 1200.0</span></code></pre></div>
+        </details>
+
+        <details>
+            <summary>Ride Fare Estimator — hint &amp; starter</summary>
+            <p>
+                Wrap the pricing rules in a <code>struct</code>: a fixed base fare plus a
+                rate per kilometer. Reject bad input with a <code>raises</code> method so the
+                caller is forced to handle it.
+            </p>
+            <div class="code-block"><pre><code><span class="keyword">struct</span> <span class="type">Ride</span>:
+    <span class="keyword">var</span> distance: <span class="type">Float64</span>
+    <span class="keyword">var</span> rate_per_km: <span class="type">Float64</span>
+
+    <span class="keyword">def</span> <span class="func">__init__</span>(<span class="keyword">out</span> self, distance: <span class="type">Float64</span>, rate_per_km: <span class="type">Float64</span>):
+        self.distance = distance
+        self.rate_per_km = rate_per_km
+
+    <span class="keyword">def</span> <span class="func">fare</span>(self) <span class="keyword">raises</span> -&gt; <span class="type">Float64</span>:
+        <span class="keyword">if</span> self.distance &lt; <span class="number">0.0</span>:
+            <span class="keyword">raise</span> <span class="type">Error</span>(<span class="string">"distance cannot be negative"</span>)
+        <span class="keyword">return</span> <span class="number">2.0</span> + self.distance * self.rate_per_km
+
+<span class="keyword">def</span> <span class="func">main</span>():
+    <span class="keyword">var</span> ride = <span class="type">Ride</span>(<span class="number">10.0</span>, <span class="number">0.8</span>)
+    <span class="keyword">try</span>:
+        <span class="keyword">print</span>(ride.fare())   <span class="comment"># 10.0</span>
+    <span class="keyword">except</span> e:
+        <span class="keyword">print</span>(e)</code></pre></div>
+        </details>
+
+        <details>
+            <summary>Mini Stats Library — hint &amp; starter</summary>
+            <p>
+                Add <code>min()</code> and <code>max()</code> to <code>Series</code>, then
+                reuse the <code>median()</code> solution above. For the slope you need paired
+                (x, y) values: slope = Σ (x−μx)(y−μy) ÷ Σ (x−μx)², built from two means and
+                one loop.
+            </p>
+            <div class="code-block"><pre><code><span class="keyword">struct</span> <span class="type">Regression</span>:
+    <span class="keyword">var</span> x: <span class="type">List</span>[<span class="type">Float64</span>]
+    <span class="keyword">var</span> y: <span class="type">List</span>[<span class="type">Float64</span>]
+
+    <span class="keyword">def</span> <span class="func">__init__</span>(<span class="keyword">out</span> self):
+        self.x = []
+        self.y = []
+
+    <span class="keyword">def</span> <span class="func">push</span>(<span class="keyword">mut</span> self, xi: <span class="type">Float64</span>, yi: <span class="type">Float64</span>):
+        self.x.append(xi)
+        self.y.append(yi)
+
+    <span class="keyword">def</span> <span class="func">slope</span>(self) -&gt; <span class="type">Float64</span>:
+        <span class="keyword">var</span> n = <span class="type">Float64</span>(<span class="func">len</span>(self.x))
+        <span class="keyword">var</span> mx = <span class="number">0.0</span>
+        <span class="keyword">for</span> v <span class="keyword">in</span> self.x:
+            mx += v
+        mx /= n
+        <span class="keyword">var</span> my = <span class="number">0.0</span>
+        <span class="keyword">for</span> v <span class="keyword">in</span> self.y:
+            my += v
+        my /= n
+
+        <span class="comment"># slope = covariance / variance</span>
+        <span class="keyword">var</span> num = <span class="number">0.0</span>
+        <span class="keyword">var</span> den = <span class="number">0.0</span>
+        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="func">len</span>(self.x)):
+            num += (self.x[i] - mx) * (self.y[i] - my)
+            den += (self.x[i] - mx) * (self.x[i] - mx)
+        <span class="keyword">return</span> num / den</code></pre></div>
+        </details>
+
+        <details>
+            <summary>Python–Mojo Bridge — hint &amp; starter</summary>
+            <p>
+                Let <code>pandas</code> do the parsing and hand the numbers to
+                <code>numpy</code> for the math. Keep the data on the Python side — moving
+                whole frames into Mojo goes beyond this book.
+            </p>
+            <div class="code-block"><pre><code><span class="keyword">from</span> std.python <span class="keyword">import</span> Python
+
+<span class="keyword">def</span> <span class="func">main</span>():
+    <span class="keyword">var</span> pd = <span class="type">Python</span>.import_module(<span class="string">"pandas"</span>)
+    <span class="keyword">var</span> df = pd.read_csv(<span class="string">"grades.csv"</span>)
+    <span class="keyword">print</span>(df.head())
+
+    <span class="keyword">var</span> np = <span class="type">Python</span>.import_module(<span class="string">"numpy"</span>)
+    <span class="keyword">var</span> scores = df[<span class="string">"score"</span>].to_list()
+    <span class="keyword">print</span>(<span class="string">"mean:"</span>, np.mean(scores))</code></pre></div>
+        </details>
+
+        <p>
+            The deeper you go, the more you will meet <code>comptime</code> evaluation,
+            parameterized structs, and the standard library — but everything rests on the
+            fundamentals in this book.
+        </p>
+
+        <!-- ─── CHAPTER 15 ─── -->
+        <h2 id="ch15">15. Quick Reference</h2>
+        <table>
+            <thead>
+                <tr><th>Concept</th><th>Mojo 1.0</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Entry point</td><td><code>def main():</code></td></tr>
+                <tr><td>Function</td><td><code>def add(a: Int, b: Int) -&gt; Int:</code></td></tr>
+                <tr><td>Raise</td><td><code>def f() raises -&gt; Int:</code> + <code>raise Error("...")</code></td></tr>
+                <tr><td>Mutable binding</td><td><code>var x = 10</code></td></tr>
+                <tr><td>Reference binding</td><td><code>ref y = items[0]</code></td></tr>
+                <tr><td>Compile-time constant</td><td><code>comptime MAX = 100</code></td></tr>
+                <tr><td>Struct</td><td><code>struct Point:</code> / <code>var x: Float64</code></td></tr>
+                <tr><td>Initializer</td><td><code>def __init__(out self, x: Float64):</code></td></tr>
+                <tr><td>Mutating method</td><td><code>def push(mut self, x: Float64):</code></td></tr>
+                <tr><td>Trait requirement</td><td><code>def area(self) -&gt; Float64: ...</code></td></tr>
+                <tr><td>List</td><td><code>var xs: List[Int] = [1, 2, 3]</code></td></tr>
+                <tr><td>Dict</td><td><code>var d: Dict[String, Int] = {"a": 1}</code></td></tr>
+                <tr><td>For loop</td><td><code>for i in range(n):</code></td></tr>
+                <tr><td>If / else</td><td><code>if cond: ... elif ...: ... else: ...</code></td></tr>
+                <tr><td>Type conversion</td><td><code>Float64(n)</code>, <code>Int(x)</code></td></tr>
+                <tr><td>Template string</td><td><code>t"value = {x}"</code></td></tr>
+                <tr><td>Python interop</td><td><code>from std.python import Python</code></td></tr>
+                <tr><td>Import</td><td><code>from std.math import sqrt</code></td></tr>
+                <tr><td>Comment</td><td><code># a comment</code></td></tr>
+            </tbody>
+        </table>
+
+        <div style="margin-top:2.5rem; padding-top:1.5rem; border-top:2px solid var(--border); text-align:center; font-size:0.8rem; color:var(--text-secondary);">
+            ◈ Fundamentals of Programming with Mojo &nbsp;·&nbsp; Mojo 1.0, mastered from first principles
+        </div>
+
+        <div style="margin-top:1rem; text-align:center; font-size:0.9rem; color:var(--text-secondary);">
+            This book is a launchpad, not a ceiling — keep going with the
+            <a href="https://mojolang.org/docs" target="_blank" rel="noopener">official Mojo documentation</a>:
+            the full language syntax, guides, and the standard library
+            (<code>std.*</code>) are all there, and every concept from these sixteen
+            chapters goes further.
+        </div>
+
+    </main>
+
+    <!-- scroll‑spy -->
+    <script>
+        (function() {
+            const links = document.querySelectorAll('.sidebar .toc a');
+            const sections = Array.from(links).map(a => document.querySelector(a.getAttribute('href')));
+            function updateActive() {
+                let currentId = '';
+                const scrollY = window.scrollY + 80;
+                for (let i = 0; i < sections.length; i++) {
+                    const sec = sections[i];
+                    if (sec && sec.offsetTop <= scrollY) currentId = sec.id;
+                }
+                links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + currentId));
+            }
+            window.addEventListener('scroll', updateActive);
+            window.addEventListener('load', updateActive);
+        })();
+
+        /* sidebar minimize/expand */
+        (function() {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.getElementById('sidebar-toggle');
+            function setMinimized(min) {
+                sidebar.classList.toggle('minimized', min);
+                toggle.textContent = min ? '»' : '«';
+                toggle.setAttribute('aria-expanded', String(!min));
+                toggle.title = min ? 'Expand navigation' : 'Minimize navigation';
+                try { localStorage.setItem('nav-minimized', min ? '1' : '0'); } catch (e) {}
+            }
+            let saved = false;
+            try { saved = localStorage.getItem('nav-minimized') === '1'; } catch (e) {}
+            setMinimized(saved);
+            toggle.addEventListener('click', () => {
+                setMinimized(!sidebar.classList.contains('minimized'));
+            });
+        })();
+        /* dark mode: saved choice wins, otherwise dark by default */
+        (function() {
+            const btn = document.getElementById('theme-toggle');
+            let saved = null;
+            try { saved = localStorage.getItem('theme'); } catch (e) {}
+            const prefersDark = true; // dark is the default unless the reader chose otherwise
+
+            const apply = (dark) => {
+                document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+                btn.textContent = dark ? '☀️' : '🌙';
+                btn.title = dark ? 'Switch to light mode' : 'Switch to dark mode';
+            };
+            apply(saved ? saved === 'dark' : prefersDark);
+            btn.addEventListener('click', () => {
+                const dark = document.documentElement.dataset.theme !== 'dark';
+                apply(dark);
+                try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
+            });
+        })();
+    </script>
+
+</body>
+</html>

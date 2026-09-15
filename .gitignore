@@ -1,0 +1,10 @@
+# Windows system files
+desktop.ini
+Thumbs.db
+ehthumbs.db
+
+# Node
+node_modules/
+
+# Logs
+*.log

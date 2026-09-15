@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TutMe🔥 · Learning Hub</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><defs><linearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22><stop offset=%220%22 stop-color=%22%235bd4ff%22/><stop offset=%221%22 stop-color=%22%232f8fe0%22/></linearGradient></defs><rect width=%2240%22 height=%2240%22 rx=%2210%22 fill=%22url(%23g)%22/><g fill=%22none%22 stroke=%22%23052033%22 stroke-width=%222.4%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 transform=%22translate(8 8)%22><path d=%22M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z%22/><path d=%22M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z%22/></g></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #08131f;
+            --bg-deep: #040b13;
+            --ink: #e6f5ff;
+            --muted: rgba(230, 245, 255, .56);
+            --desc: rgba(230, 245, 255, .74);
+            --glass: rgba(255, 255, 255, .06);
+            --glass-hover: rgba(255, 255, 255, .11);
+            --line: rgba(255, 255, 255, .08);
+            --c-green: #57e6b8;
+            --c-blue: #4fb3ff;
+            --c-gold: #8fe1ff;
+            --c-red: #ff8d7a;
+            --grad-text: linear-gradient(92.72deg, #eafcff 1.22%, #4fb3ff 96.05%);
+            --grad-brand: linear-gradient(92.72deg, #5bd4ff, #2f8fe0);
+            --grad-index: linear-gradient(320.12deg, #9fe9ff -6.62%, #2f8fe0 107.08%);
+            --grad-cta: linear-gradient(181deg, #8fe4ff 1.02%, #2f8fe0 123.28%);
+            --orb-green: rgba(63, 201, 242, .26);
+            --orb-gold: rgba(143, 225, 255, .2);
+            --orb-blue: rgba(47, 143, 224, .22);
+            --nav-bg: rgba(4, 13, 21, .8);
+            --nav-border: rgba(255, 255, 255, .08);
+            --pill-active-bg: linear-gradient(180deg, rgba(63, 201, 242, .18), rgba(143, 225, 255, .1));
+            --pill-active-bd: rgba(63, 201, 242, .4);
+            --gold-tint-bg: rgba(143, 225, 255, .1);
+            --gold-tint-bd: rgba(143, 225, 255, .42);
+            --ghost-bd: rgba(255, 255, 255, .18);
+            --ghost-bg: rgba(255, 255, 255, .06);
+            --ghost-bd-h: rgba(255, 255, 255, .32);
+            --ghost-bg-h: rgba(255, 255, 255, .12);
+            --icon-bg: linear-gradient(180deg, rgba(63, 201, 242, .18), rgba(143, 225, 255, .12));
+            --icon-bd: rgba(255, 255, 255, .1);
+            --surface1: rgba(255, 255, 255, .045);
+            --surface2: rgba(10, 25, 42, .82);
+            --surface1-h: rgba(255, 255, 255, .09);
+            --panel-tint: rgba(63, 201, 242, .12);
+            --panel-border: rgba(63, 201, 242, .16);
+            --panel-glow-a: rgba(63, 201, 242, .4);
+            --panel-glow-b: rgba(143, 225, 255, .26);
+            --card-border: rgba(95, 212, 255, .13);
+            --tile-bg: linear-gradient(180deg, rgba(9, 28, 46, .82), rgba(6, 20, 36, .88));
+            --tile-bg-h: linear-gradient(180deg, rgba(13, 36, 58, .9), rgba(8, 25, 43, .94));
+            --tile-bd: rgba(95, 212, 255, .12);
+            --tile-bd-h: rgba(95, 212, 255, .26);
+            --item-bg: rgba(255, 255, 255, .05);
+            --item-bd: rgba(255, 255, 255, .08);
+            --item-hover-bg: rgba(63, 201, 242, .12);
+            --item-hover-bd: rgba(95, 212, 255, .32);
+            --tag-bg: rgba(95, 212, 255, .07);
+            --tag-bd: rgba(95, 212, 255, .13);
+            --tag-bg-h: rgba(95, 212, 255, .13);
+            --tag-bd-h: rgba(95, 212, 255, .34);
+            --link-blue: #5bd4ff;
+            --link-blue-h: #a9ecff;
+            --cta-blue-bd: rgba(95, 212, 255, .4);
+            --cta-blue-bg: rgba(95, 212, 255, .1);
+            --cta-blue-txt: #7fe0ff;
+            --cta-blue-bd-h: rgba(95, 212, 255, .6);
+            --cta-blue-bg-h: rgba(95, 212, 255, .18);
+            --cta-glow: rgba(95, 212, 255, .4);
+            --cta-shadow: 0 12px 16px rgba(4, 26, 44, .4), 0 0 16px rgba(63, 201, 242, .3);
+            --gold-glow: rgba(143, 225, 255, .5);
+            --blue-glow: rgba(63, 201, 242, .45);
+            --grid-line: rgba(255, 255, 255, .022);
+            --glow-opacity: .3;
+            --inner-hi: rgba(255, 255, 255, .08);
+            --dark-hi: rgba(0, 0, 0, .4);
+            --shadow: 0 18px 50px rgba(0, 0, 0, .4);
+            --shadow-hover: 0 22px 52px rgba(0, 0, 0, .45);
+            --bg-grad:
+                radial-gradient(circle at 50% 16%, rgba(63, 201, 242, .07) 0%, rgba(47, 143, 224, .05) 18%, transparent 52%),
+                linear-gradient(180deg, rgba(14, 44, 72, .25) 0%, rgba(8, 19, 31, .6) 40%, rgba(4, 11, 19, 1) 100%);
+            --font-p: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+            --font-b: 'Inter', ui-sans-serif, system-ui, sans-serif;
+        }
+
+        html[data-theme="dark"] {
+            color-scheme: dark;
+            --bg: #06101b;
+            --bg-deep: #030810;
+            --ink: #dfeef9;
+            --muted: rgba(223, 238, 249, .55);
+            --desc: rgba(223, 238, 249, .72);
+            --glass: rgba(255, 255, 255, .05);
+            --glass-hover: rgba(255, 255, 255, .1);
+            --line: rgba(255, 255, 255, .07);
+            --c-green: #4ecfac;
+            --c-blue: #3fa6e8;
+            --c-gold: #7ad4f7;
+            --c-red: #eb7a64;
+            --grad-text: linear-gradient(92.72deg, #d6f2ff 1.22%, #2f8fe0 96.05%);
+            --grad-brand: linear-gradient(92.72deg, #4bb8e8, #1f6faa);
+            --grad-index: linear-gradient(320.12deg, #84d8f7 -6.62%, #2f8fe0 107.08%);
+            --grad-cta: linear-gradient(181deg, #74cff2 1.02%, #1f6faa 123.28%);
+            --orb-green: rgba(63, 201, 242, .22);
+            --orb-gold: rgba(122, 212, 247, .18);
+            --orb-blue: rgba(31, 111, 170, .2);
+            --nav-bg: rgba(4, 9, 15, .8);
+            --nav-border: rgba(255, 255, 255, .07);
+            --pill-active-bg: linear-gradient(180deg, rgba(63, 201, 242, .16), rgba(122, 212, 247, .1));
+            --pill-active-bd: rgba(63, 201, 242, .38);
+            --gold-tint-bg: rgba(122, 212, 247, .1);
+            --gold-tint-bd: rgba(122, 212, 247, .42);
+            --ghost-bd: rgba(255, 255, 255, .18);
+            --ghost-bg: rgba(255, 255, 255, .06);
+            --ghost-bd-h: rgba(255, 255, 255, .3);
+            --ghost-bg-h: rgba(255, 255, 255, .12);
+            --icon-bg: linear-gradient(180deg, rgba(63, 201, 242, .18), rgba(122, 212, 247, .12));
+            --icon-bd: rgba(255, 255, 255, .1);
+            --surface1: rgba(255, 255, 255, .045);
+            --surface2: rgba(8, 20, 34, .82);
+            --surface1-h: rgba(255, 255, 255, .09);
+            --panel-tint: rgba(63, 201, 242, .12);
+            --panel-border: rgba(63, 201, 242, .14);
+            --panel-glow-a: rgba(63, 201, 242, .45);
+            --panel-glow-b: rgba(122, 212, 247, .3);
+            --card-border: rgba(95, 212, 255, .12);
+            --tile-bg: linear-gradient(180deg, rgba(7, 22, 37, .82), rgba(4, 15, 28, .88));
+            --tile-bg-h: linear-gradient(180deg, rgba(10, 28, 46, .9), rgba(6, 19, 33, .94));
+            --tile-bd: rgba(95, 212, 255, .1);
+            --tile-bd-h: rgba(95, 212, 255, .24);
+            --item-bg: rgba(255, 255, 255, .05);
+            --item-bd: rgba(255, 255, 255, .08);
+            --item-hover-bg: rgba(63, 201, 242, .11);
+            --item-hover-bd: rgba(95, 212, 255, .3);
+            --tag-bg: rgba(95, 212, 255, .06);
+            --tag-bd: rgba(95, 212, 255, .12);
+            --tag-bg-h: rgba(95, 212, 255, .12);
+            --tag-bd-h: rgba(95, 212, 255, .32);
+            --link-blue: #5bd4ff;
+            --link-blue-h: #84d8f7;
+            --cta-blue-bd: rgba(95, 212, 255, .4);
+            --cta-blue-bg: rgba(95, 212, 255, .1);
+            --cta-blue-txt: #7ad4f7;
+            --cta-blue-bd-h: rgba(95, 212, 255, .6);
+            --cta-blue-bg-h: rgba(95, 212, 255, .18);
+            --cta-glow: rgba(95, 212, 255, .45);
+            --cta-shadow: 0 12px 16px rgba(4, 18, 32, .5), 0 0 16px rgba(63, 201, 242, .38);
+            --gold-glow: rgba(122, 212, 247, .5);
+            --blue-glow: rgba(63, 201, 242, .45);
+            --grid-line: rgba(255, 255, 255, .022);
+            --glow-opacity: .3;
+            --inner-hi: rgba(255, 255, 255, .08);
+            --dark-hi: rgba(0, 0, 0, .4);
+            --shadow: 0 18px 50px rgba(0, 0, 0, .45);
+            --shadow-hover: 0 22px 52px rgba(0, 0, 0, .5);
+            --bg-grad:
+                radial-gradient(circle at 50% 16%, rgba(63, 201, 242, .05) 0%, rgba(31, 111, 170, .04) 18%, transparent 52%),
+                linear-gradient(180deg, rgba(10, 33, 54, .3) 0%, rgba(6, 16, 26, .7) 40%, rgba(3, 8, 16, 1) 100%);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        a, a:visited, a:hover, a:active { text-decoration: none; }
+        body {
+            font-family: var(--font-b);
+            background: var(--bg);
+            color: var(--ink);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.5;
+            transition: background .3s ease, color .3s ease;
+        }
+
+        .site-bg {
+            position: fixed; inset: 0; z-index: -2; pointer-events: none;
+            background: var(--bg-grad);
+            transition: background .3s ease;
+        }
+        .site-bg::after {
+            content: ""; position: absolute; inset: 0;
+            background-image:
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 48px 48px;
+            -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, .5), transparent 82%);
+            mask-image: linear-gradient(180deg, rgba(0, 0, 0, .5), transparent 82%);
+        }
+        .orb { position: fixed; border-radius: 50%; filter: blur(100px); z-index: -1; pointer-events: none; transition: background .3s ease; }
+        .orb-1 { top: 5vh; left: 12%; width: 44vw; height: 44vw; background: var(--orb-green); }
+        .orb-2 { top: 18vh; left: 46%; width: 28vw; height: 28vw; background: var(--orb-gold); }
+        .orb-3 { top: 30vh; right: 14%; width: 24vw; height: 24vw; background: var(--orb-blue); }
+
+        .wrap { width: min(100% - 3rem, 1240px); margin-inline: auto; }
+
+        /* ---------- header ---------- */
+        .nav {
+            position: sticky; top: 0; z-index: 50;
+            display: flex; align-items: center; gap: 1.25rem;
+            padding: .85rem 1.5rem;
+            background: var(--nav-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--nav-border);
+            transition: background .3s ease, border-color .3s ease;
+        }
+        .brand { display: flex; align-items: center; gap: .6rem; font-family: var(--font-p); font-weight: 700; font-size: 1.15rem; text-decoration: none; color: var(--ink); white-space: nowrap; }
+        .brand .logo { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 9px; background: var(--grad-cta); color: #04222f; box-shadow: 0 0 14px var(--blue-glow); }
+        .brand .logo svg { width: 15px; height: 15px; }
+        .brand .g { background: var(--grad-brand); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .brand .flame { display: inline-block; }
+        .brand:hover .flame { animation: flame-dance .5s ease-in-out infinite; transform-origin: bottom center; }
+        @keyframes flame-dance {
+            0%, 100% { transform: rotate(-8deg) scale(1); }
+            25% { transform: rotate(7deg) scale(1.15); }
+            50% { transform: rotate(-5deg) scale(.95) translateY(-2px); }
+            75% { transform: rotate(9deg) scale(1.1); }
+        }
+
+        .navlinks { display: flex; gap: .3rem; margin-left: auto; flex-wrap: wrap; }
+        .pill {
+            display: inline-flex; align-items: center; gap: .35rem;
+            padding: .45rem .85rem; border-radius: 999px; white-space: nowrap;
+            font-size: .86rem; font-weight: 500; color: var(--desc);
+            border: 1px solid transparent; background: transparent; cursor: pointer; text-decoration: none;
+            transition: background .18s ease, color .18s ease, border-color .18s ease;
+        }
+        .pill:hover { background: var(--glass); color: var(--ink); }
+        .pill.active {
+            background: var(--pill-active-bg);
+            border-color: var(--pill-active-bd);
+            color: var(--ink);
+        }
+        .theme-toggle {
+            display: inline-flex; align-items: center; justify-content: center;
+            min-width: 2.4rem; height: 2.4rem; padding: 0 .6rem; border-radius: 999px;
+            font-size: 1rem; line-height: 1; cursor: pointer;
+            color: var(--c-gold); background: var(--gold-tint-bg);
+            border: 1px solid var(--gold-tint-bd);
+            transition: background .18s ease, border-color .18s ease, transform .18s ease;
+        }
+        .theme-toggle:hover { background: var(--glass-hover); transform: translateY(-1px); }
+
+        /* ---------- hero ---------- */
+        .hero {
+            display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(21rem, .65fr);
+            align-items: center; gap: clamp(2rem, 4vw, 4.5rem);
+            min-height: min(68vh, 42rem);
+            padding: clamp(2.5rem, 5vw, 5rem) 0 1rem;
+        }
+        .hero h1 {
+            font-family: var(--font-p); font-weight: 700;
+            font-size: clamp(2.6rem, 5vw, 4rem); line-height: 1.1; letter-spacing: -.01em;
+            margin: 0; text-wrap: balance;
+        }
+        .hero h1 .g {
+            background: var(--grad-text);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+        }
+        .hero .sub { max-width: 34rem; margin-top: 1.2rem; color: var(--desc); font-size: 1.05rem; line-height: 1.7; }
+        .hero-actions { display: flex; flex-wrap: wrap; gap: .9rem; margin-top: 1.9rem; }
+
+        .btn-cta {
+            display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+            min-height: 3.4rem; padding: .85rem 1.7rem; border-radius: 999px;
+            background: var(--grad-cta); color: #04222f; text-decoration: none;
+            font-family: var(--font-p); font-weight: 700; font-size: 1.02rem; line-height: 1;
+            box-shadow: 0 0 20px var(--cta-glow);
+            transition: transform .25s ease, box-shadow .25s ease;
+        }
+        .btn-cta:hover { transform: translateY(-2px); box-shadow: var(--cta-shadow); }
+        .btn-ghost {
+            display: inline-flex; align-items: center; justify-content: center;
+            min-height: 3.4rem; padding: .85rem 1.5rem; border-radius: 999px;
+            border: 1px solid var(--ghost-bd); background: var(--ghost-bg);
+            color: var(--ink); text-decoration: none; font-weight: 600; font-size: .98rem;
+            font-family: var(--font-b); backdrop-filter: blur(14px);
+            transition: background .2s ease, border-color .2s ease, transform .2s ease;
+        }
+        .btn-ghost:hover { background: var(--ghost-bg-h); border-color: var(--ghost-bd-h); transform: translateY(-2px); }
+
+        /* ---------- side panel ---------- */
+        .side-panel {
+            position: relative; display: flex; flex-direction: column; gap: 1rem;
+            padding: 1.5rem; border-radius: 28px; overflow: hidden;
+            border: 1px solid var(--panel-border);
+            background:
+                radial-gradient(circle at 100% 0%, var(--panel-tint), transparent 55%),
+                linear-gradient(180deg, var(--surface1), var(--surface2));
+            box-shadow: inset 0 1px var(--inner-hi), 0 18px 50px var(--shadow);
+        }
+        .side-panel::before { content: ""; position: absolute; left: 18%; bottom: -46%; width: 220px; height: 220px; border-radius: 50%; background: var(--panel-glow-a); filter: blur(120px); pointer-events: none; }
+        .side-panel::after { content: ""; position: absolute; right: -30%; top: -30%; width: 200px; height: 200px; border-radius: 50%; background: var(--panel-glow-b); filter: blur(110px); pointer-events: none; }
+        .panel-title { position: relative; font-family: var(--font-p); font-size: 1.15rem; font-weight: 600; display: flex; align-items: center; gap: .5rem; color: var(--ink); }
+        .panel-title .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--grad-cta); box-shadow: 0 0 10px var(--blue-glow); }
+        .panel-desc { position: relative; color: var(--desc); font-size: .9rem; line-height: 1.6; }
+
+        .side-items { position: relative; display: flex; flex-direction: column; gap: .6rem; margin-top: .2rem; }
+        .side-item {
+            display: flex; align-items: center; gap: .8rem;
+            padding: .7rem .8rem; border-radius: 16px; text-decoration: none;
+            border: 1px solid var(--item-bd); background: var(--item-bg);
+            transition: background .18s ease, border-color .18s ease, transform .18s ease;
+        }
+        .side-item:hover { background: var(--item-hover-bg); border-color: var(--item-hover-bd); transform: translateY(-2px); }
+        .side-icon { display: grid; place-items: center; flex: 0 0 38px; width: 38px; height: 38px; border-radius: 12px; font-size: 1.1rem; background: var(--icon-bg); border: 1px solid var(--icon-bd); }
+        .side-copy { min-width: 0; }
+        .side-copy b { display: block; font-size: .9rem; font-weight: 600; color: var(--ink); }
+        .side-copy span { display: block; font-size: .75rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .side-item .arrow { margin-left: auto; color: var(--muted); font-size: .9rem; transition: color .18s ease, transform .18s ease; }
+        .side-item:hover .arrow { color: var(--c-gold); transform: translateX(3px); }
+
+        .side-cta {
+            position: relative; display: inline-flex; align-items: center; justify-content: center; gap: .45rem;
+            margin-top: .3rem; padding: .8rem 1rem; border-radius: 18px; text-decoration: none;
+            border: 1px solid var(--cta-blue-bd); background: var(--cta-blue-bg);
+            color: var(--cta-blue-txt); font-size: .92rem; font-weight: 600;
+            transition: background .2s ease, border-color .2s ease;
+        }
+        .side-cta:hover { background: var(--cta-blue-bg-h); border-color: var(--cta-blue-bd-h); }
+
+        .fold-toggle {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 2rem; height: 2rem; margin-left: auto; flex: 0 0 auto;
+            border-radius: 999px; border: 1px solid var(--item-bd); background: var(--item-bg);
+            color: var(--muted); cursor: pointer;
+            transition: background .18s ease, color .18s ease, border-color .18s ease;
+        }
+        .fold-toggle:hover { background: var(--item-hover-bg); border-color: var(--item-hover-bd); color: var(--ink); }
+        .fold-toggle svg { width: 15px; height: 15px; transition: transform .25s ease; }
+        .hero.folded { grid-template-columns: minmax(0, 1fr); }
+        .hero.folded .side-panel {
+            flex-direction: row; align-items: center; gap: .6rem;
+            padding: .7rem 1.1rem; border-radius: 999px; max-width: fit-content;
+            box-shadow: inset 0 1px var(--inner-hi), 0 8px 30px var(--shadow);
+        }
+        .hero.folded .panel-title { margin: 0; font-size: 1rem; }
+        .hero.folded .panel-desc, .hero.folded .side-items, .hero.folded .side-cta { display: none; }
+        .hero.folded .fold-toggle svg { transform: rotate(180deg); }
+        .hero.folded .side-panel { cursor: pointer; transition: border-color .18s ease, box-shadow .18s ease; }
+        .hero.folded .side-panel:hover { border-color: var(--item-hover-bd); box-shadow: inset 0 1px var(--inner-hi), 0 12px 40px var(--shadow-hover); }
+
+        /* ---------- sections ---------- */
+        section.norm { padding: clamp(3rem, 6vw, 5rem) 0; }
+        .sechead { display: flex; align-items: baseline; gap: 1rem; margin-bottom: .6rem; }
+        .index { font-family: var(--font-p); font-weight: 700; font-size: .95rem; background: var(--grad-index); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: .06em; }
+        .sechead h2 { font-family: var(--font-p); font-size: clamp(1.7rem, 3vw, 2.4rem); font-weight: 600; color: var(--ink); }
+        .sechead-sub { max-width: 42rem; color: var(--desc); margin-bottom: 2rem; }
+
+        /* hub cards (mirror trial portal-card) */
+        .hubgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); gap: 1.4rem; }
+        .hubcard {
+            position: relative; display: flex; flex-direction: column; min-height: 300px;
+            overflow: hidden; border-radius: 22px; padding: 12px;
+            border: 1px solid var(--card-border);
+            background: linear-gradient(180deg, var(--surface1), var(--surface2));
+            transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease, background .3s ease;
+        }
+        .hubcard:hover { transform: translateY(-4px); border-color: var(--card-border); box-shadow: 0 22px 52px var(--shadow-hover); }
+        .hubcard .glow { position: absolute; right: -22%; bottom: -48%; width: 260px; height: 260px; border-radius: 50%; opacity: var(--glow-opacity); filter: blur(90px); pointer-events: none; }
+        .hubcard-head {
+            position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr) 54px; align-items: center; gap: 14px;
+            min-height: 84px; overflow: hidden; border-radius: 30px; padding: 14px 18px;
+            background: linear-gradient(90deg, transparent 50%, var(--panel-tint)), var(--surface1-h);
+        }
+        .hubcard-icon { display: grid; place-items: center; width: 50px; height: 50px; border-radius: 15px; background: var(--glass-hover); font-size: 1.4rem; }
+        .hubcard-title { font-family: var(--font-p); font-size: 1.2rem; font-weight: 600; line-height: 1.15; margin-top: .15rem; color: var(--ink); min-width: 0; overflow-wrap: anywhere; }
+        .hubcard-arrow { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 15px; justify-self: end; background: var(--glass-hover); color: var(--ink); transition: transform .15s ease, background .15s ease; }
+        .hubcard-arrow svg { width: 22px; height: 22px; }
+        .hubcard:hover .hubcard-arrow { background: var(--glass-hover); transform: scale(1.08); }
+        .hubcard-k { display: inline-flex; width: fit-content; padding: 6px 12px; margin: 13px 8px 0; border-radius: 999px; font-size: .76rem; font-weight: 600; letter-spacing: .02em; }
+        .hubcard-k.k-green { background: rgba(87, 230, 184, .14); color: var(--c-green); }
+        .hubcard-k.k-blue { background: rgba(79, 179, 255, .14); color: var(--c-blue); }
+        .hubcard-k.k-gold { background: rgba(143, 225, 255, .14); color: var(--c-gold); }
+        .hubcard-k.k-red { background: rgba(255, 141, 122, .14); color: var(--c-red); }
+        html[data-theme="dark"] .hubcard-k.k-green { background: rgba(78, 207, 172, .14); }
+        html[data-theme="dark"] .hubcard-k.k-blue { background: rgba(63, 166, 232, .16); }
+        html[data-theme="dark"] .hubcard-k.k-gold { background: rgba(122, 212, 247, .14); }
+        html[data-theme="dark"] .hubcard-k.k-red { background: rgba(235, 122, 100, .16); }
+        .hubcard-desc { margin: 9px 8px 0; color: var(--desc); font-size: .93rem; line-height: 1.62; }
+        .hubcard-goto { margin: auto 8px 8px; padding-top: 14px; color: var(--link-blue); font-size: .92rem; font-weight: 600; text-decoration: none; }
+        .hubcard-goto:hover { color: var(--link-blue-h); }
+
+        /* tile links */
+        .tilegrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); gap: 1.2rem; }
+        .tile {
+            padding: 1.3rem 1.4rem; border-radius: 24px;
+            border: 1px solid var(--tile-bd); background: var(--tile-bg);
+            transition: background .18s ease, border-color .18s ease;
+        }
+        .tile:hover { background: var(--tile-bg-h); border-color: var(--tile-bd-h); }
+        .tile h3 { font-family: var(--font-p); font-size: 1.05rem; font-weight: 600; margin-bottom: .3rem; color: var(--ink); overflow-wrap: anywhere; }
+        .tile > p { color: var(--desc); font-size: .88rem; margin-bottom: 1rem; }
+        .tags { display: flex; flex-wrap: wrap; gap: .45rem; }
+        .tags .pill { padding: .35rem .7rem; font-size: .8rem; background: var(--tag-bg); border-color: var(--tag-bd); }
+        .tags .pill:hover { background: var(--tag-bg-h); border-color: var(--tag-bd-h); color: var(--ink); }
+
+        /* ---------- footer ---------- */
+        footer { border-top: 1px solid var(--nav-border); padding: 2.4rem 0 3rem; margin-top: 2rem; }
+        .footgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 2rem; margin-bottom: 2.2rem; }
+        .footgrid h4 { font-family: var(--font-p); font-size: .85rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: .8rem; }
+        .footgrid a { display: block; color: var(--desc); text-decoration: none; font-size: .9rem; padding: .28rem 0; transition: color .16s ease; }
+        .footgrid a:hover { color: var(--ink); }
+        .small { color: var(--muted); font-size: .84rem; }
+
+        @media (max-width: 900px) {
+            .hero { grid-template-columns: 1fr; min-height: 0; }
+            .side-panel { max-width: 30rem; }
+        }
+        @media (max-width: 640px) {
+            .wrap { width: min(100% - 2rem, 1240px); }
+            .nav { flex-wrap: wrap; }
+            .navlinks { width: 100%; justify-content: flex-start; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            * { animation: none !important; transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="site-bg" aria-hidden="true"></div>
+    <div class="orb orb-1" aria-hidden="true"></div>
+    <div class="orb orb-2" aria-hidden="true"></div>
+    <div class="orb orb-3" aria-hidden="true"></div>
+
+    <nav class="nav">
+        <a class="brand" href="index.html">
+            <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/></svg></span>
+            <span>TutMe<span class="flame">🔥</span> <span class="g">Learning Hub</span></span>
+        </a>
+        <div class="navlinks">
+            <a class="pill active" href="index.html">Home</a>
+            <a class="pill" href="mojo_v1/index.html">Mojo</a>
+            <a class="pill" href="data-science/index.html">Data Science</a>
+            <a class="pill" href="applications/index.html">Applications</a>
+            <a class="pill" href="praxis/index.html">Praxis</a>
+            <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle colour theme" title="Toggle colour theme">🌙</button>
+        </div>
+    </nav>
+
+    <main>
+        <div class="wrap">
+            <!-- ===== HERO + SMALL SIDE PANEL ===== -->
+            <section class="hero" id="hero">
+                <div>
+                    <h1>Learn programming. <span class="g">Build with Mojo.</span></h1>
+                    <p class="sub">One language, four connected spaces: learn Mojo, apply it to real domains, then train it in practice.</p>
+                    <div class="hero-actions">
+                        <a class="btn-cta" href="mojo_v1/index.html">Start with Mojo →</a>
+                        <a class="btn-ghost" href="#browse">Browse the library</a>
+                    </div>
+                </div>
+
+                <aside class="side-panel" id="sidePanel" aria-label="Front doors">
+                    <p class="panel-title"><span class="dot"></span> Front doors
+                        <button class="fold-toggle" id="foldSide" type="button" aria-label="Collapse side panel" aria-expanded="true" title="Collapse side panel">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                        </button>
+                    </p>
+                    <p class="panel-desc">Every shelf keeps its own full table of contents — these are the quickest way in.</p>
+                    <div class="side-items">
+                        <a class="side-item" href="mojo_v1/mojo-book-1.html">
+                            <span class="side-icon">🔥</span>
+                            <span class="side-copy"><b>Textbook · Cover &amp; TOC</b><span>Mojo 1.0 Textbook</span></span>
+                            <span class="arrow">→</span>
+                        </a>
+                        <a class="side-item" href="mojo_v1/mojo-01-intro.html">
+                            <span class="side-icon">🚀</span>
+                            <span class="side-copy"><b>Begin Chapter 01</b><span>Start with Mojo</span></span>
+                            <span class="arrow">→</span>
+                        </a>
+                        <a class="side-item" href="praxis/drill-01.html">
+                            <span class="side-icon">💪</span>
+                            <span class="side-copy"><b>Drill 01</b><span>First practical exercise</span></span>
+                            <span class="arrow">→</span>
+                        </a>
+                    </div>
+                    <a class="side-cta" href="mojo_v1/advisory.html">🧠 Algorithms &amp; Equations →</a>
+                </aside>
+            </section>
+
+            <!-- ===== EXPLORE THE HUB ===== -->
+            <section id="explore" class="norm">
+                <div class="sechead"><span class="index">01</span><h2>Explore the hub</h2></div>
+                <p class="sechead-sub">Four connected spaces: learn the language, apply it to real domains, then train it in practice.</p>                <div class="hubgrid">
+                    <a class="hubcard" href="mojo_v1/index.html">
+                        <div class="hubcard-head">
+                            <span class="hubcard-icon">🔥</span>
+                            <span class="hubcard-title">Mojo</span>
+                            <span class="hubcard-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+                        </div>
+                        <span class="hubcard-k k-green">Begin here</span>
+                        <div class="glow" style="background:var(--c-green)"></div>
+                        <p class="hubcard-desc">Fifteen chapters of the Mojo 1.0 Textbook plus a browseable library of algorithms, equations and programming essentials.</p>
+                        <span class="hubcard-goto">Open Mojo →</span>
+                    </a>
+                    <a class="hubcard" href="data-science/index.html">
+                        <div class="hubcard-head">
+                            <span class="hubcard-icon">📊</span>
+                            <span class="hubcard-title">Data Science</span>
+                            <span class="hubcard-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+                        </div>
+                        <span class="hubcard-k k-blue">Numerical &amp; analytical</span>
+                        <div class="glow" style="background:var(--c-blue)"></div>
+                        <p class="hubcard-desc">Three complete books — from tensors and PyTorch interop to systems-scale ML with MLIR — plus nine topic guides.</p>
+                        <span class="hubcard-goto">Open Data Science →</span>
+                    </a>
+                    <a class="hubcard" href="applications/index.html">
+                        <div class="hubcard-head">
+                            <span class="hubcard-icon">⚒</span>
+                            <span class="hubcard-title">Applications</span>
+                            <span class="hubcard-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+                        </div>
+                        <span class="hubcard-k k-gold">Real problems</span>
+                        <div class="glow" style="background:var(--c-gold)"></div>
+                        <p class="hubcard-desc">Finance, geomatics and operations research. One language, three domains — the same Mojo in action.</p>
+                        <span class="hubcard-goto">Open Applications →</span>
+                    </a>
+                    <a class="hubcard" href="praxis/index.html">
+                        <div class="hubcard-head">
+                            <span class="hubcard-icon">💪</span>
+                            <span class="hubcard-title">Praxis</span>
+                            <span class="hubcard-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+                        </div>
+                        <span class="hubcard-k k-red">Train it</span>
+                        <div class="glow" style="background:var(--c-red)"></div>
+                        <p class="hubcard-desc">Twenty-four drills mapped chapter-by-chapter and three mini-projects. Don't just read — practise.</p>
+                        <span class="hubcard-goto">Open Praxis →</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- ===== JUMP STRAIGHT IN ===== -->
+            <section id="start" class="norm" style="padding-top:0">
+                <div class="sechead"><span class="index">02</span><h2>Jump straight in</h2></div>
+                <p class="sechead-sub">Every shelf keeps its own full table of contents — these are the front doors.</p>                <div class="tilegrid">
+                    <div class="tile">
+                        <h3>🔥 Mojo</h3>
+                        <p>Fifteen-chapter Mojo 1.0 Textbook plus the library.</p>
+                        <div class="tags">
+                            <a class="pill" href="mojo_v1/mojo-book-1.html">Textbook · Cover &amp; TOC</a>
+                            <a class="pill" href="mojo_v1/mojo-01-intro.html">Begin Chapter 01</a>
+                            <a class="pill" href="mojo_v1/mojo-101.html">Mojo 101</a>
+                            <a class="pill" href="mojo_v1/advisory.html">Algorithms &amp; Equations</a>
+                            <a class="pill" href="mojo_v1/mojo-book-2.html">Companion Book</a>
+                            <a class="pill" href="mojo_v1/index.html">Full shelf →</a>
+                        </div>
+                    </div>
+                    <div class="tile">
+                        <h3>📊 Data Science</h3>
+                        <p>Three books plus nine topic guides.</p>
+                        <div class="tags">
+                            <a class="pill" href="data-science/ds-textbook-00-cover.html">ds-textbook</a>
+                            <a class="pill" href="data-science/ds-ml-textbook-00-cover.html">ds-ml-textbook</a>
+                            <a class="pill" href="data-science/ds-advanced-00-cover.html">ds-advanced</a>
+                            <a class="pill" href="data-science/perceptrons-and-activation.html">Perceptrons</a>
+                            <a class="pill" href="data-science/time-series-analytics.html">Time Series</a>
+                            <a class="pill" href="data-science/fine-tuning-llms.html">Fine-tuning LLMs</a>
+                            <a class="pill" href="data-science/index.html">Full shelf →</a>
+                        </div>
+                    </div>
+                    <div class="tile">
+                        <h3>⚒ Applications</h3>
+                        <p>Finance, geomatics and operations research.</p>
+                        <div class="tags">
+                            <a class="pill" href="applications/finance/the-annuity-codex.html">Annuity Codex</a>
+                            <a class="pill" href="applications/finance/npv-amortisation.html">NPV &amp; Amortisation</a>
+                            <a class="pill" href="applications/geomatics/gnss_surveying.html">GNSS Surveying</a>
+                            <a class="pill" href="applications/geomatics/karney_krueger_equations.html">Karney-Krüger</a>
+                            <a class="pill" href="applications/operations-research/operations-research.html">OR</a>
+                            <a class="pill" href="applications/operations-research/simplex_algorithm.html">Simplex Method</a>
+                            <a class="pill" href="applications/index.html">Full shelf →</a>
+                        </div>
+                    </div>
+                    <div class="tile">
+                        <h3>💪 Praxis</h3>
+                        <p>Twenty-five drills and three mini-projects.</p>
+                        <div class="tags">
+                            <a class="pill" href="praxis/drill-01.html">Drill 01</a>
+                            <a class="pill" href="praxis/drill-18.html">Application drills</a>
+                            <a class="pill" href="praxis/mini-project-01.html">Mini Project 01</a>
+                            <a class="pill" href="praxis/mini-project-02.html">Mini Project 02</a>
+                            <a class="pill" href="praxis/mini-project-03.html">Mini Project 03</a>
+                            <a class="pill" href="praxis/index.html">Full floor →</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== BROWSE THE FULL LIBRARY ===== -->
+            <section id="browse" class="norm" style="padding-top:0">
+                <div class="sechead"><span class="index">03</span><h2>Browse the full library</h2></div>
+                <p class="sechead-sub">Everything on the hub, grouped by shelf — jump to any page directly.</p>                <div class="tilegrid">
+                    <div class="tile">
+                        <h3>🔥 Mojo <span class="index">Chapter-by-chapter</span></h3>
+                        <p>Mojo 1.0 Textbook — follow in order or hop to any topic.</p>
+                        <div class="tags">
+                            <a class="pill" href="mojo_v1/mojo-01-intro.html">01 · Intro</a>
+                            <a class="pill" href="mojo_v1/mojo-04-functions.html">04 · Functions</a>
+                            <a class="pill" href="mojo_v1/mojo-06-structs.html">06 · Structs &amp; Traits</a>
+                            <a class="pill" href="mojo_v1/mojo-07-ownership.html">07 · Ownership</a>
+                            <a class="pill" href="mojo_v1/mojo-08-metaprogramming.html">08 · Metaprogramming</a>
+                            <a class="pill" href="mojo_v1/mojo-11-interop.html">11 · Interop</a>
+                            <a class="pill" href="mojo_v1/mojo-15-docstrings.html">15 · Docstrings</a>
+                            <a class="pill" href="mojo_v1/mojo-book-1.html">All chapters · TOC</a>
+                        </div>
+                    </div>
+                    <div class="tile">
+                        <h3>📊 Data Science <span class="index">Three books</span></h3>
+                        <p>From tensors and PyTorch interop to systems-scale ML with MLIR.</p>
+                        <div class="tags">
+                            <a class="pill" href="data-science/ds-textbook-05-tensors.html">Tensors</a>
+                            <a class="pill" href="data-science/ds-textbook-10-gpu.html">GPU Kernels</a>
+                            <a class="pill" href="data-science/ds-textbook-12-pytorch.html">PyTorch &amp; ONNX</a>
+                            <a class="pill" href="data-science/ds-ml-textbook-05-ml-fundamentals.html">ML Fundamentals</a>
+                            <a class="pill" href="data-science/ds-advanced-10-tensors.html">Deep Tensors</a>
+                            <a class="pill" href="data-science/ds-advanced-17-mlir.html">MLIR</a>
+                            <a class="pill" href="data-science/linear-regression.html">Linear Regression</a>
+                            <a class="pill" href="data-science/decision-aware-ml.html">Decision-aware ML</a>
+                        </div>
+                    </div>
+                    <div class="tile">
+                        <h3>⚒ Applications <span class="index">Three domains</span></h3>
+                        <p>Finance, geomatics and operations research in actual code.</p>
+                        <div class="tags">
+                            <a class="pill" href="applications/finance/future-value-and-annuities.html">Future Value &amp; Annuities</a>
+                            <a class="pill" href="applications/finance/the-annuity-codex.html">Annuity Codex</a>
+                            <a class="pill" href="applications/geomatics/karney_krueger_equations.html">Karney-Krüger Equations</a>
+                            <a class="pill" href="applications/geomatics/gnss_surveying.html">GNSS Surveying</a>
+                            <a class="pill" href="applications/operations-research/operations-research.html">Operations Research</a>
+                            <a class="pill" href="applications/operations-research/simplex_algorithm.html">The Simplex Method</a>
+                        </div>
+                    </div>
+                    <div class="tile">
+                        <h3>💪 Praxis <span class="index">25 drills + 3 projects</span></h3>
+                        <p>MCQ drills mapped chapter-by-chapter, plus larger mini-projects.</p>
+                        <div class="tags">
+                            <a class="pill" href="praxis/drill-01.html">Drill 01</a>
+                            <a class="pill" href="praxis/drill-05.html">Drill 05</a>
+                            <a class="pill" href="praxis/drill-10.html">Drill 10</a>
+                            <a class="pill" href="praxis/drill-15.html">Drill 15</a>
+                            <a class="pill" href="praxis/drill-18.html">Drill 18</a>
+                            <a class="pill" href="praxis/drill-21.html">Drill 21</a>
+                            <a class="pill" href="praxis/drill-25.html">Drill 25</a>
+                            <a class="pill" href="praxis/mini-project-03.html">Mini Project 03</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="wrap">
+            <div class="footgrid">
+                <div><h4>Learn</h4><a href="mojo_v1/index.html">Mojo</a><a href="mojo_v1/mojo-book-1.html">Mojo 1.0 Textbook</a><a href="mojo_v1/advisory.html">Algorithms &amp; Equations</a></div>
+                <div><h4>Apply</h4><a href="data-science/index.html">Data Science</a><a href="applications/index.html">Applications</a><a href="applications/finance/index.html">Finance</a><a href="applications/geomatics/index.html">Geomatics</a><a href="applications/geomatics/gnss_surveying.html">GNSS Surveying</a><a href="applications/geomatics/karney_krueger_equations.html">Karney-Krüger</a></div>
+                <div><h4>Practise</h4><a href="praxis/index.html">Praxis</a><a href="praxis/drill-01.html">Drill 01</a><a href="praxis/mini-project-01.html">Mini Project 01</a><a href="praxis/mini-project-02.html">Mini Project 02</a></div>
+                <div><h4>Home</h4><a href="index.html">Learning Hub</a><a href="data-science/index.html">Data Science</a><a href="applications/index.html">Applications</a></div>
+            </div>
+            <p class="small">TutMe🔥 · A structured path from syntax → Mojo → applications → practice.</p>
+        </div>
+    </footer>
+<script>
+    (function () {
+        const root = document.documentElement;
+        const btn = document.getElementById('themeToggle');
+        const saved = (() => { try { return localStorage.getItem('tutme-theme'); } catch (e) { return null; } })();
+        let theme = saved === 'light' || saved === 'dark' ? saved : 'dark';
+        root.setAttribute('data-theme', theme);
+        if (btn) {
+            btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+            btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+            btn.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+            btn.addEventListener('click', function () {
+                theme = theme === 'dark' ? 'light' : 'dark';
+                root.setAttribute('data-theme', theme);
+                btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+                btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+                btn.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+                try { localStorage.setItem('tutme-theme', theme); } catch (e) {}
+            });
+        }
+        const hero = document.getElementById('hero');
+        const sidePanel = document.getElementById('sidePanel');
+        const foldBtn = document.getElementById('foldSide');
+        if (hero && foldBtn) {
+            const sync = function () {
+                const folded = hero.classList.contains('folded');
+                foldBtn.setAttribute('aria-expanded', String(!folded));
+                foldBtn.title = folded ? 'Expand side panel' : 'Collapse side panel';
+            };
+            foldBtn.addEventListener('click', function () {
+                hero.classList.toggle('folded');
+                sync();
+            });
+            if (sidePanel) {
+                sidePanel.addEventListener('click', function (e) {
+                    if (e.target === foldBtn || foldBtn.contains(e.target)) return;
+                    if (hero.classList.contains('folded')) {
+                        hero.classList.remove('folded');
+                        sync();
+                    }
+                });
+            }
+        }
+    })();
+    </script>
+</body>
+</html>
