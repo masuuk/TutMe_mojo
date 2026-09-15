@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 10 — Errors &amp; Context Managers · Mojo 1.0 Textbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --font-sans:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --bg-primary:#0b0d15;--bg-secondary:#12162b;--bg-card:rgba(255,255,255,0.04);
+  --bg-code:rgba(0,0,0,0.4);
+  --text-primary:#ffffff;--text-secondary:#d8def0;--text-muted:#a8b6d4;
+  --accent-1:#6c5ce7;--accent-2:#00b4d8;--accent-3:#f77f00;
+  --accent-gradient:linear-gradient(135deg,#6c5ce7,#00b4d8,#f77f00);
+  --border-color:rgba(255,255,255,0.18);--radius:16px;--radius-sm:8px;
+  --transition:0.3s cubic-bezier(0.4,0,0.2,1);--max-width:900px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.7;overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+::selection{background:rgba(108,92,231,0.4);color:#fff;}
+::-webkit-scrollbar{width:8px;}
+::-webkit-scrollbar-track{background:var(--bg-primary);}
+::-webkit-scrollbar-thumb{background:var(--accent-1);border-radius:10px;}
+
+.progress{position:fixed;top:0;left:0;height:3px;background:var(--accent-gradient);z-index:100;width:0%;transition:width .1s;}
+
+.header{position:sticky;top:0;z-index:100;height:64px;background:rgba(11,13,21,0.85);backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between;padding:0 5vw;}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.05rem;}
+.logo-icon{width:32px;height:32px;border-radius:var(--radius-sm);background:var(--accent-gradient);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;}
+.logo span{color:var(--text-secondary);font-weight:400;}
+.logo .mojo{background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.chnum{font-family:var(--font-mono);font-size:0.78rem;color:var(--accent-2);letter-spacing:0.04em;}
+
+.container{max-width:var(--max-width);margin:0 auto;padding:0 24px;}
+.wrap{padding:5rem 0 8rem;}
+
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent-2);background:rgba(0,180,216,0.12);padding:4px 16px;border-radius:100px;border:1px solid rgba(0,180,216,0.15);margin-bottom:16px;}
+h1{font-size:clamp(2rem,4vw,3rem);font-weight:800;letter-spacing:-0.03em;line-height:1.15;margin-bottom:12px;}
+h1 .highlight{background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.dek{font-size:1.1rem;color:var(--text-secondary);max-width:600px;margin-bottom:40px;line-height:1.8;}
+
+h2{font-size:1.6rem;font-weight:700;letter-spacing:-0.02em;margin:3rem 0 1rem;padding-top:1rem;border-top:1px solid var(--border-color);}
+h2:first-of-type{border-top:none;}
+h3{font-size:1.2rem;font-weight:600;margin:2rem 0 0.8rem;color:var(--text-primary);}
+p{color:var(--text-secondary);margin:0 0 1.1rem;line-height:1.8;}
+p strong{color:var(--text-primary);}
+ul,ol{color:var(--text-secondary);padding-left:24px;line-height:1.8;}
+li{margin-bottom:6px;}
+code.inline{font-family:var(--font-mono);font-size:0.85em;background:rgba(108,92,231,0.12);padding:2px 8px;border-radius:6px;color:#c084fc;border:1px solid rgba(108,92,231,0.2);}
+
+.info-box{padding:20px 24px;border-radius:var(--radius);background:rgba(108,92,231,0.06);border:1px solid rgba(108,92,231,0.12);margin:20px 0;}
+.info-box strong{color:var(--text-primary);}
+.info-box p{margin-top:4px;color:var(--text-secondary);}
+.tip-box{background:rgba(0,180,216,0.05);border-color:rgba(0,180,216,0.12);}
+.tip-box strong{color:var(--accent-2);}
+.warning-box{background:rgba(247,127,0,0.06);border-color:rgba(247,127,0,0.12);}
+.warning-box strong{color:var(--accent-3);}
+
+.code-tabs{margin:20px 0;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border-color);background:var(--bg-code);}
+.tabs-header{display:flex;gap:2px;padding:8px 12px 0;background:rgba(0,0,0,0.3);border-bottom:1px solid var(--border-color);}
+.tab-btn{padding:8px 18px;font-family:var(--font-mono);font-size:0.75rem;font-weight:500;background:none;border:none;color:var(--text-muted);cursor:pointer;border-radius:var(--radius-sm) var(--radius-sm) 0 0;transition:var(--transition);position:relative;}
+.tab-btn:hover{color:var(--text-primary);background:rgba(255,255,255,0.04);}
+.tab-btn.active{color:var(--text-primary);background:rgba(255,255,255,0.18);}
+.tab-btn.active::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:2px;background:var(--accent-gradient);border-radius:4px;}
+.tab-content{display:none;padding:16px 20px;overflow-x:auto;background:rgba(0,0,0,0.2);}
+.tab-content.active{display:block;}
+pre{font-family:var(--font-mono);font-size:0.85rem;line-height:1.8;color:#e2e8f0;margin:0;white-space:pre-wrap;}
+pre .kw{color:#c084fc;}pre .fn{color:#60a5fa;}pre .str{color:#4ade80;}pre .num{color:#fbbf24;}pre .cmt{color:#a8b6d4;font-style:italic;}pre .op{color:#f472b6;}pre .type{color:#34d399;}pre .var{color:#fcd34d;}
+
+table.cheat{width:100%;border-collapse:collapse;margin:20px 0;font-size:0.88rem;}
+table.cheat th{font-family:var(--font-mono);font-size:0.75rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;text-align:left;padding:12px 16px;background:rgba(0,0,0,0.3);color:var(--accent-2);border-bottom:2px solid var(--border-color);}
+table.cheat td{padding:10px 16px;border-bottom:1px solid var(--border-color);color:var(--text-secondary);vertical-align:top;}
+table.cheat tr:hover td{background:rgba(255,255,255,0.02);}
+table.cheat td:first-child{font-weight:600;color:var(--text-primary);white-space:nowrap;}
+table.cheat code{font-family:var(--font-mono);font-size:0.82em;color:#c084fc;}
+
+.chapnav{display:flex;justify-content:space-between;margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border-color);gap:16px;flex-wrap:wrap;}
+.navbtn{font-family:var(--font-mono);font-size:0.85rem;color:var(--text-secondary);text-decoration:none;border:1px solid var(--border-color);padding:10px 16px;border-radius:var(--radius-sm);transition:var(--transition);}
+.navbtn:hover{border-color:var(--accent-1);color:var(--text-primary);}
+.navbtn.disabled{opacity:0.4;pointer-events:none;}
+
+.mini-toc{position:fixed;right:2vw;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:14px;z-index:30;}
+.mini-toc a{width:8px;height:8px;border-radius:50%;background:var(--border-color);display:block;transition:background .2s,transform .2s;}
+.mini-toc a.active{background:var(--accent-2);transform:scale(1.3);}
+@media(max-width:900px){.mini-toc{display:none;}}
+
+@media(max-width:600px){
+  h1{font-size:2rem;}
+  .wrap{padding:3rem 0 5rem;}
+  table.cheat{font-size:0.78rem;}
+  table.cheat th,table.cheat td{padding:8px 10px;}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header class="header">
+  <a class="logo" href="mojo_book_1.html">
+    <span class="logo-icon">M</span>
+    <span><span class="mojo">Mojo</span> <span>Textbook</span></span>
+  </a>
+  <span class="chnum">Ch 10 — Errors &amp; Context Managers</span> <a href="mojo_book_2.html" style="font-size:.8em;opacity:.75;text-decoration:underline;margin-left:8px;">Book 2 · Data Science &amp; AI →</a>
+</header>
+
+<div class="mini-toc" id="miniToc">
+  <a href="#values"></a>
+  <a href="#raising"></a>
+  <a href="#handling"></a>
+  <a href="#typed"></a>
+  <a href="#multi"></a>
+  <a href="#never"></a>
+  <a href="#mixing"></a>
+  <a href="#traces"></a>
+  <a href="#cm"></a>
+  <a href="#summary"></a>
+</div>
+
+<div class="wrap">
+<div class="container">
+  <span class="kicker">Chapter 10</span>
+  <h1><span class="highlight">Errors &amp;</span> Context Managers</h1>
+  <p class="dek">Raise, handle, and type your failures — then manage resources safely with <code class="inline">with</code>.</p>
+
+  <section id="values">
+    <h2>1. Errors as Values</h2>
+    <p>Mojo represents errors as values — specifically, as <strong>alternate return values</strong> from functions. Unlike the stack-unwinding exceptions of C++ or Java, Mojo errors don't unwind the call stack, so their runtime overhead is as low as returning and checking an extra <code class="inline">Bool</code>. This design even enables error handling where traditional exceptions can't exist: GPU kernels.</p>
+    <p>An error interrupts normal execution. If a handler exists in the current function, it resumes there; otherwise the error propagates to the caller, and so on. If nothing catches it, the program terminates with a non-zero exit code and prints:</p>
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch10-unhandled-out">unhandled error</button>
+      </div>
+      <div class="tab-content active" id="ch10-unhandled-out">
+        <pre>Unhandled exception caught during execution: record not found</pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="raising">
+    <h2>2. Raising Errors</h2>
+    <p>The built-in <code class="inline">Error</code> type carries a text message and is the right default for application code. Declare that a function may fail with the <code class="inline">raises</code> keyword; raise with the constructor or the string-literal shorthand (the compiler wraps it in an <code class="inline">Error</code>):</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch10-raise-mojo">Mojo</button>
+        <button class="tab-btn" data-tab="ch10-raise-out">output</button>
+      </div>
+      <div class="tab-content active" id="ch10-raise-mojo">
+        <pre><span class="kw">def</span> <span class="fn">read_file</span>(path: <span class="type">String</span>) <span class="kw">raises</span> -> <span class="type">String</span>:
+    <span class="kw">if</span> <span class="kw">not</span> path:
+        <span class="kw">raise</span> <span class="str">"path cannot be empty"</span>
+    <span class="kw">return</span> <span class="str">"contents of "</span> + path
+
+<span class="cmt"># These two raises are equivalent:
+#   raise Error("file not found")
+#   raise "file not found"</span>
+
+<span class="kw">def</span> <span class="fn">main</span>() <span class="kw">raises</span>:
+    <span class="fn">print</span>(<span class="fn">read_file</span>(<span class="str">"data.txt"</span>))</pre>
+      </div>
+      <div class="tab-content" id="ch10-raise-out">
+        <pre>contents of data.txt</pre>
+      </div>
+    </div>
+
+    <p>Mojo functions are <strong>non-raising by default</strong>. A non-raising function that calls a raising one must either handle the error locally or declare <code class="inline">raises</code> itself — otherwise the program won't compile.</p>
+  </section>
+
+  <section id="handling">
+    <h2>3. Handling Errors: try / except / else / finally</h2>
+
+    <table class="cheat">
+      <thead>
+        <tr><th>Clause</th><th>Runs when…</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>try</code></td><td>Always first — contains the code that might raise</td></tr>
+        <tr><td><code>except e</code></td><td>The try block raised — <code>e</code> binds the error value (max one per try)</td></tr>
+        <tr><td><code>else</code></td><td>No error occurred — skipped if try exits via continue/break/return</td></tr>
+        <tr><td><code>finally</code></td><td>Always, after everything else — even if a clause exits or re-raises</td></tr>
+      </tbody>
+    </table>
+
+    <p>You must include <code class="inline">except</code> or <code class="inline">finally</code> (or both); <code class="inline">else</code> is optional:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch10-handle-mojo">Mojo</button>
+        <button class="tab-btn" data-tab="ch10-handle-out">output</button>
+      </div>
+      <div class="tab-content active" id="ch10-handle-mojo">
+        <pre><span class="kw">def</span> <span class="fn">process_record</span>(id: <span class="type">Int</span>) <span class="kw">raises</span> -> <span class="type">String</span>:
+    <span class="kw">if</span> id &gt; <span class="num">999</span>:
+        <span class="kw">raise</span> <span class="type">Error</span>(<span class="str">"record not found"</span>)
+    <span class="kw">return</span> <span class="type">String</span>(<span class="str">"record_"</span>, id)
+
+<span class="kw">def</span> <span class="fn">main</span>() <span class="kw">raises</span>:
+    <span class="kw">try</span>:
+        <span class="kw">var</span> result = <span class="fn">process_record</span>(<span class="num">1001</span>)
+    <span class="kw">except</span> e:
+        <span class="fn">print</span>(<span class="str">"handled:"</span>, e)
+    <span class="kw">else</span>:
+        <span class="fn">print</span>(<span class="str">"success:"</span>, result)
+    <span class="kw">finally</span>:
+        <span class="fn">print</span>(<span class="str">"cleanup always runs"</span>)</pre>
+      </div>
+      <div class="tab-content" id="ch10-handle-out">
+        <pre>handled: record not found
+cleanup always runs</pre>
+      </div>
+    </div>
+
+    <h3>Re-raising</h3>
+    <p>Pass a caught error back to <code class="inline">raise</code> to propagate it after logging. Re-raising copies the error — cheap, since its message and optional stack trace are reference-counted. To skip the copy, transfer ownership with the sigil: <code class="inline">raise e^</code>. Custom error types that aren't <code class="inline">ImplicitlyCopyable</code> require the transfer sigil.</p>
+
+    <div class="info-box tip-box">
+      <strong>📌 Tip:</strong>
+      <p>Use <code class="inline">finally</code> for cleanup that must happen regardless of outcome — file handles, locks, connections. Or better: let a context manager do it for you (Section 9).</p>
+    </div>
+  </section>
+
+  <section id="typed">
+    <h2>4. Typed Errors</h2>
+    <p>When callers need structured data — an error code, a field name — define a custom error type. <strong>Any struct can serve as an error type</strong>; no base class or trait required. Implementing <code class="inline">Writable</code> is recommended so the error prints readably:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch10-typed-mojo">define &amp; raise</button>
+        <button class="tab-btn" data-tab="ch10-typed-out">catch</button>
+      </div>
+      <div class="tab-content active" id="ch10-typed-mojo">
+        <pre><span class="fn">@fieldwise_init</span>
+<span class="kw">struct</span> <span class="type">ValidationError</span>(<span class="type">Copyable</span>, <span class="type">Writable</span>):
+    <span class="kw">var</span> field: <span class="type">String</span>
+    <span class="kw">var</span> reason: <span class="type">String</span>
+
+    <span class="kw">def</span> <span class="fn">write_to</span>(<span class="kw">self</span>, <span class="kw">mut</span> writer: <span class="type">Some</span>[<span class="type">Writer</span>]):
+        writer.<span class="fn">write</span>(<span class="str">"ValidationError("</span>, <span class="kw">self</span>.field, <span class="str">"): "</span>, <span class="kw">self</span>.reason)
+
+<span class="kw">def</span> <span class="fn">validate_username</span>(username: <span class="type">String</span>) <span class="kw">raises</span> <span class="type">ValidationError</span> -&gt; <span class="type">String</span>:
+    <span class="kw">if</span> username.<span class="fn">byte_length</span>() == <span class="num">0</span>:
+        <span class="kw">raise</span> <span class="fn">ValidationError</span>(field=<span class="str">"username"</span>, reason=<span class="str">"cannot be empty"</span>)
+    <span class="kw">return</span> username</pre>
+      </div>
+      <div class="tab-content" id="ch10-typed-out">
+        <pre><span class="kw">try</span>:
+    <span class="kw">var</span> name = <span class="fn">validate_username</span>(<span class="str">""</span>)
+<span class="kw">except</span> e:
+    <span class="cmt"># e is a ValidationError — fields accessed directly, no casting:</span>
+    <span class="fn">print</span>(<span class="str">"Error in field '"</span> + e.field + <span class="str">"': "</span> + e.reason)
+
+<span class="cmt"># Output: Error in field 'username': cannot be empty</span></pre>
+      </div>
+    </div>
+
+    <ul>
+      <li><strong>One error type per function.</strong> Every <code class="inline">raise</code> in the body must match the declared type or compilation fails.</li>
+      <li><strong>The type is inferred at the catch site.</strong> There is no <code class="inline">except ErrorType as e:</code> syntax — the compiler deduces the type from the function being called.</li>
+      <li><strong>Different types need separate try blocks</strong> (see Section 7).</li>
+      <li>If the type conforms to <code class="inline">Writable</code>, pass it straight to <code class="inline">print(e)</code>.</li>
+    </ul>
+
+    <div class="info-box">
+      <strong>💡 Key Insight:</strong>
+      <p>Typed errors work on GPUs and embedded targets too — as long as you avoid heap-allocated fields like <code class="inline">String</code>. That's the real payoff of representing errors as values instead of stack unwinding.</p>
+    </div>
+  </section>
+
+  <section id="multi">
+    <h2>5. Multiple Error Conditions</h2>
+    <p>A function declares only one error type, so multiple failure modes must live inside that one type. Mojo offers two patterns:</p>
+
+    <h3>Option A: Enumerated error type</h3>
+    <p>A single struct with an integer variant field and comptime constants — simplest when you only need to distinguish conditions. With <code class="inline">Equatable</code>, <code class="inline">==</code> is auto-synthesized for comparing variants:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch10-enum-mojo">Mojo</button>
+        <button class="tab-btn" data-tab="ch10-enum-out">handle</button>
+      </div>
+      <div class="tab-content active" id="ch10-enum-mojo">
+        <pre><span class="fn">@fieldwise_init</span>
+<span class="kw">struct</span> <span class="type">FileError</span>(<span class="type">Equatable</span>, <span class="type">ImplicitlyCopyable</span>, <span class="type">Writable</span>):
+    <span class="kw">var</span> _variant: <span class="type">Int</span>
+
+    <span class="fn">comptime</span> not_found = <span class="type">FileError</span>(_variant=<span class="num">1</span>)
+    <span class="fn">comptime</span> permission_denied = <span class="type">FileError</span>(_variant=<span class="num">2</span>)
+    <span class="fn">comptime</span> already_exists = <span class="type">FileError</span>(_variant=<span class="num">3</span>)
+
+    <span class="cmt"># ...variant_name()/write_to() produce readable messages...</span>
+
+<span class="kw">def</span> <span class="fn">open_file</span>(path: <span class="type">String</span>) <span class="kw">raises</span> <span class="type">FileError</span> -&gt; <span class="type">String</span>:
+    <span class="kw">if</span> <span class="kw">not</span> path:
+        <span class="kw">raise</span> <span class="type">FileError</span>.not_found
+    <span class="kw">if</span> path == <span class="str">"/secret"</span>:
+        <span class="kw">raise</span> <span class="type">FileError</span>.permission_denied
+    <span class="kw">return</span> <span class="str">"Contents of "</span> + path</pre>
+      </div>
+      <div class="tab-content" id="ch10-enum-out">
+        <pre><span class="kw">try</span>:
+    <span class="fn">print</span>(<span class="fn">open_file</span>(<span class="str">"/secret"</span>))
+<span class="kw">except</span> e:
+    <span class="kw">if</span> e == <span class="type">FileError</span>.not_found:
+        <span class="fn">print</span>(<span class="str">"Not found:"</span>, e)
+    <span class="kw">elif</span> e == <span class="type">FileError</span>.permission_denied:
+        <span class="fn">print</span>(<span class="str">"Permission denied:"</span>, e)</pre>
+      </div>
+    </div>
+
+    <h3>Option B: Variant of error structs</h3>
+    <p>When each condition carries different data, give each its own struct and combine them with the stdlib <code class="inline">Variant</code>:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch10-var-mojo">Mojo</button>
+        <button class="tab-btn" data-tab="ch10-var-out">output</button>
+      </div>
+      <div class="tab-content active" id="ch10-var-mojo">
+        <pre><span class="kw">from</span> std.utils <span class="kw">import</span> <span class="type">Variant</span>
+
+<span class="cmt"># @fieldwise_init structs NotFoundError(path)
+#   and PermissionError(path, required_role) defined here...</span>
+
+<span class="fn">comptime</span> FileError = <span class="type">Variant</span>[NotFoundError, PermissionError]
+
+<span class="kw">def</span> <span class="fn">open_file</span>(path: <span class="type">String</span>) <span class="kw">raises</span> FileError -&gt; <span class="type">String</span>:
+    <span class="kw">if</span> <span class="kw">not</span> path:
+        <span class="kw">raise</span> <span class="fn">FileError</span>(<span class="fn">NotFoundError</span>(path))
+    <span class="kw">if</span> path == <span class="str">"/secret"</span>:
+        <span class="kw">raise</span> <span class="fn">FileError</span>(<span class="fn">PermissionError</span>(path, <span class="str">"admin"</span>))
+    <span class="kw">return</span> <span class="str">"Contents of "</span> + path
+
+<span class="kw">try</span>:
+    <span class="fn">print</span>(<span class="fn">open_file</span>(<span class="str">"/secret"</span>))
+<span class="kw">except</span> e:
+    <span class="kw">if</span> e.<span class="fn">isa</span>[PermissionError]():
+        <span class="fn">print</span>(<span class="str">"Access denied:"</span>, e[PermissionError])</pre>
+      </div>
+      <div class="tab-content" id="ch10-var-out">
+        <pre>Access denied: permission denied on /secret (requires admin)</pre>
+      </div>
+    </div>
+
+    <p><code class="inline">e.isa[T]()</code> tests which struct is active; <code class="inline">e[T]</code> extracts it with full type information. Rule of thumb: enumerated type when you only distinguish conditions; <code class="inline">Variant</code> when each needs its own fields.</p>
+  </section>
+
+  <section id="never">
+    <h2>6. The <code class="inline">Never</code> Type &amp; Parametric Raises</h2>
+    <p><code class="inline">Never</code> has no constructors — it can't be instantiated — which lets it express two opposite guarantees in error signatures:</p>
+    <ul>
+      <li><code class="inline">raises YourError -&gt; Never</code> — the function <strong>always raises</strong>, never returns.</li>
+      <li><code class="inline">raises Never -&gt; T</code> — the function <strong>never raises</strong>; equivalent to omitting <code class="inline">raises</code>.</li>
+    </ul>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch10-never-mojo">Mojo</button>
+        <button class="tab-btn" data-tab="ch10-never-out">why it works</button>
+      </div>
+      <div class="tab-content active" id="ch10-never-mojo">
+        <pre><span class="cmt"># Always raises, never returns:</span>
+<span class="kw">def</span> <span class="fn">panic</span>(msg: <span class="type">String</span>) <span class="kw">raises</span> -&gt; <span class="type">Never</span>:
+    <span class="kw">raise</span> <span class="type">Error</span>(msg)
+
+<span class="kw">def</span> <span class="fn">get_value_or_panic</span>(maybe: <span class="type">Optional</span>[<span class="type">Int</span>]) <span class="kw">raises</span> -&gt; <span class="type">Int</span>:
+    <span class="kw">if</span> maybe:
+        <span class="kw">return</span> maybe.<span class="fn">value</span>()
+    <span class="fn">panic</span>(<span class="str">"value is missing"</span>)   <span class="cmt"># Never substitutes for Int here</span></pre>
+      </div>
+      <div class="tab-content" id="ch10-never-out">
+        <pre><span class="cmt"># Because Never can stand in for any type, a call to panic()
+# satisfies the "must return Int" requirement of this branch —
+# the compiler knows that line never completes normally.</span></pre>
+      </div>
+    </div>
+
+    <h3>Parametric raises</h3>
+    <p>Generic wrappers can propagate whatever error type their function argument carries. The error type is just another compile-time parameter, inferred at the call site:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch10-par-mojo">Mojo</button>
+        <button class="tab-btn" data-tab="ch10-par-out">output</button>
+      </div>
+      <div class="tab-content active" id="ch10-par-mojo">
+        <pre><span class="kw">def</span> <span class="fn">run_action</span>[
+    ErrorType: <span class="type">AnyType</span>
+](action: <span class="kw">def</span>() <span class="fn">thin</span> <span class="kw">raises</span> ErrorType -&gt; <span class="type">Int</span>) <span class="kw">raises</span> ErrorType -&gt; <span class="type">Int</span>:
+    <span class="kw">return</span> action()
+
+<span class="cmt"># fetch_data() raises NetworkError → run_action raises NetworkError
+# parse_config() raises ParseError  → run_action raises ParseError
+
+# A non-raising argument infers Never — run_action becomes
+# non-raising, and no try block is needed:</span>
+<span class="kw">var</span> result = <span class="fn">run_action</span>(get_value)
+<span class="fn">print</span>(<span class="str">"Got value:"</span>, result)</pre>
+      </div>
+      <div class="tab-content" id="ch10-par-out">
+        <pre>Got value: 99</pre>
+      </div>
+    </div>
+
+    <p>The <code class="inline">thin</code> marker appears because <code class="inline">action</code> is a noncapturing function value (Chapter 8's thin lambdas).</p>
+  </section>
+
+  <section id="mixing">
+    <h2>7. Mixing Error and Typed Errors</h2>
+    <p>Real codebases mix plain <code class="inline">Error</code>-raising functions with typed ones. Three rules keep them composable:</p>
+
+    <h3>Wrap Error at API boundaries</h3>
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch10-wrap-mojo">Mojo</button>
+      </div>
+      <div class="tab-content active" id="ch10-wrap-mojo">
+        <pre><span class="kw">def</span> <span class="fn">validate_with_error</span>(value: <span class="type">Int</span>) <span class="kw">raises</span> -&gt; <span class="type">Int</span>:
+    <span class="kw">if</span> value &lt; <span class="num">0</span>:
+        <span class="kw">raise</span> <span class="str">"value cannot be negative"</span>
+    <span class="kw">return</span> value
+
+<span class="kw">def</span> <span class="fn">wrapped_validate</span>(value: <span class="type">Int</span>) <span class="kw">raises</span> <span class="type">ValidationError</span> -&gt; <span class="type">Int</span>:
+    <span class="kw">try</span>:
+        <span class="kw">return</span> <span class="fn">validate_with_error</span>(value)
+    <span class="kw">except</span> e:
+        <span class="kw">raise</span> <span class="fn">ValidationError</span>(field=<span class="str">"value"</span>, reason=<span class="type">String</span>(e))</pre>
+      </div>
+    </div>
+
+    <h3>Avoid bare raises with typed errors</h3>
+    <p>A bare <code class="inline">raises</code> on a function that calls typed-error code causes <strong>type erasure</strong>: the runtime preserves the original error's identity and message, but the compiler only sees <code class="inline">Error</code> — so callers lose field access. Always write <code class="inline">raises YourErrorType</code>. (Catching locally still gives full field access; erasure only affects errors that propagate through.)</p>
+
+    <h3>Never mix types in one try block</h3>
+    <p>Calling an <code class="inline">Error</code>-raising function and a typed-raising function in the same <code class="inline">try</code> won't compile:</p>
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch10-mix-err">compile error</button>
+      </div>
+      <div class="tab-content active" id="ch10-mix-err">
+        <pre>error: cannot call function that may raise 'Error' in a context that
+supports an error type of 'ValidationError'</pre>
+      </div>
+    </div>
+    <p>Use separate try blocks per type, or wrap as shown above.</p>
+  </section>
+
+  <section id="traces">
+    <h2>8. Stack Traces</h2>
+    <p>Because errors are return values rather than unwinding exceptions, stack trace collection isn't automatic — it needs heap allocation and runtime overhead, so it's <strong>off by default</strong>. Two steps turn it on:</p>
+    <ol>
+      <li>Compile with debug symbols: <code class="inline">mojo build --debug-level full app.mojo</code> (or <code class="inline">-g</code>).</li>
+      <li>Run with the environment variable set: <code class="inline">MODULAR_DEBUG=stack-trace-on-error ./app</code>.</li>
+    </ol>
+    <p>With both, an unhandled error prints the full call chain with source locations: <code class="inline">main() → func1() → func2() → Error.__init__()</code>. Note that running via <code class="inline">mojo run</code>/<code class="inline">mojo</code> doesn't symbolicate traces even with <code class="inline">--debug-level full</code> — build and run the binary.</p>
+
+    <p>You can also capture the trace programmatically. Bind the error in <code class="inline">except e:</code> and call its method — it returns <code class="inline">Optional[String]</code>, which is <code class="inline">None</code> when collection was disabled:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch10-trace-mojo">Mojo</button>
+        <button class="tab-btn" data-tab="ch10-trace-out">output</button>
+      </div>
+      <div class="tab-content active" id="ch10-trace-mojo">
+        <pre><span class="kw">def</span> <span class="fn">main</span>() <span class="kw">raises</span>:
+    <span class="kw">try</span>:
+        <span class="fn">func1</span>()
+    <span class="kw">except</span> e:
+        <span class="fn">print</span>(e)
+        <span class="kw">var</span> stack_trace = e.<span class="fn">get_stack_trace</span>()
+        <span class="kw">if</span> stack_trace:
+            <span class="fn">print</span>(stack_trace.<span class="fn">value</span>())
+        <span class="kw">else</span>:
+            <span class="fn">print</span>(<span class="str">"No stack trace available"</span>)</pre>
+      </div>
+      <div class="tab-content" id="ch10-trace-out">
+        <pre>Intentional error
+--------------------
+#2 0x... Error.__init__[...](...) .../builtin/error.mojo:159:38
+#3 0x... app::func2() app.mojo:14:16
+#4 0x... app::func1() app.mojo:18:10
+#5 0x... app::main() app.mojo:23:14</pre>
+      </div>
+    </div>
+
+    <div class="info-box warning-box">
+      <strong>⚠️ Watch Out:</strong>
+      <p>Stack traces are a feature of the built-in <code class="inline">Error</code> type only. Typed errors don't capture them — the trace is collected inside <code class="inline">Error.__init__()</code>, and custom structs have no equivalent hook.</p>
+    </div>
+  </section>
+
+  <section id="cm">
+    <h2>9. Context Managers &amp; <code class="inline">with</code></h2>
+    <p>A context manager allocates a resource and guarantees its release at the end of a block — even if an error occurs. The naive pattern is fragile:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch10-naive-mojo">fragile</button>
+        <button class="tab-btn" data-tab="ch10-with-mojo">with statement</button>
+      </div>
+      <div class="tab-content active" id="ch10-naive-mojo">
+        <pre><span class="cmt"># If f.read() raises, close() never runs:
+# buffered writes are lost, handles leak.</span>
+<span class="kw">var</span> f = <span class="fn">open</span>(input_file, <span class="str">"r"</span>)
+<span class="kw">var</span> content = f.<span class="fn">read</span>()
+f.<span class="fn">close</span>()
+
+<span class="cmt"># try/finally fixes it, verbosely:</span>
+<span class="kw">var</span> g = <span class="fn">open</span>(input_file, <span class="str">"r"</span>)
+<span class="kw">try</span>:
+    <span class="kw">var</span> content = g.<span class="fn">read</span>()
+<span class="kw">finally</span>:
+    g.<span class="fn">close</span>()</pre>
+      </div>
+      <div class="tab-content" id="ch10-with-mojo">
+        <pre><span class="cmt"># FileHandle is a context manager — close() is automatic:</span>
+<span class="kw">with</span> <span class="fn">open</span>(input_file, <span class="str">"r"</span>) <span class="kw">as</span> f:
+    <span class="kw">var</span> content = f.<span class="fn">read</span>()
+
+<span class="cmt"># Multiple managers in one statement:</span>
+<span class="kw">with</span> <span class="fn">open</span>(input_file, <span class="str">"r"</span>) <span class="kw">as</span> f_in, <span class="fn">open</span>(output_file, <span class="str">"w"</span>) <span class="kw">as</span> f_out:
+    <span class="kw">var</span> output_text = f_in.<span class="fn">read</span>().<span class="fn">upper</span>()
+    f_out.<span class="fn">write</span>(output_text)</pre>
+      </div>
+    </div>
+
+    <p>The <code class="inline">with</code> statement works transparently with both error styles. Other stdlib context managers include <code class="inline">NamedTemporaryFile</code>, <code class="inline">TemporaryDirectory</code>, <code class="inline">BlockingScopedLock</code>, and <code class="inline">assert_raises</code>.</p>
+
+    <h3>Writing your own</h3>
+    <p>A struct becomes a context manager by implementing <code class="inline">__enter__()</code> (initialize state, return the manager) and <code class="inline">__exit__()</code> (release resources; runs even on continue/break/return/raise):</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch10-timer-mojo">Mojo</button>
+        <button class="tab-btn" data-tab="ch10-timer-out">output</button>
+      </div>
+      <div class="tab-content active" id="ch10-timer-mojo">
+        <pre><span class="kw">import</span> std.time
+
+<span class="fn">@fieldwise_init</span>
+<span class="kw">struct</span> <span class="type">Timer</span>(<span class="type">ImplicitlyCopyable</span>):
+    <span class="kw">var</span> start_time: <span class="type">Int</span>
+
+    <span class="kw">def</span> <span class="fn">__enter__</span>(<span class="kw">mut</span> <span class="kw">self</span>) -&gt; <span class="type">Self</span>:
+        <span class="kw">self</span>.start_time = <span class="type">Int</span>(time.<span class="fn">perf_counter_ns</span>())
+        <span class="kw">return</span> <span class="kw">self</span>
+
+    <span class="kw">def</span> <span class="fn">__exit__</span>(<span class="kw">mut</span> <span class="kw">self</span>):
+        <span class="kw">var</span> elapsed_ms = <span class="fn">round</span>(
+            Float64(time.<span class="fn">perf_counter_ns</span>() - <span class="kw">self</span>.start_time) / <span class="num">1e6</span>, <span class="num">3</span>
+        )
+        <span class="fn">print</span>(<span class="str">"Elapsed time:"</span>, elapsed_ms, <span class="str">"milliseconds"</span>)
+
+<span class="kw">def</span> <span class="fn">main</span>() <span class="kw">raises</span>:
+    <span class="kw">with</span> <span class="fn">Timer</span>():
+        <span class="fn">print</span>(<span class="str">"Beginning execution"</span>)
+        time.<span class="fn">sleep</span>(<span class="num">1.0</span>)
+        <span class="fn">print</span>(<span class="str">"Ending execution"</span>)</pre>
+      </div>
+      <div class="tab-content" id="ch10-timer-out">
+        <pre>Beginning execution
+Ending execution
+Elapsed time: 2010.0 milliseconds</pre>
+      </div>
+    </div>
+
+    <h3>Error-aware exits</h3>
+    <p>An overloaded exit receives the error and decides what happens — return <code class="inline">True</code> to suppress, <code class="inline">False</code> to re-raise, or raise something new:</p>
+
+    <table class="cheat">
+      <thead>
+        <tr><th>Overload</th><th>Handles</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>def __exit__(mut self)</code></td><td>All completions without distinguishing errors</td></tr>
+        <tr><td><code>def __exit__(mut self, e: Error) raises -&gt; Bool</code></td><td>Runs instead when an <code>Error</code> occurred in the block</td></tr>
+        <tr><td><code>def __exit__[ErrType: AnyType](self, err: ErrType) -&gt; Bool</code></td><td>Typed errors — full type preserved; inspect with <code>reflect[ErrType]</code> / <code>conforms_to</code></td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-box tip-box">
+      <strong>📌 Tip:</strong>
+      <p>If your manager has nothing to release, you can omit <code class="inline">__exit__()</code> entirely — the object is simply destroyed when the block ends.</p>
+    </div>
+  </section>
+
+  <section id="summary">
+    <h2>10. Chapter Summary</h2>
+    <ul>
+      <li><strong>Errors are values</strong> — alternate return values with near-zero overhead, usable even on GPUs.</li>
+      <li><strong>Raise</strong> with <code class="inline">raise "message"</code> (shorthand for <code class="inline">Error</code>) or a typed value; declare failure modes in the signature with <code class="inline">raises</code>.</li>
+      <li><strong>Handle</strong> with <code class="inline">try</code>/<code class="inline">except e</code>/<code class="inline">else</code>/<code class="inline">finally</code>; re-raise cheaply, transfer with <code class="inline">raise e^</code>.</li>
+      <li><strong>Typed errors</strong> are plain structs carrying structured data; one type per function, inferred automatically at the catch site.</li>
+      <li><strong>Multiple conditions</strong>: enumerated variant structs, or <code class="inline">Variant[...]</code> when each condition carries different fields.</li>
+      <li><strong><code class="inline">Never</code></strong> marks always-raising functions; <code class="inline">raises Never</code> proves a function can't fail; parametric raises propagate error types through generics.</li>
+      <li><strong>Keep types sharp</strong>: wrap <code class="inline">Error</code> at boundaries, never use bare <code class="inline">raises</code> over typed code, one error type per try block.</li>
+      <li><strong>Stack traces</strong>: opt-in via <code class="inline">MODULAR_DEBUG=stack-trace-on-error</code> + <code class="inline">-g</code>; <code class="inline">Error</code>-only.</li>
+      <li><strong>Context managers</strong> make cleanup automatic: <code class="inline">__enter__</code>/<code class="inline">__exit__</code>, optional error-aware overloads that can suppress or transform failures.</li>
+    </ul>
+  </section>
+
+  <nav class="chapnav">
+    <a href="mojo_09_syntax_tour.html" class="navbtn">← Ch 09 · Mojo vs Python Syntax Tour</a>
+    <a href="mojo_11_interop.html" class="navbtn">Ch 11 · Python &amp; C Interop →</a>
+  </nav>
+</div>
+</div>
+
+<script>
+const progress = document.getElementById('progress');
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  progress.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+});
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    const group=this.closest('.code-tabs');
+    group.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    group.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+    this.classList.add('active');
+    const target=group.querySelector('#'+this.getAttribute('data-tab'));
+    if(target) target.classList.add('active');
+  });
+});
+
+const sections=[...document.querySelectorAll('section[id]')];
+const dots=document.querySelectorAll('#miniToc a');
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      dots.forEach(d=>d.classList.toggle('active',d.getAttribute('href')==='#'+entry.target.id));
+    }
+  });
+},{rootMargin:'-40% 0px -50% 0px'});
+sections.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

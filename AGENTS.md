@@ -10,7 +10,7 @@
 - Static site lives in `public/` — all paths relative, no build step.
 - Shared theme: `public/styles.css`. Praxis quiz + code-highlight logic: `public/praxis/praxis.js` (loaded by all 24 drills).
 - Safety backup of the original site: `public.backup/` — do not edit.
-- `public/site-manifest.json` lists every file (114). Regenerate when files are added/removed.
+- `public/site_manifest.json` lists every file (114 html + praxis.js + styles.css). Regenerate when files are added/removed.
 
 ## Conventions
 - Hubs/landing pages: compact — `pagehead` (h1 + a few buttons) → sections → footer. No hero prose/stat strips.

@@ -361,7 +361,7 @@ function renderHome() {
         ${next
           ? `<a class="btn btn-primary" href="#/lesson/${next.id}"><span>🚀</span> Continue: ${esc(next.title)}</a>`
           : `<a class="btn btn-primary" href="#/track/mojo"><span>💪</span> Start Daily Workout</a>`}
-        <a class="btn btn-secondary" href="/mojo_v1/mojo-101.html"><span>🌱</span> Explore Mojo 101</a>
+        <a class="btn btn-secondary" href="/mojo_v1/mojo_101.html"><span>🌱</span> Explore Mojo 101</a>
       </div>
     </section>
 
@@ -374,13 +374,13 @@ function renderHome() {
           <h3>Daily Workouts</h3>
           <p>Short, focused daily exercises to keep your coding and math skills sharp and build consistent habits.</p>
         </a>
-        <a href="/mojo_v1/mojo-101.html" class="feature-card">
+        <a href="/mojo_v1/mojo_101.html" class="feature-card">
           <div class="feature-icon">🌱</div>
           <span class="feature-tag">Beginner Friendly</span>
           <h3>Mojo 101</h3>
           <p>Foundational programming concepts explained simply. Perfect for those just starting their tech journey.</p>
         </a>
-        <a href="/mojo_v1/mojo-book-1.html" class="feature-card">
+        <a href="/mojo_v1/mojo_book_1.html" class="feature-card">
           <div class="feature-icon">📕</div>
           <span class="feature-tag">Reference</span>
           <h3>Text Books</h3>
@@ -392,7 +392,7 @@ function renderHome() {
           <h3>Praxis</h3>
           <p>Real-world applications and projects to put your theoretical knowledge into practical, portfolio-ready use.</p>
         </a>
-        <a href="/data-science/ds-tools.html" class="feature-card">
+        <a href="/data_science/ds_tools.html" class="feature-card">
           <div class="feature-icon">🧪</div>
           <span class="feature-tag">Specialized</span>
           <h3>DS Tools</h3>

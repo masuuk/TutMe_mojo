@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 12 — Modules, Packages &amp; Toolchain · Mojo 1.0 Textbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --font-sans:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --bg-primary:#0b0d15;--bg-secondary:#12162b;--bg-card:rgba(255,255,255,0.04);
+  --bg-code:rgba(0,0,0,0.4);
+  --text-primary:#ffffff;--text-secondary:#d8def0;--text-muted:#a8b6d4;
+  --accent-1:#6c5ce7;--accent-2:#00b4d8;--accent-3:#f77f00;
+  --accent-gradient:linear-gradient(135deg,#6c5ce7,#00b4d8,#f77f00);
+  --border-color:rgba(255,255,255,0.18);--radius:16px;--radius-sm:8px;
+  --transition:0.3s cubic-bezier(0.4,0,0.2,1);--max-width:900px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.7;overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+::selection{background:rgba(108,92,231,0.4);color:#fff;}
+::-webkit-scrollbar{width:8px;}
+::-webkit-scrollbar-track{background:var(--bg-primary);}
+::-webkit-scrollbar-thumb{background:var(--accent-1);border-radius:10px;}
+
+.progress{position:fixed;top:0;left:0;height:3px;background:var(--accent-gradient);z-index:100;width:0%;transition:width .1s;}
+
+.header{position:sticky;top:0;z-index:100;height:64px;background:rgba(11,13,21,0.85);backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between;padding:0 5vw;}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.05rem;}
+.logo-icon{width:32px;height:32px;border-radius:var(--radius-sm);background:var(--accent-gradient);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;}
+.logo span{color:var(--text-secondary);font-weight:400;}
+.logo .mojo{background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.chnum{font-family:var(--font-mono);font-size:0.78rem;color:var(--accent-2);letter-spacing:0.04em;}
+
+.container{max-width:var(--max-width);margin:0 auto;padding:0 24px;}
+.wrap{padding:5rem 0 8rem;}
+
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent-2);background:rgba(0,180,216,0.12);padding:4px 16px;border-radius:100px;border:1px solid rgba(0,180,216,0.15);margin-bottom:16px;}
+h1{font-size:clamp(2rem,4vw,3rem);font-weight:800;letter-spacing:-0.03em;line-height:1.15;margin-bottom:12px;}
+h1 .highlight{background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.dek{font-size:1.1rem;color:var(--text-secondary);max-width:600px;margin-bottom:40px;line-height:1.8;}
+
+h2{font-size:1.6rem;font-weight:700;letter-spacing:-0.02em;margin:3rem 0 1rem;padding-top:1rem;border-top:1px solid var(--border-color);}
+h2:first-of-type{border-top:none;}
+h3{font-size:1.2rem;font-weight:600;margin:2rem 0 0.8rem;color:var(--text-primary);}
+p{color:var(--text-secondary);margin:0 0 1.1rem;line-height:1.8;}
+p strong{color:var(--text-primary);}
+ul,ol{color:var(--text-secondary);padding-left:24px;line-height:1.8;}
+li{margin-bottom:6px;}
+code.inline{font-family:var(--font-mono);font-size:0.85em;background:rgba(108,92,231,0.12);padding:2px 8px;border-radius:6px;color:#c084fc;border:1px solid rgba(108,92,231,0.2);}
+
+.info-box{padding:20px 24px;border-radius:var(--radius);background:rgba(108,92,231,0.06);border:1px solid rgba(108,92,231,0.12);margin:20px 0;}
+.info-box strong{color:var(--text-primary);}
+.info-box p{margin-top:4px;color:var(--text-secondary);}
+.tip-box{background:rgba(0,180,216,0.05);border-color:rgba(0,180,216,0.12);}
+.tip-box strong{color:var(--accent-2);}
+.warning-box{background:rgba(247,127,0,0.06);border-color:rgba(247,127,0,0.12);}
+.warning-box strong{color:var(--accent-3);}
+
+.code-tabs{margin:20px 0;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border-color);background:var(--bg-code);}
+.tabs-header{display:flex;gap:2px;padding:8px 12px 0;background:rgba(0,0,0,0.3);border-bottom:1px solid var(--border-color);}
+.tab-btn{padding:8px 18px;font-family:var(--font-mono);font-size:0.75rem;font-weight:500;background:none;border:none;color:var(--text-muted);cursor:pointer;border-radius:var(--radius-sm) var(--radius-sm) 0 0;transition:var(--transition);position:relative;}
+.tab-btn:hover{color:var(--text-primary);background:rgba(255,255,255,0.04);}
+.tab-btn.active{color:var(--text-primary);background:rgba(255,255,255,0.18);}
+.tab-btn.active::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:2px;background:var(--accent-gradient);border-radius:4px;}
+.tab-content{display:none;padding:16px 20px;overflow-x:auto;background:rgba(0,0,0,0.2);}
+.tab-content.active{display:block;}
+pre{font-family:var(--font-mono);font-size:0.85rem;line-height:1.8;color:#e2e8f0;margin:0;white-space:pre-wrap;}
+pre .kw{color:#c084fc;}pre .fn{color:#60a5fa;}pre .str{color:#4ade80;}pre .num{color:#fbbf24;}pre .cmt{color:#a8b6d4;font-style:italic;}pre .op{color:#f472b6;}pre .type{color:#34d399;}pre .var{color:#fcd34d;}
+
+table.cheat{width:100%;border-collapse:collapse;margin:20px 0;font-size:0.88rem;}
+table.cheat th{font-family:var(--font-mono);font-size:0.75rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;text-align:left;padding:12px 16px;background:rgba(0,0,0,0.3);color:var(--accent-2);border-bottom:2px solid var(--border-color);}
+table.cheat td{padding:10px 16px;border-bottom:1px solid var(--border-color);color:var(--text-secondary);vertical-align:top;}
+table.cheat tr:hover td{background:rgba(255,255,255,0.02);}
+table.cheat td:first-child{font-weight:600;color:var(--text-primary);white-space:nowrap;}
+table.cheat code{font-family:var(--font-mono);font-size:0.82em;color:#c084fc;}
+
+.chapnav{display:flex;justify-content:space-between;margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border-color);gap:16px;flex-wrap:wrap;}
+.navbtn{font-family:var(--font-mono);font-size:0.85rem;color:var(--text-secondary);text-decoration:none;border:1px solid var(--border-color);padding:10px 16px;border-radius:var(--radius-sm);transition:var(--transition);}
+.navbtn:hover{border-color:var(--accent-1);color:var(--text-primary);}
+.navbtn.disabled{opacity:0.4;pointer-events:none;}
+
+.mini-toc{position:fixed;right:2vw;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:14px;z-index:30;}
+.mini-toc a{width:8px;height:8px;border-radius:50%;background:var(--border-color);display:block;transition:background .2s,transform .2s;}
+.mini-toc a.active{background:var(--accent-2);transform:scale(1.3);}
+@media(max-width:900px){.mini-toc{display:none;}}
+
+@media(max-width:600px){
+  h1{font-size:2rem;}
+  .wrap{padding:3rem 0 5rem;}
+  table.cheat{font-size:0.78rem;}
+  table.cheat th,table.cheat td{padding:8px 10px;}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header class="header">
+  <a class="logo" href="mojo_book_1.html">
+    <span class="logo-icon">M</span>
+    <span><span class="mojo">Mojo</span> <span>Textbook</span></span>
+  </a>
+  <span class="chnum">Ch 12 — Modules, Packages &amp; Toolchain</span> <a href="mojo_book_2.html" style="font-size:.8em;opacity:.75;text-decoration:underline;margin-left:8px;">Book 2 · Data Science &amp; AI →</a>
+</header>
+
+<div class="mini-toc" id="miniToc">
+  <a href="#modules"></a>
+  <a href="#packages"></a>
+  <a href="#init"></a>
+  <a href="#mojoc"></a>
+  <a href="#cli"></a>
+  <a href="#targets"></a>
+  <a href="#defines"></a>
+  <a href="#platform"></a>
+  <a href="#debug"></a>
+  <a href="#sharedlib"></a>
+  <a href="#summary"></a>
+</div>
+
+<div class="wrap">
+<div class="container">
+  <span class="kicker">Chapter 12</span>
+  <h1><span class="highlight">Modules, Packages</span> &amp; Toolchain</h1>
+  <p class="dek">Organize code into importable modules and packages, drive the compiler with the <code class="inline">mojo</code> CLI, target CPUs and GPUs — and gate features at compile time.</p>
+
+  <section id="modules">
+    <h2>1. Mojo Modules</h2>
+    <p>A <strong>module</strong> is a single Mojo source file whose code is meant for use by other files that import it. Modules typically contain APIs — not an entry point. Notice this one has no <code class="inline">main()</code>, so you can't execute it directly:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch12-mymodule">mymodule.mojo</button>
+        <button class="tab-btn" data-tab="ch12-import-forms">import forms</button>
+        <button class="tab-btn" data-tab="ch12-import-out">output</button>
+      </div>
+      <div class="tab-content active" id="ch12-mymodule">
+        <pre><span class="kw">struct</span> <span class="type">MyPair</span>:
+    <span class="kw">var</span> first: <span class="type">Int</span>
+    <span class="kw">var</span> second: <span class="type">Int</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">out</span> <span class="kw">self</span>, first: <span class="type">Int</span>, second: <span class="type">Int</span>):
+        <span class="kw">self</span>.first = first
+        <span class="kw">self</span>.second = second
+
+    <span class="kw">def</span> <span class="fn">dump</span>(<span class="kw">self</span>):
+        <span class="fn">print</span>(<span class="kw">self</span>.first, <span class="kw">self</span>.second)</pre>
+      </div>
+      <div class="tab-content" id="ch12-import-forms">
+        <pre><span class="cmt"># Import one member:</span>
+<span class="kw">from</span> mymodule <span class="kw">import</span> MyPair
+<span class="kw">var</span> mine = MyPair(<span class="num">2</span>, <span class="num">4</span>)
+
+<span class="cmt"># Import the whole module:</span>
+<span class="kw">import</span> mymodule
+<span class="kw">var</span> mine = mymodule.MyPair(<span class="num">2</span>, <span class="num">4</span>)
+
+<span class="cmt"># Alias the module:</span>
+<span class="kw">import</span> mymodule <span class="kw">as</span> my
+<span class="kw">var</span> mine = my.MyPair(<span class="num">2</span>, <span class="num">4</span>)</pre>
+      </div>
+      <div class="tab-content" id="ch12-import-out">
+        <pre>$ mojo main.mojo
+2 4</pre>
+      </div>
+    </div>
+
+    <p>These imports work when <code class="inline">mymodule.mojo</code> sits in the <strong>same directory</strong> as <code class="inline">main.mojo</code>. Currently you can't import <code class="inline">.mojo</code> files from other directories as bare modules — that requires a package, next.</p>
+
+    <div class="info-box tip-box">
+      <strong>📌 Tip:</strong>
+      <p>A module <em>may</em> include a <code class="inline">main()</code> and be executable, but that's not the practice — modules exist to be imported by programs that have their own entry point.</p>
+    </div>
+  </section>
+
+  <section id="packages">
+    <h2>2. Mojo Packages</h2>
+    <p>A <strong>package</strong> is a directory of modules that includes an <code class="inline">__init__.mojo</code> file. That file is essential — without it, Mojo won't recognize the directory as a package and you can't import its modules:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch12-pkg-tree">project layout</button>
+        <button class="tab-btn" data-tab="ch12-pkg-mojo">main.mojo</button>
+        <button class="tab-btn" data-tab="ch12-pkg-out">output</button>
+      </div>
+      <div class="tab-content active" id="ch12-pkg-tree">
+        <pre>project
+├── main.mojo
+└── mypackage/
+    ├── __init__.mojo   ← required (can be empty)
+    └── mymodule.mojo</pre>
+      </div>
+      <div class="tab-content" id="ch12-pkg-mojo">
+        <pre><span class="kw">from</span> mypackage.mymodule <span class="kw">import</span> MyPair
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="kw">var</span> mine = MyPair(<span class="num">2</span>, <span class="num">4</span>)
+    mine.<span class="fn">dump</span>()</pre>
+      </div>
+      <div class="tab-content" id="ch12-pkg-out">
+        <pre>$ mojo main.mojo
+2 4</pre>
+      </div>
+    </div>
+
+    <p>With the package in place, directory-based imports work from anywhere in your project — the same-directory restriction applies only to bare modules.</p>
+  </section>
+
+  <section id="init">
+    <h2>3. The <code class="inline">__init__</code> File</h2>
+    <p>Unlike Python, Mojo has <strong>no top-level code</strong> in source files — so <code class="inline">__init__.mojo</code> can't execute statements on import. It can, however, hold structs and functions, and more idiomatically, <strong>re-export module members</strong> so they're importable straight from the package name:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch12-init-file">__init__.mojo</button>
+        <button class="tab-btn" data-tab="ch12-init-effect">the effect</button>
+      </div>
+      <div class="tab-content active" id="ch12-init-file">
+        <pre><span class="cmt"># mypackage/__init__.mojo — this one line is the whole file:</span>
+<span class="kw">from</span> .mymodule <span class="kw">import</span> MyPair</pre>
+      </div>
+      <div class="tab-content" id="ch12-init-effect">
+        <pre><span class="cmt"># Before: full dotted path required</span>
+<span class="kw">from</span> mypackage.mymodule <span class="kw">import</span> MyPair
+
+<span class="cmt"># After: the package re-exports it</span>
+<span class="kw">from</span> mypackage <span class="kw">import</span> MyPair</pre>
+      </div>
+    </div>
+
+    <p>This is exactly how the accelerator library works. The <code class="inline">functional</code> module lives in <code class="inline">max.algorithm</code> — moved out of the standard library in Mojo 1.0 / MAX 26.5, when GPU and algorithm APIs migrated to the <code class="inline">max</code> package — so both of these import its <code class="inline">map()</code> — the second works because <code class="inline">algorithm/__init__.mojo</code> re-exports its submodules:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch12-stdlib">max.algorithm example</button>
+      </div>
+      <div class="tab-content active" id="ch12-stdlib">
+        <pre><span class="kw">from</span> max.algorithm.functional <span class="kw">import</span> map   <span class="cmt"># module path</span>
+<span class="kw">from</span> max.algorithm <span class="kw">import</span> map                      <span class="cmt"># package scope</span></pre>
+      </div>
+    </div>
+
+    <p>Which package modules are re-exported to package scope varies and may change — check each module's docs for its importable members.</p>
+  </section>
+
+  <section id="mojoc">
+    <h2>4. Precompiled Packages (.mojoc)</h2>
+    <p>You can compile a package into a single precompiled file that loads faster as a dependency to another Mojo compile:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch12-precompile">workflow</button>
+      </div>
+      <div class="tab-content active" id="ch12-precompile">
+        <pre><span class="cmt"># Compile the package to a .mojoc file:</span>
+$ mojo precompile mypackage -o mypack.mojoc
+
+<span class="cmt"># Project can now ship source elsewhere; layout becomes:</span>
+project
+├── main.mojo
+└── mypack.mojoc
+
+<span class="cmt"># The .mojoc filename becomes the package name, so:</span>
+<span class="kw">from</span> mypack.mymodule <span class="kw">import</span> MyPair</pre>
+      </div>
+    </div>
+
+    <ul>
+      <li>A <code class="inline">.mojoc</code> contains <strong>non-elaborated code</strong>, shareable across systems; it becomes an architecture-specific executable only after import into a program compiled with <code class="inline">mojo build</code>.</li>
+      <li>It is <strong>tied to the exact compiler version</strong> that produced it — loading one into a different compiler version fails. It's not a generic distributable format.</li>
+      <li>To rename a package you can't just rename the file — the name is encoded inside. Run <code class="inline">mojo precompile</code> again with a new name.</li>
+    </ul>
+
+    <h3>Escaped identifiers</h3>
+    <p>Package names come from directory names (source) or the <code class="inline">.mojoc</code> filename (binary). When a name isn't a valid identifier, escape it in backticks and alias it:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch12-escaped">escaped imports</button>
+      </div>
+      <div class="tab-content active" id="ch12-escaped">
+        <pre><span class="kw">import</span> `модул`
+<span class="kw">import</span> `package-with-hyphens and a space!` <span class="kw">as</span> package_without_hyphens_or_a_space
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    `модул`.`здрасти`()
+    package_without_hyphens_or_a_space.<span class="fn">hello</span>()</pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="cli">
+    <h2>5. The <code class="inline">mojo</code> CLI</h2>
+    <p>Everything in this book ultimately flows through one command. Here's the full toolchain surface, with pointers back to where each piece appeared:</p>
+
+    <table class="cheat">
+      <thead>
+        <tr><th>Command</th><th>What it does</th><th>Introduced</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>mojo hello.mojo</code></td><td>Compile and run a file (entry point must be <code>main()</code>)</td><td>Ch 1</td></tr>
+        <tr><td><code>mojo build app.mojo</code></td><td>Produce a standalone executable (default <code>--emit exe</code>)</td><td>Ch 1</td></tr>
+        <tr><td><code>mojo build app.mojo -o myapp</code></td><td>Name the output binary</td><td>Ch 1</td></tr>
+        <tr><td><code>mojo build lib.mojo --emit shared-lib -o libfoo.so</code></td><td>Build a shared library (C ABI host, Python extension)</td><td>Ch 11</td></tr>
+        <tr><td><code>mojo build app.mojo --debug-level full</code></td><td>Emit full debug info (<code>-g</code>); enables error stack traces with <code>MODULAR_DEBUG=stack-trace-on-error</code></td><td>Ch 10</td></tr>
+        <tr><td><code>mojo precompile mypackage -o mypack.mojoc</code></td><td>Precompile a package for fast dependent loads</td><td>This chapter</td></tr>
+        <tr><td><code>mojo build --print-effective-target</code></td><td>Print the target configuration for your host</td><td>Section 6</td></tr>
+        <tr><td><code>mojo -g -O0 -D ASSERT=all app.mojo</code></td><td>Typical debug configuration</td><td>Section 9</td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-box tip-box">
+      <strong>📌 Tip:</strong>
+      <p>An install reminder from Chapter 1: the toolchain arrives via <code class="inline">uv pip install mojo</code> or Pixi (<code class="inline">pixi init -c https://conda.modular.com/max/ -c conda-forge</code> then <code class="inline">pixi add mojo</code>). Mojo runs on macOS (Apple silicon), Linux, and Windows through WSL — see Section 10's requirements recap.</p>
+    </div>
+  </section>
+
+  <section id="targets">
+    <h2>6. Compilation Targets</h2>
+    <p>Targets describe <em>where and how</em> your program runs: platform, CPU, features, and optional accelerators — for native builds and cross-compilation alike. Start by asking the compiler what it sees and supports:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch12-query">query commands</button>
+        <button class="tab-btn" data-tab="ch12-effective">effective target</button>
+        <button class="tab-btn" data-tab="ch12-accel">accelerators</button>
+      </div>
+      <div class="tab-content active" id="ch12-query">
+        <pre>mojo build --print-effective-target    <span class="cmt"># your host config</span>
+mojo build --print-supported-targets    <span class="cmt"># architectures: arm64, aarch64, amdgcn...</span>
+mojo build --print-supported-cpus --target-triple=aarch64-apple-macosx
+mojo build --print-supported-accelerators</pre>
+      </div>
+      <div class="tab-content" id="ch12-effective">
+        <pre><span class="cmt"># Sample on an Apple M4 MacBook Pro:</span>
+Effective target configuration:
+  --target-triple arm64-apple-darwin25.3.0
+  --target-cpu apple-m4
+  --target-features +aes,+bf16,+complxnum,+crc,+dotprod,...
+  --target-accelerator metal:4</pre>
+      </div>
+      <div class="tab-content" id="ch12-accel">
+        <pre>NVIDIA (CUDA):   sm_52 Maxwell ... sm_90 Hopper (H100) ...
+AMD (ROCm/HIP):  gfx942 CDNA3 (MI300X) ...
+Apple Silicon:   apple-m1 ... apple-m2 ...
+Other:           cuda (Generic CUDA)</pre>
+      </div>
+    </div>
+
+    <h3>Target triples</h3>
+    <p>A <strong>target triple</strong> identifies the platform — architecture, vendor, OS — and is the starting point for cross-compilation:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch12-flags">Mojo target flags</button>
+        <button class="tab-btn" data-tab="ch12-gcc">GCC/Clang-compatible flags</button>
+      </div>
+      <div class="tab-content active" id="ch12-flags">
+        <pre><span class="cmt"># x86_64-unknown-linux-gnu / aarch64-apple-macosx</span>
+
+mojo build --target-triple aarch64-unknown-linux-gnu \
+    --target-cpu cortex-a72 \
+    --emit object -o myapp.o myapp.mojo
+
+mojo build --target-triple x86_64-unknown-linux-gnu \
+    --target-cpu x86-64-v3 \
+    --target-features "+avx512f" \
+    --emit object -o myapp.o myapp.mojo
+
+<span class="cmt"># Flags: --target-triple  platform (arch + vendor + OS)
+#        --target-cpu      specific processor model
+#        --target-features individual feature toggles
+#        --target-accelerator  GPU or accelerator arch</span></pre>
+      </div>
+      <div class="tab-content" id="ch12-gcc">
+        <pre><span class="cmt"># Same hardware, GCC/Clang conventions:</span>
+mojo build --target-triple x86_64-unknown-linux-gnu \
+    --mcpu=haswell \
+    --emit object -o myapp.o myapp.mojo
+
+<span class="cmt"># --march  instructions allowed (e.g. x86-64-v3+avx512f)
+# --mcpu   architecture + tuning from one CPU name
+# --mtune  tuning only; code still runs on other CPUs</span>
+
+mojo build --target-triple x86_64-unknown-linux-gnu \
+    --march=x86-64 --mcpu=haswell --mtune=skylake \
+    --emit object -o myapp.o myapp.mojo</pre>
+      </div>
+    </div>
+
+    <div class="info-box warning-box">
+      <strong>⚠️ Watch Out:</strong>
+      <p>Never mix the two families in one command — <code class="inline">--target-cpu</code> with <code class="inline">--march</code>/<code class="inline">--mcpu</code> is an error. Also, when cross-compiling to a different architecture with Mojo flags, <strong>set <code class="inline">--target-cpu</code> alongside <code class="inline">--target-triple</code></strong>: the CPU defaults to your host processor, which may be invalid for the target (<code class="inline">unknown target CPU 'apple-m4'</code>).</p>
+    </div>
+
+    <h3>Accelerators &amp; emit options</h3>
+    <p>Heterogeneous builds generate host code plus GPU device code in one build. <code class="inline">--emit asm</code> on a GPU target produces per-kernel sidecars: <code class="inline">.ptx</code> (NVIDIA), <code class="inline">.amdgcn</code> (AMD), <code class="inline">.ll</code> (Metal):</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch12-gpu">GPU builds</button>
+        <button class="tab-btn" data-tab="ch12-emit">emit options</button>
+      </div>
+      <div class="tab-content active" id="ch12-gpu">
+        <pre>mojo build --target-accelerator=nvidia:sm_90 myapp.mojo   <span class="cmt"># H100</span>
+mojo build --target-accelerator=amdgpu:gfx942 myapp.mojo  <span class="cmt"># MI300X</span></pre>
+      </div>
+      <div class="tab-content" id="ch12-emit">
+        <pre>exe (default)   Executable binary      Native only
+shared-lib      Shared library         Native only
+object          Object file (experimental)  Cross OK
+llvm            Unoptimized LLVM IR    Cross OK
+llvm-bitcode    LLVM IR bitcode        Cross OK
+asm             Assembly + GPU sidecars   Cross OK</pre>
+      </div>
+    </div>
+
+    <div class="info-box warning-box">
+      <strong>⚠️ Cross-compilation is in progress:</strong>
+      <p>Object, assembly, and IR outputs work for any supported target, but producing a fully linked cross-compiled executable requires an external linker for the platform — <code class="inline">--emit exe</code>/<code class="inline">shared-lib</code> fail at the link step when cross-compiling. Cross-compiled binaries also don't bundle external libraries (Python, C, Modular runtime) — the target environment must provide them.</p>
+    </div>
+  </section>
+
+  <section id="defines">
+    <h2>7. Compile-Time Defines</h2>
+    <p>The <code class="inline">-D</code> flag passes key-value pairs from the command line into Mojo code — Mojo's answer to C's preprocessor, except values are <strong>first-class compile-time parameters in the type system</strong>, not string substitutions:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch12-dflag">command line</button>
+        <button class="tab-btn" data-tab="ch12-dgate">feature gating</button>
+        <button class="tab-btn" data-tab="ch12-dgate-out">output</button>
+      </div>
+      <div class="tab-content active" id="ch12-dflag">
+        <pre><span class="cmt"># -Dkey=value or -D key=value — joined with "=":</span>
+mojo run -Dmode=release -Dverbose -Dmax_threads=8 hello.mojo
+
+<span class="cmt"># -D KEY=VALUE   parsed per get_defined_*[]() reader
+# -D KEY         flag with no value; is_defined["K"]() is True
+# -D KEY=42      read with get_defined_int["K"]()</span></pre>
+      </div>
+      <div class="tab-content" id="ch12-dgate">
+        <pre><span class="kw">from</span> std.sys <span class="kw">import</span> get_defined_string
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="fn">comptime</span> mode = <span class="fn">get_defined_string</span>[<span class="str">"mode"</span>, <span class="str">"debug"</span>]()
+
+    <span class="fn">comptime</span> <span class="kw">if</span> mode == <span class="str">"release"</span>:
+        <span class="fn">print</span>(<span class="str">"optimized path"</span>)
+    <span class="kw">else</span>:
+        <span class="fn">print</span>(<span class="str">"debug path with extra checks"</span>)</pre>
+      </div>
+      <div class="tab-content" id="ch12-dgate-out">
+        <pre>$ mojo run -Dmode=release hello.mojo
+optimized path</pre>
+      </div>
+    </div>
+
+    <p>All define names are compile-time <code class="inline">StaticString</code> parameters, read through <code class="inline">std.sys</code>:</p>
+
+    <table class="cheat">
+      <thead>
+        <tr><th>Reader</th><th>Returns</th><th>On missing define</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>is_defined["verbose"]()</code></td><td><code>Bool</code> — presence only (like <code>#ifdef</code>), value ignored</td><td><code>False</code>, never errors</td></tr>
+        <tr><td><code>get_defined_bool["verbose"]()</code></td><td><code>Bool</code> — <code>1/true/True/on</code> are truthy; <code>yes</code> is not</td><td>default <code>False</code></td></tr>
+        <tr><td><code>get_defined_int["max_threads"]()</code></td><td><code>Int</code> — base-10 only (<code>0x10</code>, <code>1_000</code> fail)</td><td>Compile error (defaulted version available)</td></tr>
+        <tr><td><code>get_defined_string["mode"]()</code></td><td><code>StaticString</code></td><td>Compile error (defaulted version available)</td></tr>
+        <tr><td><code>get_defined_dtype["dtype", DType.bfloat16]()</code></td><td><code>DType</code> — default required; canonical names (<code>float16</code>, not <code>fp16</code>)</td><td>Returns default</td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-box warning-box">
+      <strong>⚠️ Watch Out:</strong>
+      <p><code class="inline">get_defined_bool</code> errors when the define exists but has no value (<code class="inline">-D verbose</code>), and avoid <code class="inline">default=True</code> — it inverts the meaning confusingly. If "on unless explicitly off" is the intent, <code class="inline">is_defined[]()</code> states it more clearly.</p>
+    </div>
+  </section>
+
+  <section id="platform">
+    <h2>8. Platform &amp; Architecture Detection</h2>
+    <p><code class="inline">std.sys.info</code> exposes parameter-evaluable functions for branching on the <em>compilation target</em> (what the compiler builds for — set the target flags from Section 6 to aim elsewhere):</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch12-detect-mojo">Mojo</button>
+        <button class="tab-btn" data-tab="ch12-detect-out">output (varies by host)</button>
+      </div>
+      <div class="tab-content active" id="ch12-detect-mojo">
+        <pre><span class="kw">from</span> std.sys <span class="kw">import</span> CompilationTarget
+
+<span class="kw">def</span> <span class="fn">compute</span>():
+    <span class="fn">comptime</span> <span class="kw">if</span> CompilationTarget.<span class="fn">has_avx512f</span>():
+        <span class="fn">print</span>(<span class="str">"AVX-512 path"</span>)
+    <span class="kw">elif</span> CompilationTarget.<span class="fn">is_apple_silicon</span>():
+        <span class="fn">print</span>(<span class="str">"Apple Silicon path"</span>)
+    <span class="kw">else</span>:
+        <span class="fn">print</span>(<span class="str">"generic path"</span>)</pre>
+      </div>
+      <div class="tab-content" id="ch12-detect-out">
+        <pre>Apple Silicon path</pre>
+      </div>
+    </div>
+
+    <table class="cheat">
+      <thead>
+        <tr><th>Question</th><th>API</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Which OS?</td><td><code>CompilationTarget.is_linux()</code>, <code>is_macos()</code> — no Windows targets natively</td></tr>
+        <tr><td>Which CPU family?</td><td><code>CompilationTarget.is_x86()</code>, <code>is_apple_silicon()</code>, <code>is_apple_m1()</code> … <code>is_apple_m5()</code></td></tr>
+        <tr><td>Which instruction sets?</td><td><code>CompilationTarget.has_avx512f()</code>, <code>has_neon()</code>, …</td></tr>
+        <tr><td>Am I compiling <em>for</em> a GPU?</td><td><code>is_nvidia_gpu()</code>, <code>is_amd_gpu()</code>, <code>is_apple_gpu()</code>, <code>is_gpu()</code></td></tr>
+        <tr><td>Does the <em>host</em> have an accelerator?</td><td><code>has_accelerator()</code>, <code>has_nvidia_gpu_accelerator()</code>, …</td></tr>
+      </tbody>
+    </table>
+
+    <p>The distinction matters: <code class="inline">is_nvidia_gpu()</code> asks "am I compiling <em>for</em> an NVIDIA GPU?" while <code class="inline">has_nvidia_gpu_accelerator()</code> asks whether such acceleration is <em>available</em> — which can also be true when the target is the GPU itself.</p>
+
+    <div class="info-box tip-box">
+      <strong>📌 Tip:</strong>
+      <p>Combine detection with <code class="inline">comptime assert</code> (Chapter 8) to hard-block misuse: <code class="inline">comptime assert is_gpu(), "this function requires a GPU target"</code> prints a <code class="inline">constraint failed</code> note at the call site in a CPU build.</p>
+    </div>
+  </section>
+
+  <section id="debug">
+    <h2>9. Debug &amp; Optimization Gating</h2>
+    <p>Debug and optimization features are <strong>independent</strong> — enabling one doesn't enable another. "Debug build" can mean several different things in Mojo:</p>
+
+    <table class="cheat">
+      <thead>
+        <tr><th>Goal</th><th>Flag</th><th>Effect</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Full debug info (LLDB symbols)</td><td><code>-g</code> / <code>--debug-level=full</code></td><td>Sets <code>__DEBUG_LEVEL="full"</code></td></tr>
+        <tr><td>Line tables only</td><td><code>-g1</code> / <code>--debug-level=line-tables</code></td><td>Sets <code>__DEBUG_LEVEL="line-tables"</code></td></tr>
+        <tr><td>Disable optimization</td><td><code>-O0</code> / <code>--no-optimization</code></td><td>Sets <code>__OPTIMIZATION_LEVEL=0</code></td></tr>
+        <tr><td>AddressSanitizer</td><td><code>--sanitize=address</code></td><td>Sets <code>__SANITIZE_ADDRESS=1</code></td></tr>
+        <tr><td>All <code>debug_assert()</code> checks</td><td><code>-D ASSERT=all</code></td><td>Independent of <code>-g</code> and <code>-O</code></td></tr>
+      </tbody>
+    </table>
+
+    <p>A typical debug configuration combines flags explicitly: <code class="inline">mojo -g -O0 -D ASSERT=all app.mojo</code>. A typical release build needs none: plain <code class="inline">mojo app.mojo</code> already uses <code class="inline">-O3</code>, emits no debug info, and disables sanitizers.</p>
+
+    <h3>debug_assert() and -D ASSERT</h3>
+    <p><code class="inline">debug_assert()</code> is a runtime assertion controlled by <code class="inline">-D ASSERT</code> — <code class="inline">-g</code> and <code class="inline">-O</code> don't affect it. Levels: <code class="inline">none</code> (off), <code class="inline">safe</code> (default — only assertions tagged <code class="inline">assert_mode="safe"</code>), <code class="inline">all</code>, and <code class="inline">warn</code> (run everything, warn instead of aborting). Convention: tag constant-time checks (bounds, comparisons) as safe; leave expensive traversals and allocations untagged:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch12-assert">tagged assertions</button>
+        <button class="tab-btn" data-tab="ch12-optlevel">reading levels in code</button>
+      </div>
+      <div class="tab-content active" id="ch12-assert">
+        <pre><span class="cmt"># Runs under default -D ASSERT=safe:</span>
+<span class="fn">debug_assert</span>[assert_mode=<span class="str">"safe"</span>](
+    n &gt;= <span class="num">0</span>,
+    <span class="str">"nth: n must be non-negative"</span>,
+)
+
+<span class="cmt"># Untagged — runs only under -D ASSERT=all / warn:</span>
+<span class="fn">debug_assert</span>(len(data) &gt; <span class="num">0</span>, <span class="str">"data must not be empty"</span>)</pre>
+      </div>
+      <div class="tab-content" id="ch12-optlevel">
+        <pre><span class="kw">from</span> std.sys.compile <span class="kw">import</span> OptimizationLevel, DebugLevel
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="fn">comptime</span> <span class="kw">if</span> OptimizationLevel.level == <span class="num">0</span>:
+        <span class="fn">print</span>(<span class="str">"unoptimized build"</span>)
+
+    <span class="fn">comptime</span> <span class="kw">if</span> DebugLevel.level == <span class="str">"full"</span>:
+        <span class="fn">print</span>(<span class="str">"source-aware logging enabled"</span>)</pre>
+      </div>
+    </div>
+
+    <div class="info-box warning-box">
+      <strong>⚠️ Watch Out:</strong>
+      <p>The plain <code class="inline">Bool</code> form of <code class="inline">debug_assert()</code> <em>always evaluates the condition</em>, even when assertions are disabled. And don't confuse Mojo's <code class="inline">-D ASSERT</code> with the MAX runtime's <code class="inline">MODULAR_DEBUG=assert-level=…</code> — separate systems, separately controlled. (<code class="inline">debug_assert()</code> is silently disabled on Apple GPU targets.)</p>
+    </div>
+  </section>
+
+  <section id="sharedlib">
+    <h2>10. Mojo Shared Libraries from C/C++</h2>
+    <p>Chapter 11 called C from Mojo; the reverse works too. Compile Mojo into a shared library and call it from any C-ABI host. Mark exported functions with <code class="inline">@export</code> and <code class="inline">abi("C")</code>:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch12-cml">mylib.mojo</button>
+        <button class="tab-btn" data-tab="ch12-cmc">main.c</button>
+        <button class="tab-btn" data-tab="ch12-cmout">build &amp; run</button>
+      </div>
+      <div class="tab-content active" id="ch12-cml">
+        <pre><span class="kw">from</span> max.algorithm <span class="kw">import</span> parallelize
+<span class="kw">from</span> std.runtime <span class="kw">import</span> initialize_runtime
+
+<span class="fn">@export</span>(<span class="str">"parallel_sum"</span>)
+<span class="kw">def</span> <span class="fn">parallel_sum</span>(n: Int64) <span class="fn">abi</span>(<span class="str">"C"</span>) -&gt; Int64:
+    <span class="fn">initialize_runtime</span>()
+
+    <span class="kw">var</span> count = <span class="type">Int</span>(n)
+    <span class="kw">var</span> results = List[Int64](length=count, fill=<span class="num">0</span>)
+
+    <span class="fn">@parameter</span>
+    <span class="kw">def</span> <span class="fn">fill</span>(i: <span class="type">Int</span>):
+        results[i] = Int64(i)
+
+    <span class="fn">parallelize</span>[fill](count)
+
+    <span class="kw">var</span> total = Int64(<span class="num">0</span>)
+    <span class="kw">for</span> r <span class="kw">in</span> results:
+        total += r
+    <span class="kw">return</span> total
+<span class="cmt"># Int64 matches C's long long across the ABI</span></pre>
+      </div>
+      <div class="tab-content" id="ch12-cmc">
+        <pre><span class="kw">#include</span> &lt;stdio.h&gt;
+
+<span class="kw">extern long long</span> parallel_sum(<span class="kw">long long</span> n);
+
+<span class="kw">int</span> main(<span class="kw">void</span>) {
+    printf(<span class="str">"sum=%lld\n"</span>, parallel_sum(<span class="num">1000</span>));
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+      </div>
+      <div class="tab-content" id="ch12-cmout">
+        <pre>mojo build mylib.mojo --emit shared-lib -o libmylib.so
+cc main.c -o main -L. -lmylib -Wl,-rpath,'$ORIGIN'
+./main
+sum=499500</pre>
+      </div>
+    </div>
+
+    <div class="info-box warning-box">
+      <strong>⚠️ initialize_runtime() is mandatory:</strong>
+      <p>When Mojo starts from its own <code class="inline">main()</code>, generated startup code initializes the runtime thread pool that <code class="inline">parallelize()</code> and <code class="inline">TaskGroup</code> depend on. Under a C host, that code never runs — a runtime-dependent exported function segfaults. Either call <code class="inline">initialize_runtime()</code> at the top of every exported function (simplest, idempotent, cheap) or export a dedicated <code class="inline">mylib_init()</code> and require the host to call it once.</p>
+    </div>
+
+    <p>Other differences from a Mojo executable: <code class="inline">sys.argv()</code> isn't populated, the crash-stack-trace signal handler isn't installed, and the runtime lives until process exit. On macOS, build a <code class="inline">.dylib</code> and run <code class="inline">install_name_tool -id @rpath/libmylib.dylib libmylib.dylib</code> before linking.</p>
+
+    <h3>System requirements recap</h3>
+    <ul>
+      <li><strong>OS</strong>: macOS Sequoia 15+ (Apple silicon M1–M5), Linux with glibc 2.34+ (Ubuntu 22.04 LTS is the tested distribution), or Windows via WSL.</li>
+      <li><strong>CPU</strong>: x86-64-v3 (Haswell-class, ~2013 onward) or ARM64 Neoverse N1+; 8 GiB RAM minimum for development.</li>
+      <li><strong>Software</strong>: a C compiler on Linux (used as linker); Xcode or Command Line Tools 16+ on macOS.</li>
+      <li><strong>GPU (optional)</strong>: NVIDIA (driver 580+; B200/H100/A100/RTX series …), AMD ROCm/HIP (MI300X, Radeon RX …), or Apple silicon GPUs — no GPU required to use Mojo.</li>
+    </ul>
+  </section>
+
+  <section id="summary">
+    <h2>11. Chapter Summary</h2>
+    <ul>
+      <li><strong>Modules</strong> are single <code class="inline">.mojo</code> files of importable API — no <code class="inline">main()</code> needed; import via <code class="inline">from m import X</code>, <code class="inline">import m</code>, or <code class="inline">import m as alias</code> (same directory only).</li>
+      <li><strong>Packages</strong> are directories with a required <code class="inline">__init__.mojo</code>; import as <code class="inline">from mypackage.mymodule import MyPair</code>. <code class="inline">__init__</code> can't run top-level code, but its re-exports (<code class="inline">from .mymodule import MyPair</code>) lift members to package scope — the <code class="inline">max.algorithm</code> pattern.</li>
+      <li><strong>Precompiled packages</strong>: <code class="inline">mojo precompile mypackage -o mypack.mojoc</code> — faster loads, non-elaborated and cross-system shareable, but tied to the exact compiler version; renaming requires re-precompiling. Non-identifier names use backtick-escaped imports.</li>
+      <li><strong>Targets</strong>: query with <code class="inline">--print-effective-target</code> and friends; set with Mojo flags (<code class="inline">--target-triple/-cpu/-features/-accelerator</code>) <em>or</em> GCC-style (<code class="inline">--march/-mcpu/-mtune</code>) — never mixed. GPUs: <code class="inline">--target-accelerator=nvidia:sm_90</code>, <code class="inline">amdgpu:gfx942</code>.</li>
+      <li><strong>Cross-compilation</strong> works for object/asm/IR emits; linked executables need an external platform linker; cross binaries don't bundle Python/C/Modular runtime libraries.</li>
+      <li><strong>Defines</strong>: <code class="inline">-Dkey=value</code> read via <code class="inline">is_defined[]</code>, <code class="inline">get_defined_bool/int/string/dtype[]</code> — first-class compile-time parameters, gated with <code class="inline">comptime if</code>, guarded with <code class="inline">comptime assert</code>.</li>
+      <li><strong>Platform detection</strong>: <code class="inline">CompilationTarget.is_linux()/is_x86()/has_avx512f()/…</code>; target queries (<code class="inline">is_gpu()</code>) differ from host queries (<code class="inline">has_accelerator()</code>).</li>
+      <li><strong>Debug vs release</strong>: independent axes — <code class="inline">-g</code>/<code class="inline">-O0</code>/<code class="inline">--sanitize=address</code>/<code class="inline">-D ASSERT=…</code>; plain <code class="inline">mojo app.mojo</code> is already <code class="inline">-O3</code> release. <code class="inline">debug_assert()</code> follows <code class="inline">-D ASSERT</code> alone; read levels via <code class="inline">OptimizationLevel.level</code>/<code class="inline">DebugLevel.level</code>.</li>
+      <li><strong>Hosted Mojo</strong>: <code class="inline">--emit shared-lib</code> + <code class="inline">@export … abi("C")</code> + <code class="inline">initialize_runtime()</code> puts Mojo kernels inside C/C++ hosts.</li>
+    </ul>
+  </section>
+  <nav class="chapnav">
+    <a href="mojo_11_interop.html" class="navbtn">← Ch 11 · Python &amp; C Interop</a>
+    <a href="mojo_13_closures.html" class="navbtn">Ch 13 · Closures &amp; Lambdas →</a>
+  </nav>
+</div>
+</div>
+
+<script>
+const progress = document.getElementById('progress');
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  progress.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+});
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    const group=this.closest('.code-tabs');
+    group.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    group.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+    this.classList.add('active');
+    const target=group.querySelector('#'+this.getAttribute('data-tab'));
+    if(target) target.classList.add('active');
+  });
+});
+
+const sections=[...document.querySelectorAll('section[id]')];
+const dots=document.querySelectorAll('#miniToc a');
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      dots.forEach(d=>d.classList.toggle('active',d.getAttribute('href')==='#'+entry.target.id));
+    }
+  });
+},{rootMargin:'-40% 0px -50% 0px'});
+sections.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

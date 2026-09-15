@@ -1,0 +1,60 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mojo 1.0 · Drill 25 · GNSS Surveying</title><link rel="stylesheet" href="../styles.css"><link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><defs><linearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22><stop offset=%220%22 stop-color=%22%235bd4ff%22/><stop offset=%221%22 stop-color=%22%232f8fe0%22/></linearGradient></defs><rect width=%2240%22 height=%2240%22 rx=%2210%22 fill=%22url(%23g)%22/><g fill=%22none%22 stroke=%22%2306101c%22 stroke-width=%222.4%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 transform=%22translate(8 8)%22><path d=%22M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z%22/><path d=%22M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z%22/></g></svg>"></head><body>
+<nav><div class="wrap navin"><a class="brand" href="../index.html"><span class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/></svg></span><span>TutMe🔥 <span style="color:#5bd4ff">Learning Hub</span></span></a>
+<div class="navlinks"><a class="pill" href="../index.html">Home</a><a class="pill" href="../mojo_v1/index.html">Fundamentals</a><a class="pill" href="../data_science/index.html">Data Science</a><a class="pill" href="../applications/index.html">Applications</a><a class="pill" href="../praxis/index.html">Praxis</a></div></div></nav>
+<main><section><div class="wrap hero"><span class="eyebrow">PRAXIS · APPLICATIONS · GEOMATICS</span><h1>Drill 25 · GNSS Surveying</h1><p class="lead">Carry a GNSS point from geodetic coordinates to a calibrated local grid.</p><div class="card big"><h3>Your task</h3><p>Implement `geodetic_to_ecef(lat, lon, h) -> (Float64, Float64, Float64)` on the WGS84 ellipsoid (a = 6378137.0, f = 1/298.257223563), then an `enu(dx, dy, dz, lat, lon)` helper that turns an ECEF coordinate difference into local East/North/Up. Finally, apply the book's 4-parameter similarity model `E = a·x − b·y + tx`, `N = b·x + a·y + ty` to map two grid points onto a site-calibrated local grid, and compute the residual of each control point against its known local coordinates. Verify the residuals are at the few-millimetre level before trusting the calibration.</p><div class="notice">Based on <a href="../applications/geomatics/gnss_surveying.html" style="color:#5bd4ff">GNSS Surveying</a>; see the projection side in <a href="../applications/geomatics/karney_krueger_equations.html" style="color:#5bd4ff">The Karney-Krueger Equations</a>. Ground your code with <a href="../mojo_v1/mojo_06_structs.html" style="color:#5bd4ff">Structs &amp; Traits</a>, <a href="../mojo_v1/mojo_03_types.html" style="color:#5bd4ff">Types &amp; Values</a> and <a href="../mojo_v1/mojo_05_operators.html" style="color:#5bd4ff">Operators &amp; Control Flow</a>. Do the problem before looking for the solution or answering the checkpoint. If you forget syntax, use the <a href="../mojo_v1/index.html" style="color:#5bd4ff">Mojo Library</a>.</div></div>
+<div class="card big quiz" data-quiz><h3>Checkpoint · multiple choice</h3><p class="q">The 4-parameter similarity transformation used for site calibration consists of which parameters?</p>
+<label class="opt"><input type="radio" name="d25q1" value="a">Four translations (tx, ty, tz, tt).</label>
+<label class="opt" data-correct="true"><input type="radio" name="d25q1" value="b">Two translations, one rotation and one scale factor.</label>
+<label class="opt"><input type="radio" name="d25q1" value="c">Three rotations and one translation.</label>
+<label class="opt"><input type="radio" name="d25q1" value="d">Seven parameters: three translations, three rotations and a scale.</label>
+<div class="actions qactions"><button type="button" class="btn check">Check answer</button><button type="button" class="btn reset">Try again</button></div><p class="feedback"></p>
+<div class="explain" hidden><strong>Why:</strong> The 2D similarity model packs rotation θ and scale s into a = s·cos θ and b = s·sin θ, leaving two translations tx, ty — four parameters in total. Seven parameters is the 3D Helmert model.</div></div>
+<details class="solution"><summary>Solution</summary><p>Reference Mojo for geodetic → ECEF, ENU and a 4-parameter site calibration with residuals.</p><pre class="code">from math import sin, cos, sqrt, atan2, radians
+
+struct Ellipsoid:
+    var a: Float64      # semi-major axis (m)
+    var f: Float64      # flattening
+
+def WGS84() -> Ellipsoid:
+    return Ellipsoid(a=6378137.0, f=1.0 / 298.257223563)
+
+def geodetic_to_ecef(lat: Float64, lon: Float64, h: Float64) -> (Float64, Float64, Float64):
+    var e2 = 2 * WGS84().f - WGS84().f ** 2
+    var phi = radians(lat)
+    var lam = radians(lon)
+    var s = sin(phi)
+    var n = WGS84().a / sqrt(1 - e2 * s * s)   # prime-vertical radius
+    var x = (n + h) * cos(phi) * cos(lam)
+    var y = (n + h) * cos(phi) * sin(lam)
+    var z = (n * (1 - e2) + h) * s
+    return (x, y, z)
+
+def enu(dx: Float64, dy: Float64, dz: Float64, lat: Float64, lon: Float64) -> (Float64, Float64, Float64):
+    var phi = radians(lat)
+    var lam = radians(lon)
+    var e = -sin(lam) * dx + cos(lam) * dy
+    var n = -sin(phi) * cos(lam) * dx - sin(phi) * sin(lam) * dy + cos(phi) * dz
+    var u = cos(phi) * cos(lam) * dx + cos(phi) * sin(lam) * dy + sin(phi) * dz
+    return (e, n, u)
+
+# 4-parameter similarity: E = a*x - b*y + tx ; N = b*x + a*y + ty
+fn apply_sim4(x: Float64, y: Float64, a: Float64, b: Float64, tx: Float64, ty: Float64) -> (Float64, Float64):
+    return (a * x - b * y + tx, b * x + a * y + ty)
+
+def main():
+    # Harare area check: geodetic -> ECEF round trip closes to &lt; 1 mm
+    var (x, y, z) = geodetic_to_ecef(-17.8252, 31.0335, 1480.0)
+    print("ECEF (m):", x, y, z)
+
+    # Calibrated grid point (a, b, tx, ty from a least-squares fit of control points)
+    var (E, N) = apply_sim4(x=501234.5, y=7987654.3, a=0.9999965, b=0.0000210, tx=102.45, ty=-57.82)
+    print("Local E, N:", E, N)
+
+    # Residual QC: known local coords of a control point vs transformed
+    var known_E = 501336.98
+    var known_N = 7987596.44
+    print("residual dE, dN (m):", E - known_E, N - known_N)
+    # |residual| at the few-mm level means the calibration is trustworthy.</pre></details>
+<div class="actions"><a class="btn" href="index.html">← Praxis</a><a class="btn primary" href="../applications/geomatics/gnss_surveying.html">Review book →</a></div></div></section></main><footer><div class="wrap">TutMe🔥 · A structured path from syntax → fundamentals → applications → practice.</div></footer>
+<script defer src="praxis.js"></script></body></html>

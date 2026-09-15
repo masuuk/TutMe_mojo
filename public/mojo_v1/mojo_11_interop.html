@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 11 — Python &amp; C Interop · Mojo 1.0 Textbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --font-sans:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --bg-primary:#0b0d15;--bg-secondary:#12162b;--bg-card:rgba(255,255,255,0.04);
+  --bg-code:rgba(0,0,0,0.4);
+  --text-primary:#ffffff;--text-secondary:#d8def0;--text-muted:#a8b6d4;
+  --accent-1:#6c5ce7;--accent-2:#00b4d8;--accent-3:#f77f00;
+  --accent-gradient:linear-gradient(135deg,#6c5ce7,#00b4d8,#f77f00);
+  --border-color:rgba(255,255,255,0.18);--radius:16px;--radius-sm:8px;
+  --transition:0.3s cubic-bezier(0.4,0,0.2,1);--max-width:900px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.7;overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+::selection{background:rgba(108,92,231,0.4);color:#fff;}
+::-webkit-scrollbar{width:8px;}
+::-webkit-scrollbar-track{background:var(--bg-primary);}
+::-webkit-scrollbar-thumb{background:var(--accent-1);border-radius:10px;}
+
+.progress{position:fixed;top:0;left:0;height:3px;background:var(--accent-gradient);z-index:100;width:0%;transition:width .1s;}
+
+.header{position:sticky;top:0;z-index:100;height:64px;background:rgba(11,13,21,0.85);backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between;padding:0 5vw;}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.05rem;}
+.logo-icon{width:32px;height:32px;border-radius:var(--radius-sm);background:var(--accent-gradient);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;}
+.logo span{color:var(--text-secondary);font-weight:400;}
+.logo .mojo{background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.chnum{font-family:var(--font-mono);font-size:0.78rem;color:var(--accent-2);letter-spacing:0.04em;}
+
+.container{max-width:var(--max-width);margin:0 auto;padding:0 24px;}
+.wrap{padding:5rem 0 8rem;}
+
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent-2);background:rgba(0,180,216,0.12);padding:4px 16px;border-radius:100px;border:1px solid rgba(0,180,216,0.15);margin-bottom:16px;}
+h1{font-size:clamp(2rem,4vw,3rem);font-weight:800;letter-spacing:-0.03em;line-height:1.15;margin-bottom:12px;}
+h1 .highlight{background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.dek{font-size:1.1rem;color:var(--text-secondary);max-width:600px;margin-bottom:40px;line-height:1.8;}
+
+h2{font-size:1.6rem;font-weight:700;letter-spacing:-0.02em;margin:3rem 0 1rem;padding-top:1rem;border-top:1px solid var(--border-color);}
+h2:first-of-type{border-top:none;}
+h3{font-size:1.2rem;font-weight:600;margin:2rem 0 0.8rem;color:var(--text-primary);}
+p{color:var(--text-secondary);margin:0 0 1.1rem;line-height:1.8;}
+p strong{color:var(--text-primary);}
+ul,ol{color:var(--text-secondary);padding-left:24px;line-height:1.8;}
+li{margin-bottom:6px;}
+code.inline{font-family:var(--font-mono);font-size:0.85em;background:rgba(108,92,231,0.12);padding:2px 8px;border-radius:6px;color:#c084fc;border:1px solid rgba(108,92,231,0.2);}
+
+.info-box{padding:20px 24px;border-radius:var(--radius);background:rgba(108,92,231,0.06);border:1px solid rgba(108,92,231,0.12);margin:20px 0;}
+.info-box strong{color:var(--text-primary);}
+.info-box p{margin-top:4px;color:var(--text-secondary);}
+.tip-box{background:rgba(0,180,216,0.05);border-color:rgba(0,180,216,0.12);}
+.tip-box strong{color:var(--accent-2);}
+.warning-box{background:rgba(247,127,0,0.06);border-color:rgba(247,127,0,0.12);}
+.warning-box strong{color:var(--accent-3);}
+
+.code-tabs{margin:20px 0;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border-color);background:var(--bg-code);}
+.tabs-header{display:flex;gap:2px;padding:8px 12px 0;background:rgba(0,0,0,0.3);border-bottom:1px solid var(--border-color);}
+.tab-btn{padding:8px 18px;font-family:var(--font-mono);font-size:0.75rem;font-weight:500;background:none;border:none;color:var(--text-muted);cursor:pointer;border-radius:var(--radius-sm) var(--radius-sm) 0 0;transition:var(--transition);position:relative;}
+.tab-btn:hover{color:var(--text-primary);background:rgba(255,255,255,0.04);}
+.tab-btn.active{color:var(--text-primary);background:rgba(255,255,255,0.18);}
+.tab-btn.active::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:2px;background:var(--accent-gradient);border-radius:4px;}
+.tab-content{display:none;padding:16px 20px;overflow-x:auto;background:rgba(0,0,0,0.2);}
+.tab-content.active{display:block;}
+pre{font-family:var(--font-mono);font-size:0.85rem;line-height:1.8;color:#e2e8f0;margin:0;white-space:pre-wrap;}
+pre .kw{color:#c084fc;}pre .fn{color:#60a5fa;}pre .str{color:#4ade80;}pre .num{color:#fbbf24;}pre .cmt{color:#a8b6d4;font-style:italic;}pre .op{color:#f472b6;}pre .type{color:#34d399;}pre .var{color:#fcd34d;}
+
+table.cheat{width:100%;border-collapse:collapse;margin:20px 0;font-size:0.88rem;}
+table.cheat th{font-family:var(--font-mono);font-size:0.75rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;text-align:left;padding:12px 16px;background:rgba(0,0,0,0.3);color:var(--accent-2);border-bottom:2px solid var(--border-color);}
+table.cheat td{padding:10px 16px;border-bottom:1px solid var(--border-color);color:var(--text-secondary);vertical-align:top;}
+table.cheat tr:hover td{background:rgba(255,255,255,0.02);}
+table.cheat td:first-child{font-weight:600;color:var(--text-primary);white-space:nowrap;}
+table.cheat code{font-family:var(--font-mono);font-size:0.82em;color:#c084fc;}
+
+.chapnav{display:flex;justify-content:space-between;margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border-color);gap:16px;flex-wrap:wrap;}
+.navbtn{font-family:var(--font-mono);font-size:0.85rem;color:var(--text-secondary);text-decoration:none;border:1px solid var(--border-color);padding:10px 16px;border-radius:var(--radius-sm);transition:var(--transition);}
+.navbtn:hover{border-color:var(--accent-1);color:var(--text-primary);}
+.navbtn.disabled{opacity:0.4;pointer-events:none;}
+
+.mini-toc{position:fixed;right:2vw;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:14px;z-index:30;}
+.mini-toc a{width:8px;height:8px;border-radius:50%;background:var(--border-color);display:block;transition:background .2s,transform .2s;}
+.mini-toc a.active{background:var(--accent-2);transform:scale(1.3);}
+@media(max-width:900px){.mini-toc{display:none;}}
+
+@media(max-width:600px){
+  h1{font-size:2rem;}
+  .wrap{padding:3rem 0 5rem;}
+  table.cheat{font-size:0.78rem;}
+  table.cheat th,table.cheat td{padding:8px 10px;}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header class="header">
+  <a class="logo" href="mojo_book_1.html">
+    <span class="logo-icon">M</span>
+    <span><span class="mojo">Mojo</span> <span>Textbook</span></span>
+  </a>
+  <span class="chnum">Ch 11 — Python &amp; C Interop</span> <a href="mojo_book_2.html" style="font-size:.8em;opacity:.75;text-decoration:underline;margin-left:8px;">Book 2 · Data Science &amp; AI →</a>
+</header>
+
+<div class="mini-toc" id="miniToc">
+  <a href="#pythonize"></a>
+  <a href="#pyobjects"></a>
+  <a href="#exporting"></a>
+  <a href="#binding"></a>
+  <a href="#limits"></a>
+  <a href="#ffi"></a>
+  <a href="#libc"></a>
+  <a href="#handles"></a>
+  <a href="#buffers"></a>
+  <a href="#ownership"></a>
+  <a href="#summary"></a>
+</div>
+
+<div class="wrap">
+<div class="container">
+  <span class="kicker">Chapter 11</span>
+  <h1><span class="highlight">Python &amp; C</span> Interop</h1>
+  <p class="dek">Two bridges beyond pure Mojo: reach Python's ecosystem from Mojo code, expose fast Mojo routines back to Python — then drop to zero-overhead calls into C libraries.</p>
+
+  <section id="pythonize">
+    <h2>1. Calling Python from Mojo</h2>
+    <p>Mojo can import any installed Python module as-is, so your existing Python toolkit is available from day one. The entry point is <code class="inline">Python.import_module()</code> from <code class="inline">std.python</code>. It returns a reference to the module wrapped in a <code class="inline">PythonObject</code>, which you store in a variable and use with ordinary dot-notation:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch11-np-mojo">Mojo</button>
+        <button class="tab-btn" data-tab="ch11-np-out">output</button>
+      </div>
+      <div class="tab-content active" id="ch11-np-mojo">
+        <pre><span class="kw">from</span> std.python <span class="kw">import</span> Python
+
+<span class="kw">def</span> <span class="fn">main</span>() <span class="kw">raises</span>:
+    <span class="kw">var</span> np = Python.<span class="fn">import_module</span>(<span class="str">"numpy"</span>)
+    <span class="kw">var</span> ar = np.<span class="fn">arange</span>(<span class="num">15</span>).<span class="fn">reshape</span>(<span class="num">3</span>, <span class="num">5</span>)
+    <span class="fn">print</span>(ar)
+    <span class="fn">print</span>(ar.shape)</pre>
+      </div>
+      <div class="tab-content" id="ch11-np-out">
+        <pre>[[ 0  1  2  3  4]
+ [ 5  6  7  8  9]
+ [10 11 12 13 14]]
+(3, 5)</pre>
+      </div>
+    </div>
+
+    <p>This is roughly equivalent to Python's own <code class="inline">import numpy</code> — method calls, attribute chains, and even keyword-style arguments pass straight through to Python. The module must be installed in the environment where Mojo runs (<code class="inline">uv pip install numpy</code>, or <code class="inline">pixi add numpy</code>).</p>
+
+    <div class="info-box">
+      <strong>💡 Key Insight:</strong>
+      <p>Mojo has no globally scoped variables, so you import a Python module <em>inside each function that needs it</em> — or pass the module object between functions as an argument.</p>
+    </div>
+
+    <div class="info-box warning-box">
+      <strong>⚠️ Watch Out:</strong>
+      <p>Using Python code creates a <strong>runtime dependency on a Python interpreter and packages</strong>. Building an executable with <code class="inline">mojo build</code> does not embed them. Deploy into an environment that provides Python — a venv managed by Pixi or conda is the easiest guarantee.</p>
+    </div>
+
+    <div class="info-box tip-box">
+      <strong>📌 Pro Tip:</strong>
+      <p>The pygame chapter of the official tutorial builds a whole UI this way: <code class="inline">pygame.display.set_mode(Python.tuple(width, height))</code> shows how Mojo values flow into Python calls naturally — more on <code class="inline">Python.tuple()</code> below.</p>
+    </div>
+  </section>
+
+  <section id="pyobjects">
+    <h2>2. Python Objects in Mojo</h2>
+    <p>Every Python value you touch from Mojo is wrapped in a <code class="inline">PythonObject</code>. The wrapper forwards dunder methods like <code class="inline">__getitem__()</code> and <code class="inline">__getattr__()</code> to the underlying object, so you can treat it much as you would in Python: dot into attributes, call methods, and index sequences with <code class="inline">[]</code>.</p>
+
+    <h3>Collections built from Mojo</h3>
+    <p>Besides implicit conversion of Mojo primitives — integers, floats, booleans, and strings become Python objects automatically — the <code class="inline">Python</code> type offers static constructors for collections:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch11-dict-mojo">Python.dict()</button>
+        <button class="tab-btn" data-tab="ch11-list-tuple">list &amp; tuple</button>
+        <button class="tab-btn" data-tab="ch11-set">evaluate a set</button>
+      </div>
+      <div class="tab-content active" id="ch11-dict-mojo">
+        <pre><span class="kw">from</span> std.python <span class="kw">import</span> Python
+
+<span class="kw">def</span> <span class="fn">main</span>() <span class="kw">raises</span>:
+    <span class="kw">var</span> py_dict = Python.<span class="fn">dict</span>()
+    py_dict[<span class="str">"item_name"</span>] = <span class="str">"whizbang"</span>
+    py_dict[<span class="str">"price"</span>] = <span class="num">11.75</span>
+    py_dict[<span class="str">"inventory"</span>] = <span class="num">100</span>
+    <span class="fn">print</span>(py_dict)</pre>
+      </div>
+      <div class="tab-content" id="ch11-list-tuple">
+        <pre><span class="cmt"># Python.list() is mutable:</span>
+<span class="kw">var</span> py_list = Python.<span class="fn">list</span>(<span class="str">"cat"</span>, <span class="num">2</span>, <span class="num">3.14159</span>, <span class="num">4</span>)
+py_list.<span class="fn">append</span>(<span class="num">5</span>)
+py_list[<span class="num">0</span>] = <span class="str">"aardvark"</span>
+<span class="fn">print</span>(py_list)   <span class="cmt"># ['aardvark', 2, 3.14159, 4, 5]</span>
+
+<span class="cmt"># Python.tuple() is immutable, but supports count():</span>
+<span class="kw">var</span> py_tuple = Python.<span class="fn">tuple</span>(<span class="str">"cat"</span>, <span class="num">2</span>, <span class="num">3.1415</span>, <span class="str">"cat"</span>)
+<span class="fn">print</span>(<span class="str">"Number of cats:"</span>, py_tuple.<span class="fn">count</span>(<span class="str">"cat"</span>))   <span class="cmt"># 2</span></pre>
+      </div>
+      <div class="tab-content" id="ch11-set">
+        <pre><span class="cmt"># No Mojo literal for sets? Evaluate one:</span>
+<span class="kw">var</span> py_set = Python.<span class="fn">evaluate</span>(<span class="str">'{2, 3, 2, 7, 11, 3}'</span>)
+<span class="fn">print</span>(<span class="fn">len</span>(py_set), <span class="str">"items in the set."</span>)   <span class="cmt"># 4 items in the set.</span>
+
+<span class="kw">var</span> contained = <span class="num">7</span> <span class="kw">in</span> py_set
+<span class="fn">print</span>(<span class="str">"Is 7 in the set:"</span>, contained)       <span class="cmt"># True</span></pre>
+      </div>
+    </div>
+
+    <p>The output of the dict tab prints as you'd expect: <code class="inline">{'item_name': 'whizbang', 'price': 11.75, 'inventory': 100}</code>. <code class="inline">PythonObject</code> implements the <code class="inline">Writable</code> trait, which is why <code class="inline">print()</code> just works.</p>
+
+    <h3>Converting across the boundary</h3>
+    <table class="cheat">
+      <thead>
+        <tr><th>Direction</th><th>How</th><th>Example</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Mojo → Python</td><td>Implicit for <code>Int</code>, <code>Float64</code>, <code>Bool</code>, <code>String</code></td><td><code>py_utils.type_printer(4)</code> → <code>&lt;class 'int'&gt;</code></td></tr>
+        <tr><td>Mojo → Python (explicit)</td><td>Construct the wrapper directly</td><td><code>PythonObject("Hello, Mojo!")</code>, <code>PythonObject(3.14)</code></td></tr>
+        <tr><td>Python → Mojo</td><td>Type constructors with the <code>py=</code> keyword</td><td><code>Int(py=py_int)</code>, <code>Float64(py=py_float)</code>, <code>Bool(py=py_bool)</code>, <code>String(py=py_string)</code></td></tr>
+        <tr><td>In-memory module</td><td>Evaluate source text as a module</td><td><code>Python.evaluate(src, file=True, name="py_utils")</code></td></tr>
+        <tr><td>Runtime type check</td><td>Identity against the type object</td><td><code>Python.type(value1) is py_float_type</code></td></tr>
+      </tbody>
+    </table>
+
+    <p>Most Mojo APIs don't accept <code class="inline">PythonObject</code> directly, so explicit conversion back to native types is routine — and it raises an exception if the value isn't convertible. Comparisons work in both directions: Python objects participate in <code class="inline">&gt;</code>/<code class="inline">&lt;</code> expressions, the Mojo <code class="inline">is</code> operator compares identities, and Python's <code class="inline">False</code>/<code class="inline">None</code> evaluate as false in Mojo boolean contexts.</p>
+
+    <div class="info-box tip-box">
+      <strong>📌 Tip:</strong>
+      <p>To check what you're holding, use <code class="inline">Python.type(obj)</code> — Mojo's equivalent of Python's <code class="inline">type()</code> builtin — and compare with <code class="inline">is</code> against <code class="inline">Python.evaluate("float")</code> or similar.</p>
+    </div>
+  </section>
+
+  <section id="exporting">
+    <h2>3. Exposing Mojo Functions to Python</h2>
+    <p>The reverse direction: your Python project calls <em>into</em> Mojo for the performance-critical parts. You write a normal Mojo function, register it in a module initializer, and Python imports it like any other module.</p>
+
+    <div class="info-box warning-box">
+      <strong>⚠️ Watch Out:</strong>
+      <p>Calling Mojo from Python is a <strong>Beta feature</strong> in active development. Expect the API and ergonomics to change; see the limitations in Section 5.</p>
+    </div>
+
+    <p>A minimal project pairs a Python entry point with a Mojo source file:</p>
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch11-tree">project layout</button>
+      </div>
+      <div class="tab-content active" id="ch11-tree">
+        <pre>project
+├── 🐍 main.py
+└── 🔥 mojo_module.mojo</pre>
+      </div>
+    </div>
+
+    <p>On the Mojo side, Python needs to find a function named <code class="inline">PyInit_&lt;module&gt;()</code> (for <code class="inline">foo.mojo</code> that's <code class="inline">PyInit_foo()</code>). Inside it, a <code class="inline">PythonModuleBuilder</code> declares everything Python can see:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch11-fact-mojo">mojo_module.mojo</button>
+        <button class="tab-btn" data-tab="ch11-fact-py">main.py</button>
+        <button class="tab-btn" data-tab="ch11-fact-out">output</button>
+      </div>
+      <div class="tab-content active" id="ch11-fact-mojo">
+        <pre><span class="kw">from</span> std.python <span class="kw">import</span> PythonObject
+<span class="kw">from</span> std.python.bindings <span class="kw">import</span> PythonModuleBuilder
+<span class="kw">from</span> std <span class="kw">import</span> math
+<span class="kw">from</span> std.os <span class="kw">import</span> abort
+
+<span class="fn">@export</span>
+<span class="kw">def</span> <span class="fn">PyInit_mojo_module</span>() <span class="fn">abi</span>(<span class="str">"C"</span>) -&gt; PythonObject:
+    <span class="kw">try</span>:
+        <span class="kw">var</span> m = <span class="fn">PythonModuleBuilder</span>(<span class="str">"mojo_module"</span>)
+        m.<span class="fn">def_function</span>[factorial](<span class="str">"factorial"</span>, docstring=<span class="str">"Compute n!"</span>)
+        <span class="kw">return</span> m.<span class="fn">finalize</span>()
+    <span class="kw">except</span> e:
+        <span class="fn">abort</span>(<span class="type">String</span>(<span class="str">"error creating Python Mojo module:"</span>, e))
+
+<span class="kw">def</span> <span class="fn">factorial</span>(py_obj: PythonObject) <span class="kw">raises</span> -&gt; PythonObject:
+    <span class="cmt"># Raises if py_obj is not convertible to a Mojo Int:</span>
+    <span class="kw">var</span> n = <span class="type">Int</span>(py=py_obj)
+    <span class="kw">return</span> math.<span class="fn">factorial</span>(n)</pre>
+      </div>
+      <div class="tab-content" id="ch11-fact-py">
+        <pre><span class="kw">import</span> mojo.importer
+<span class="kw">import</span> mojo_module
+
+<span class="fn">print</span>(mojo_module.factorial(<span class="num">5</span>))</pre>
+      </div>
+      <div class="tab-content" id="ch11-fact-out">
+        <pre>120</pre>
+      </div>
+    </div>
+
+    <h3>How it works</h3>
+    <p>Python extension modules are the standard mechanism that lets compiled languages (C, C++, Rust, Mojo) expose themselves to CPython — a dynamic library defining a suitable <code class="inline">PyInit_*()</code> function. Importing <code class="inline">mojo.importer</code> installs Mojo's import hook: when Python imports <code class="inline">mojo_module</code>, the hook finds the matching <code class="inline">.mojo</code> file, compiles it with <code class="inline">mojo build --emit shared-lib</code>, and caches the result:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch11-cache">after first import</button>
+      </div>
+      <div class="tab-content active" id="ch11-cache">
+        <pre>project
+├── main.py
+├── mojo_module.mojo
+└── __mojocache__
+    └── mojo_module.hash-ABC123.so</pre>
+      </div>
+    </div>
+
+    <p>The cached library rebuilds only when the Mojo source goes stale — you edit, the next import recompiles. The cache holds nothing but derived artifacts and is always safe to delete.</p>
+
+    <h3>The ABI of exported functions</h3>
+    <p>Two rules govern <code class="inline">abi</code> declarations at this boundary:</p>
+    <ul>
+      <li><strong>Only <code class="inline">PyInit_&lt;module&gt;</code> needs <code class="inline">@export</code></strong>, and it must declare <code class="inline">abi("C")</code> — CPython locates and calls it directly across the C boundary.</li>
+      <li>An <code class="inline">abi("C")</code> function <strong>can't be marked <code class="inline">raises</code></strong> — which is why the examples catch errors inside the body and call <code class="inline">abort()</code> instead.</li>
+    </ul>
+    <p>Everything you register with the builder (<code class="inline">def_function</code>, <code class="inline">def_method</code>, <code class="inline">def_py_init</code>, …) needs no <code class="inline">@export</code> at all: you pass the function by reference and Mojo generates the C wrapper CPython actually calls. That wrapper invokes your function with the Mojo calling convention and translates any raised error into a Python exception — so registered functions like <code class="inline">factorial</code> can freely be marked <code class="inline">raises</code>.</p>
+  </section>
+
+  <section id="binding">
+    <h2>4. Binding Types &amp; Methods</h2>
+    <p>Functions are only the start — full Mojo types can be bound into Python as real Python type objects with constructors, methods, and static methods.</p>
+
+    <h3>Registering a type</h3>
+    <p><code class="inline">add_type[T]("Name")</code> returns a <code class="inline">PythonTypeBuilder</code> that you use to attach the rest of the surface. Bound types must implement <code class="inline">Writable</code>; extra traits unlock specific features — <code class="inline">Movable</code> for custom initializers (<code class="inline">def_py_init</code>), plus <code class="inline">Defaultable</code> for zero-argument construction (<code class="inline">def_init_defaultable</code>).</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch11-type-mojo">mojo_module.mojo</button>
+        <button class="tab-btn" data-tab="ch11-type-py">Python usage</button>
+        <button class="tab-btn" data-tab="ch11-type-out">output</button>
+      </div>
+      <div class="tab-content active" id="ch11-type-mojo">
+        <pre><span class="fn">@fieldwise_init</span>
+<span class="kw">struct</span> <span class="type">Person</span>(<span class="type">Movable</span>, <span class="type">Writable</span>):
+    <span class="kw">var</span> name: <span class="type">String</span>
+    <span class="kw">var</span> age: <span class="type">Int</span>
+
+    <span class="fn">@staticmethod</span>
+    <span class="kw">def</span> <span class="fn">py_init</span>(<span class="kw">out</span> <span class="kw">self</span>: Person, args: PythonObject, kwargs: PythonObject) <span class="kw">raises</span>:
+        <span class="kw">if</span> <span class="fn">len</span>(args) != <span class="num">2</span>:
+            <span class="kw">raise</span> <span class="type">Error</span>(<span class="str">"Person() takes exactly 2 arguments"</span>)
+        <span class="kw">var</span> name = <span class="type">String</span>(args[<span class="num">0</span>])
+        <span class="kw">var</span> age = <span class="type">Int</span>(args[<span class="num">1</span>])
+        self = <span class="type">Self</span>(name, age)
+
+    <span class="fn">@staticmethod</span>
+    <span class="kw">def</span> <span class="fn">get_name</span>(py_self: PythonObject) <span class="kw">raises</span> -&gt; PythonObject:
+        <span class="kw">var</span> self_ptr = py_self.<span class="fn">downcast_value_ptr</span>[Self]()
+        <span class="kw">return</span> self_ptr[].name
+
+    <span class="fn">@staticmethod</span>
+    <span class="kw">def</span> <span class="fn">set_age</span>(self_ptr: Pointer[<span class="kw">mut</span>=<span class="kw">True</span>, Self], new_age: PythonObject) <span class="kw">raises</span>:
+        self_ptr[].age = <span class="type">Int</span>(new_age)
+
+    <span class="kw">def</span> <span class="fn">write_to</span>(<span class="kw">self</span>, <span class="kw">mut</span> writer: <span class="type">Some</span>[<span class="type">Writer</span>]):
+        t<span class="str">"Person({self.name}, {self.age})"</span>.<span class="fn">write_to</span>(writer)
+
+<span class="fn">@export</span>
+<span class="kw">def</span> <span class="fn">PyInit_mojo_module</span>() <span class="fn">abi</span>(<span class="str">"C"</span>) -&gt; PythonObject:
+    <span class="kw">try</span>:
+        <span class="kw">var</span> mb = <span class="fn">PythonModuleBuilder</span>(<span class="str">"mojo_module"</span>)
+        _ = mb.<span class="fn">add_type</span>[Person](<span class="str">"Person"</span>)
+            .<span class="fn">def_py_init</span>[Person.py_init](<span class="str">"__init__"</span>)
+            .<span class="fn">def_method</span>[Person.get_name](<span class="str">"get_name"</span>)
+            .<span class="fn">def_method</span>[Person.set_age](<span class="str">"set_age"</span>)
+        <span class="kw">return</span> mb.<span class="fn">finalize</span>()
+    <span class="kw">except</span> e:
+        <span class="fn">abort</span>(<span class="str">"error creating Mojo module"</span>)</pre>
+      </div>
+      <div class="tab-content" id="ch11-type-py">
+        <pre><span class="kw">import</span> mojo.importer
+<span class="kw">from</span> mojo_module <span class="kw">import</span> Person
+
+person = Person(<span class="str">"Sarah"</span>, <span class="num">32</span>)
+<span class="fn">print</span>(person)                    <span class="cmt"># Person(Sarah, 32)</span>
+<span class="fn">print</span>(person.get_name())        <span class="cmt"># Sarah</span>
+person.set_age(<span class="num">33</span>)</pre>
+      </div>
+      <div class="tab-content" id="ch11-type-out">
+        <pre>Person(Sarah, 32)
+Sarah</pre>
+      </div>
+    </div>
+
+    <div class="info-box warning-box">
+      <strong>⚠️ Watch Out:</strong>
+      <p>Exposed methods are currently written as <code class="inline">@staticmethod</code> functions taking <strong>either</strong> <code class="inline">py_self: PythonObject</code> (full wrapper access) <strong>or</strong> <code class="inline">self_ptr: Pointer[mut=True, Self]</code> (minimal boilerplate for field access). This non-standard self is a temporary bindings limitation.</p>
+    </div>
+
+    <h3>Returning Mojo values to Python</h3>
+    <p>A registered type can also cross back as a <em>new</em> Python object: wrap it with <code class="inline">PythonObject(alloc=person^)</code>. The allocation raises if the type wasn't first registered with <code class="inline">add_type()</code>.</p>
+
+    <h3>Getting Mojo values back out</h3>
+    <p>Two routes from a <code class="inline">PythonObject</code> into native Mojo data:</p>
+    <ul>
+      <li><strong>Conversion</strong> — build a new Mojo value with the same logical content (<code class="inline">Int(py_obj)</code>, <code class="inline">String(name_obj)</code>), backed by the <code class="inline">ConvertibleFromPython</code> trait.</li>
+      <li><strong>Downcast</strong> — when the wrapper holds a Mojo value of a registered type, <code class="inline">downcast_value_ptr[Person]()</code> hands you a checked pointer to the inner value (<code class="inline">person[].age += 1</code> works, aliasing is your responsibility). For benchmark-hot loops, <code class="inline">unchecked_downcast_value_ptr[Person]()</code> skips the type check entirely.</li>
+    </ul>
+
+    <h3>Keyword arguments</h3>
+    <p>Python keyword arguments reach Mojo through an unsugared trailing parameter of type <code class="inline">StringDict[PythonObject]</code> (from <code class="inline">std.collections</code>). Python's native <code class="inline">**kwargs</code> and keyword-only syntax (<code class="inline">def foo(*, x: Int)</code>) are not yet supported:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch11-kwargs-mojo">Mojo</button>
+        <button class="tab-btn" data-tab="ch11-kwargs-py">Python call</button>
+      </div>
+      <div class="tab-content active" id="ch11-kwargs-mojo">
+        <pre><span class="kw">from</span> std.collections <span class="kw">import</span> StringDict
+
+<span class="kw">def</span> <span class="fn">sum_kwargs_ints</span>(kwargs: StringDict[PythonObject]) <span class="kw">raises</span> -&gt; PythonObject:
+    <span class="kw">var</span> total = <span class="num">0</span>
+    <span class="kw">for</span> entry <span class="kw">in</span> kwargs.<span class="fn">items</span>():
+        total += <span class="type">Int</span>(entry.value)
+    <span class="kw">return</span> PythonObject(total)</pre>
+      </div>
+      <div class="tab-content" id="ch11-kwargs-py">
+        <pre><span class="cmt"># returns 60 — kwargs land in the trailing StringDict:</span>
+result = mojo_module.sum_kwargs_ints(a=<span class="num">10</span>, b=<span class="num">20</span>, c=<span class="num">30</span>)</pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="limits">
+    <h2>5. Porting Strategies &amp; Limitations</h2>
+
+    <h3>The builder surface at a glance</h3>
+    <table class="cheat">
+      <thead>
+        <tr><th>Builder call</th><th>Exposes</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>def_function[f]("f")</code></td><td>Top-level function</td><td>Fixed arity, up to 6 args</td></tr>
+        <tr><td><code>add_type[T]("T")</code></td><td>Type object</td><td>Requires <code>Writable</code>; returns type builder</td></tr>
+        <tr><td><code>def_py_init[T.py_init]</code></td><td>Custom constructor</td><td>Requires <code>Movable</code>; <code>(out self, args, kwargs)</code></td></tr>
+        <tr><td><code>def_init_defaultable[T]</code></td><td>No-arg constructor</td><td>Requires <code>Defaultable</code> + <code>Movable</code></td></tr>
+        <tr><td><code>def_method[T.m]("m")</code></td><td>Instance method</td><td><code>@staticmethod</code> with <code>py_self</code>/<code>self_ptr</code></td></tr>
+        <tr><td><code>def_staticmethod[T.s]("s")</code></td><td>Static method</td><td>Called as <code>T.s(...)</code>, no instance</td></tr>
+        <tr><td><code>def_py_function[f]("f")</code></td><td>Variadic function</td><td>Receives <code>(py_self, args_tuple)</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Writing Pythonic code in Mojo</h3>
+    <p>When porting Python, you can lean on <code class="inline">PythonObject</code>'s flexibility instead of converting everything into strongly-typed Mojo values — let runtime exceptions surface your mistakes, Python-style. The rule of thumb: <strong>any Python builtin is reachable as <code class="inline">Python.&lt;builtin&gt;()</code></strong>.</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch11-port-py">Python original</button>
+        <button class="tab-btn" data-tab="ch11-port-mojo">Mojo port</button>
+      </div>
+      <div class="tab-content active" id="ch11-port-py">
+        <pre><span class="kw">def</span> <span class="fn">foo</span>(x, y, z):
+    x[y] = <span class="fn">int</span>(z)
+    x = y + z</pre>
+      </div>
+      <div class="tab-content" id="ch11-port-mojo">
+        <pre><span class="kw">def</span> <span class="fn">foo</span>(x: PythonObject, y: PythonObject, z: PythonObject) -&gt; PythonObject:
+    x[y] = Python.<span class="fn">int</span>(z)
+    x = y + z</pre>
+      </div>
+    </div>
+
+    <h3>Variadic arguments</h3>
+    <p>Python's <code class="inline">*args</code> syntax isn't supported by <code class="inline">def_function</code> (fixed arity only). The lower-level <code class="inline">def_py_function</code> receives all arguments as a tuple and leaves arity validation to you:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch11-var-mojo">Mojo</button>
+        <button class="tab-btn" data-tab="ch11-var-py">Python call</button>
+      </div>
+      <div class="tab-content active" id="ch11-var-mojo">
+        <pre><span class="kw">def</span> <span class="fn">sum_args</span>(py_self: PythonObject, args_tuple: PythonObject) <span class="kw">raises</span>:
+    <span class="kw">var</span> total = args_tuple[<span class="num">0</span>]
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="fn">len</span>(args_tuple)):
+        total += args_tuple[i]
+    <span class="kw">return</span> total
+
+<span class="cmt"># registered with: b.def_py_function[sum_args]("sum_args")</span></pre>
+      </div>
+      <div class="tab-content" id="ch11-var-py">
+        <pre><span class="fn">print</span>(mojo_module.sum_args(<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>))   <span class="cmt"># 10</span></pre>
+      </div>
+    </div>
+
+    <h3>Distributing Mojo extension modules</h3>
+    <ul>
+      <li><strong>Source files, compiled on demand</strong> — the import hook from Section 3. Simple project layout, always up to date after edits.</li>
+      <li><strong>Pre-built shared libraries</strong> — escape hatch for advanced builds (optimization/debug flags, import paths): <code class="inline">mojo build mojo_module.mojo --emit shared-lib -o mojo_module.so</code>.</li>
+    </ul>
+
+    <h3>Known limitations (Beta)</h3>
+    <ul>
+      <li>Bound functions take at most <strong>6 arguments</strong>.</li>
+      <li>Keyword arguments only via trailing <code class="inline">StringDict[PythonObject]</code>; native <code class="inline">**kwargs</code> syntax pending.</li>
+      <li>Import hook can't specify Mojo <strong>package dependencies</strong> beyond the stdlib — pre-built shared libs only.</li>
+      <li>Computed <strong>properties</strong> (getters/setters) unsupported.</li>
+      <li><code class="inline">ConvertibleFromPython</code> covers only some stdlib types — manual conversion may be needed.</li>
+    </ul>
+  </section>
+
+  <section id="ffi">
+    <h2>6. The C Foreign Function Interface</h2>
+    <p>When the library you need already exists in C — graphics, databases, hardware control, signal processing — Mojo calls it directly. The compiler emits a <strong>native call with no translation layer and no runtime overhead</strong>: a C call from Mojo runs as fast as handwritten C.</p>
+
+    <p>C's integer types have no fixed sizes; they depend on the target platform and its <strong>ABI</strong> (application binary interface — the rules for how machine code passes arguments, returns values, and lays out memory). An <code class="inline">int</code> is commonly 32 bits, while <code class="inline">long</code> is 64 bits on Linux and macOS but 32 bits on Windows. The <code class="inline">std.ffi</code> module ships type aliases that track the target's C ABI for you:</p>
+
+    <table class="cheat">
+      <thead>
+        <tr><th>C type</th><th>std.ffi alias</th><th>Mojo type</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>int</code></td><td><code>c_int</code></td><td><code>Int32</code></td><td>The most common type by far</td></tr>
+        <tr><td><code>short</code></td><td><code>c_short</code></td><td><code>Int16</code></td><td></td></tr>
+        <tr><td><code>long</code></td><td><code>c_long</code></td><td>depends on target</td><td>64-bit on Linux and macOS</td></tr>
+        <tr><td><code>long long</code></td><td><code>c_long_long</code></td><td><code>Int64</code></td><td>Always 64 bits</td></tr>
+        <tr><td><code>char</code></td><td><code>c_char</code></td><td><code>Int8</code></td><td>Signed; mostly seen as <code>char*</code></td></tr>
+        <tr><td><code>unsigned char</code></td><td><code>c_uchar</code></td><td><code>UInt8</code></td><td></td></tr>
+        <tr><td><code>unsigned short</code></td><td><code>c_ushort</code></td><td><code>UInt16</code></td><td></td></tr>
+        <tr><td><code>unsigned int</code></td><td><code>c_uint</code></td><td><code>UInt32</code></td><td></td></tr>
+        <tr><td><code>unsigned long</code></td><td><code>c_ulong</code></td><td>depends on target</td><td>Matches <code>c_long</code></td></tr>
+        <tr><td><code>float</code></td><td><code>c_float</code></td><td><code>Float32</code></td><td></td></tr>
+        <tr><td><code>double</code></td><td><code>c_double</code></td><td><code>Float64</code></td><td></td></tr>
+        <tr><td><code>size_t</code></td><td><code>c_size_t</code></td><td><code>UInt</code></td><td>For sizes and counts</td></tr>
+        <tr><td><code>ssize_t</code></td><td><code>c_ssize_t</code></td><td><code>Int</code></td><td>For sizes that can be negative</td></tr>
+        <tr><td><code>void*</code></td><td><code>OpaquePointer</code></td><td><code>Pointer[NoneType]</code></td><td>Uses origins (Section 9)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-box">
+      <strong>💡 Key Insight:</strong>
+      <p>Every platform Mojo supports today is LP64, so writing <code class="inline">Int64</code> for a C <code class="inline">long</code> happens to work. The alias says what you mean — and keeps saying it if the supported targets change.</p>
+    </div>
+  </section>
+
+  <section id="libc">
+    <h2>7. Calling libc with external_call()</h2>
+    <p><code class="inline">libc</code> — the C standard library — provides memory allocation, string manipulation, file I/O, and other common tasks. Mojo reaches it with <code class="inline">external_call</code>, imported from <code class="inline">std.ffi</code>. Parameterize it with the function name and return type, pass the arguments in parentheses, and Mojo infers the argument types from your values:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch11-sig">signature</button>
+        <button class="tab-btn" data-tab="ch11-abs-mojo">abs()</button>
+        <button class="tab-btn" data-tab="ch11-abs-out">output</button>
+      </div>
+      <div class="tab-content active" id="ch11-sig">
+        <pre><span class="kw">def</span> <span class="fn">external_call</span>[
+    callee: StaticString,
+    return_type: RegisterPassable,
+    *types: AnyType,
+    num_fixed_args: OptionalReg[<span class="type">Int</span>] = None,
+](*args: *types) -&gt; return_type</pre>
+      </div>
+      <div class="tab-content" id="ch11-abs-mojo">
+        <pre><span class="kw">from</span> std.ffi <span class="kw">import</span> external_call, c_int
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="cmt"># int abs(int n);</span>
+    <span class="kw">var</span> n = <span class="fn">external_call</span>[<span class="str">"abs"</span>, c_int](c_int(<span class="op">-</span><span class="num">42</span>))
+    <span class="fn">print</span>(t<span class="str">"Absolute value is 42: {n == 42}"</span>)</pre>
+      </div>
+      <div class="tab-content" id="ch11-abs-out">
+        <pre>Absolute value is 42: True</pre>
+      </div>
+    </div>
+
+    <p>Mojo resolves the symbol for you — no build configuration needed. <code class="inline">c_int</code> is the alias for C's <code class="inline">int</code>: 32 bits on every platform Mojo targets, with <code class="inline">Int32</code> as its Mojo counterpart.</p>
+
+    <h3>Variadic C functions</h3>
+    <p>Variadic functions like <code class="inline">printf()</code> and <code class="inline">snprintf()</code> take a variable number of arguments. Pass <code class="inline">num_fixed_args</code> with the count of arguments declared before the <code class="inline">...</code>:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch11-snprintf">Mojo</button>
+        <button class="tab-btn" data-tab="ch11-snprintf-out">output</button>
+      </div>
+      <div class="tab-content active" id="ch11-snprintf">
+        <pre><span class="kw">from</span> std.ffi <span class="kw">import</span> external_call, c_char, c_int, c_size_t
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="cmt"># int snprintf(char *buf, size_t size, const char *fmt, ...);</span>
+    <span class="cmt"># Three fixed arguments, so num_fixed_args=3.</span>
+    <span class="kw">var</span> buf = <span class="type">Array</span>[c_char, <span class="num">64</span>](uninitialized=<span class="kw">True</span>)
+    <span class="kw">var</span> written = <span class="fn">external_call</span>[<span class="str">"snprintf"</span>, c_int, num_fixed_args=<span class="num">3</span>](
+        buf.<span class="fn">unsafe_ptr</span>(),
+        c_size_t(<span class="num">64</span>),
+        <span class="str">"score: %d/%d"</span>.<span class="fn">as_c_string_slice</span>().<span class="fn">unsafe_ptr</span>(),
+        c_int(<span class="num">7</span>),
+        c_int(<span class="num">10</span>),
+    )
+    <span class="fn">print</span>(t<span class="str">"wrote {written}: {String(unsafe_from_utf8_ptr=buf.unsafe_ptr())}"</span>)</pre>
+      </div>
+      <div class="tab-content" id="ch11-snprintf-out">
+        <pre>wrote 12: score: 7/10</pre>
+      </div>
+    </div>
+
+    <div class="info-box warning-box">
+      <strong>⚠️ Watch Out:</strong>
+      <p>Without <code class="inline">num_fixed_args</code>, Mojo treats every argument as fixed. Some ABIs pass variadic arguments differently from fixed ones — AAPCS on ARM64 macOS, for instance — so the call can work on one target and break on another.</p>
+    </div>
+  </section>
+
+  <section id="handles">
+    <h2>8. Shared Libraries: OwnedDLHandle</h2>
+    <p>Beyond libc, real projects need SQLite, libcurl, camera SDKs, GPU vendor libraries. An <code class="inline">OwnedDLHandle</code> owns a handle to a dynamically linked library with RAII semantics — load it, pull functions out as Mojo callables, and it closes automatically when the handle leaves scope.</p>
+
+    <p>Library names differ by platform, so select the right one at compile time with <code class="inline">platform_map</code>:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch11-libm-mojo">Mojo</button>
+        <button class="tab-btn" data-tab="ch11-libm-out">output</button>
+      </div>
+      <div class="tab-content active" id="ch11-libm-mojo">
+        <pre><span class="kw">from</span> std.ffi <span class="kw">import</span> OwnedDLHandle, c_double
+<span class="kw">from</span> std.sys.info <span class="kw">import</span> platform_map
+
+<span class="fn">comptime</span> LIBM = platform_map[<span class="str">"libm"</span>, linux=<span class="str">"libm.so.6"</span>, macos=<span class="str">"libm.dylib"</span>]()
+
+<span class="kw">def</span> <span class="fn">main</span>() <span class="kw">raises</span>:
+    <span class="kw">var</span> lib = <span class="fn">OwnedDLHandle</span>(LIBM)
+    <span class="kw">var</span> sqrt = lib.<span class="fn">get_function</span>[c_double](<span class="str">"sqrt"</span>)
+    <span class="fn">print</span>(<span class="fn">sqrt</span>(c_double(<span class="num">4.0</span>)))
+    <span class="cmt"># Library automatically closed when lib goes out of scope</span></pre>
+      </div>
+      <div class="tab-content" id="ch11-libm-out">
+        <pre>2.0</pre>
+      </div>
+    </div>
+
+    <p>If <code class="inline">platform_map</code> has no value for the target, it raises a <strong>compilation error</strong> — it won't silently fall through to another platform's name.</p>
+
+    <h3>Library names</h3>
+    <ul>
+      <li>Pass a bare name (<code class="inline">libm.dylib</code>) when the library is on the system search path; a full path when it isn't. Mojo resolves the name at runtime.</li>
+      <li>On Linux, use the <strong>ABI-versioned runtime name</strong> (<code class="inline">libcurl.so.4</code>), not the unversioned <code class="inline">libcurl.so</code> — the unversioned name belongs to the development package and is often a linker script that fails <code class="inline">dlopen</code> with an "invalid ELF header" error. Find what the dynamic linker knows via <code class="inline">ldconfig -p | grep libcurl</code>.</li>
+      <li>macOS uses one name for both linking and loading.</li>
+      <li><strong>Omit the name entirely</strong> and <code class="inline">OwnedDLHandle()</code> opens the current process — another way to call libc and symbols already linked into your program.</li>
+    </ul>
+
+    <h3>Availability checks</h3>
+    <p>Loading happens at runtime, so guard against missing libraries and optional features:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch11-avail">fallbacks</button>
+        <button class="tab-btn" data-tab="ch11-checksym">check_symbol()</button>
+      </div>
+      <div class="tab-content active" id="ch11-avail">
+        <pre><span class="cmt"># Missing library → try/except fallback:</span>
+<span class="kw">try</span>:
+    <span class="kw">var</span> lib = <span class="fn">OwnedDLHandle</span>(LIBCURL)
+    <span class="cmt"># use the optional feature</span>
+<span class="kw">except</span>:
+    <span class="cmt"># fall back</span>
+    <span class="kw">pass</span></pre>
+      </div>
+      <div class="tab-content" id="ch11-checksym">
+        <pre><span class="kw">var</span> lib = <span class="fn">OwnedDLHandle</span>(LIBM)
+
+<span class="kw">if</span> lib.<span class="fn">check_symbol</span>(<span class="str">"exp10"</span>):
+    <span class="kw">var</span> exp10 = lib.<span class="fn">get_function</span>[c_double](<span class="str">"exp10"</span>)
+    <span class="fn">print</span>(<span class="fn">exp10</span>(c_double(<span class="num">2.0</span>)))   <span class="cmt"># 100.0</span>
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"exp10 not found in libm"</span>)</pre>
+      </div>
+    </div>
+
+    <p><code class="inline">get_function[c_int]("wgetch")</code> takes only the return type — argument types are inferred from each call's values and forwarded with the C calling convention. A missing symbol raises an error rather than aborting, which makes probing for optional, versioned, or platform-specific symbols safe. The returned callable borrows the handle, so the library can't be closed between lookup and call.</p>
+  </section>
+
+  <section id="buffers">
+    <h2>9. Pointers, Structs &amp; Buffers</h2>
+    <p>Raw pointers are <code class="inline">Pointer[T]</code> (Chapter 7). At the C boundary: <code class="inline">Pointer(to=value)</code> points at a Mojo value; <code class="inline">.unsafe_bitcast[U]()</code> reinterprets a pointer — <code class="inline">unsafe_bitcast[NoneType]()</code> produces the <code class="inline">void*</code>-style <code class="inline">OpaquePointer</code>.</p>
+
+    <h3>Typed out-parameters</h3>
+    <p>C functions often write results through a pointer you provide rather than returning them. C's <code class="inline">frexp</code> returns the mantissa and writes the exponent through a pointer:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch11-frexp-mojo">Mojo</button>
+        <button class="tab-btn" data-tab="ch11-frexp-out">output</button>
+      </div>
+      <div class="tab-content active" id="ch11-frexp-mojo">
+        <pre><span class="kw">from</span> std.ffi <span class="kw">import</span> external_call, c_double, c_int
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="cmt"># double frexp(double x, int *exp);</span>
+    <span class="kw">var</span> exponent: c_int = <span class="num">0</span>
+    <span class="kw">var</span> mantissa = <span class="fn">external_call</span>[<span class="str">"frexp"</span>, c_double](
+        c_double(<span class="num">12.0</span>), Pointer(to=exponent)
+    )
+    <span class="fn">print</span>(t<span class="str">"12.0 = {mantissa} * 2^{exponent}"</span>)</pre>
+      </div>
+      <div class="tab-content" id="ch11-frexp-out">
+        <pre>12.0 = 0.75 * 2^4</pre>
+      </div>
+    </div>
+
+    <div class="info-box warning-box">
+      <strong>⚠️ Watch Out:</strong>
+      <p>Pointing C at an <code class="inline">imm</code> function argument fails <em>quietly</em> — the value stays unchanged. Use the <code class="inline">mut</code> convention or copy into a local <code class="inline">var</code> before the call.</p>
+    </div>
+
+    <h3>Callbacks: qsort with a thin function</h3>
+    <p>C's <code class="inline">qsort</code> sorts an array in place using a comparison function you supply. The callback must be <strong>thin</strong> — no captured Mojo state — and marked <code class="inline">abi("C")</code> so C can call it across the FFI boundary:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch11-qsort-mojo">Mojo</button>
+        <button class="tab-btn" data-tab="ch11-qsort-out">output</button>
+      </div>
+      <div class="tab-content active" id="ch11-qsort-mojo">
+        <pre><span class="kw">from</span> std.ffi <span class="kw">import</span> external_call, c_int, c_size_t
+<span class="kw">from</span> std.sys <span class="kw">import</span> size_of
+
+<span class="kw">def</span> <span class="fn">compare</span>(
+    a: OpaquePointer[<span class="kw">mut</span>=<span class="kw">False</span>, _],
+    b: OpaquePointer[<span class="kw">mut</span>=<span class="kw">False</span>, _],
+) <span class="fn">abi</span>(<span class="str">"C"</span>) -&gt; c_int:
+    <span class="kw">var</span> a_value = a.<span class="fn">unsafe_bitcast</span>[c_int]()[]
+    <span class="kw">var</span> b_value = b.<span class="fn">unsafe_bitcast</span>[c_int][]
+    <span class="cmt"># Compare values, don't subtract them — large differences</span>
+    <span class="cmt"># overflow and produce the wrong sort order.</span>
+    <span class="kw">if</span> a_value &lt; b_value:
+        <span class="kw">return</span> c_int(<span class="op">-</span><span class="num">1</span>)
+    <span class="kw">return</span> c_int(a_value &gt; b_value)
+
+<span class="kw">def</span> <span class="fn">main</span>() <span class="kw">raises</span>:
+    <span class="kw">var</span> numbers: List[c_int] = [<span class="num">5</span>, <span class="num">2</span>, <span class="num">9</span>, <span class="num">1</span>, <span class="num">5</span>, <span class="num">6</span>]
+    <span class="fn">external_call</span>[<span class="str">"qsort"</span>, NoneType](
+        numbers.<span class="fn">unsafe_ptr</span>(),
+        c_size_t(<span class="fn">len</span>(numbers)),
+        c_size_t(<span class="fn">size_of</span>[c_int]()),
+        compare,
+    )
+    <span class="fn">print</span>(<span class="str">"Sorted numbers:"</span>, numbers)</pre>
+      </div>
+      <div class="tab-content" id="ch11-qsort-out">
+        <pre>Sorted numbers: [1, 2, 5, 5, 6, 9]</pre>
+      </div>
+    </div>
+
+    <h3>C-compatible structs</h3>
+    <p>To exchange structured data, mirror the C struct: conform to <code class="inline">RegisterPassable</code>, use only C-compatible fields, and <strong>keep the field order identical</strong> — Mojo reproduces the C layout including alignment padding. Return types must also be <code class="inline">RegisterPassable</code>; a C function returning a big struct by value isn't directly callable (allocate it in Mojo, pass a pointer, declare the return <code class="inline">NoneType</code>):</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch11-div-mojo">Mojo</button>
+        <button class="tab-btn" data-tab="ch11-div-out">output</button>
+      </div>
+      <div class="tab-content active" id="ch11-div-mojo">
+        <pre><span class="cmt"># Mirrors C div_t: two ints, 8 bytes total.</span>
+<span class="fn">@fieldwise_init</span>
+<span class="kw">struct</span> <span class="type">DivT</span>(<span class="type">RegisterPassable</span>):
+    <span class="kw">var</span> quot: c_int
+    <span class="kw">var</span> rem: c_int
+
+<span class="kw">def</span> <span class="fn">main</span>() <span class="kw">raises</span>:
+    <span class="kw">var</span> proc = <span class="fn">OwnedDLHandle</span>()   <span class="cmt"># No path: opens the current process</span>
+    <span class="kw">var</span> div = proc.<span class="fn">get_function</span>[DivT](<span class="str">"div"</span>)
+    <span class="kw">var</span> d = <span class="fn">div</span>(c_int(<span class="num">7</span>), c_int(<span class="num">3</span>))
+    <span class="fn">print</span>(t<span class="str">"div(7, 3): quot {d.quot} rem {d.rem}"</span>)</pre>
+      </div>
+      <div class="tab-content" id="ch11-div-out">
+        <pre>div(7, 3): quot 2 rem 1</pre>
+      </div>
+    </div>
+
+    <h3>Lists, arrays, spans — and strings</h3>
+    <ul>
+      <li><strong><code class="inline">List[T]</code></strong> stores elements contiguously like a C array — pass pointer plus length. List pointers are fragile: <code class="inline">append()</code> may move the storage, so grab the pointer fresh, right before the call.</li>
+      <li><strong><code class="inline">Span[T]</code></strong> is the built-in pointer-plus-length pair with bounds checking and safe iteration. Wrapping a Mojo buffer keeps it alive; wrapping C-owned memory (e.g. from <code class="inline">malloc()</code>) does <em>not</em> free it — that's still your job.</li>
+      <li><strong><code class="inline">Array[T, length]</code></strong> is the fixed-size, inline-owned buffer — C can fill it through a pointer.</li>
+      <li><strong>Strings</strong>: Mojo's are length-prefixed UTF-8, C's are null-terminated bytes. Going out, call <code class="inline">as_c_string_slice()</code> (ensures termination; call once and reuse — it may append a zero byte and move the buffer) then <code class="inline">unsafe_ptr()</code>. Coming back, <code class="inline">String(unsafe_from_utf8_ptr=ptr)</code> copies with <code class="inline">strlen()</code>, or wrap known-length bytes in a <code class="inline">Span[Byte]</code>. String literals like <code class="inline">"libm.so.6".as_c_string_slice()</code> convert at compile time.</li>
+    </ul>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch11-getcwd">getcwd through an Array</button>
+      </div>
+      <div class="tab-content active" id="ch11-getcwd">
+        <pre><span class="kw">from</span> std.ffi <span class="kw">import</span> external_call, c_char, c_size_t
+
+<span class="kw">def</span> <span class="fn">main</span>() <span class="kw">raises</span>:
+    <span class="cmt"># char *getcwd(char *buf, size_t size);</span>
+    <span class="fn">comptime</span> CAPACITY = <span class="num">256</span>
+    <span class="kw">var</span> buf = <span class="type">Array</span>[c_char, CAPACITY](uninitialized=<span class="kw">True</span>)
+
+    <span class="kw">var</span> filled = <span class="fn">external_call</span>[
+        <span class="str">"getcwd"</span>, Optional[Pointer[c_char, origin_of(buf)]]
+    ](buf.<span class="fn">unsafe_ptr</span>(), c_size_t(CAPACITY))
+    <span class="kw">if</span> <span class="kw">not</span> filled:
+        <span class="kw">raise</span> <span class="type">Error</span>(<span class="str">"getcwd failed"</span>)
+
+    <span class="cmt"># C reports no length, so ask for it, then wrap in a Span:</span>
+    <span class="kw">var</span> length = <span class="fn">external_call</span>[<span class="str">"strlen"</span>, c_size_t](buf.<span class="fn">unsafe_ptr</span>())
+    <span class="kw">var</span> span = <span class="type">Span</span>(
+        unsafe_ptr=buf.<span class="fn">unsafe_ptr</span>().<span class="fn">unsafe_bitcast</span>[<span class="type">Byte</span>](),
+        length=<span class="type">Int</span>(length),
+    )
+    <span class="fn">print</span>(t<span class="str">"{len(span)} bytes: {String(from_utf8=span)}"</span>)</pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="ownership">
+    <h2>10. Memory Ownership &amp; Safety</h2>
+    <p>Mojo tracks the lifetime of its own memory; C memory has no Mojo value behind it, so there's nothing to track. Every allocation that crosses the boundary belongs to exactly one side, and that side stays responsible for freeing it: <strong>free C memory with C's <code class="inline">free()</code>, let Mojo manage its own</strong> (except for unsafe allocations).</p>
+
+    <h3>Allocating C memory</h3>
+    <p>C allocators like <code class="inline">malloc</code> return null on failure — and a Mojo <code class="inline">Pointer</code> can't be null, so wrap "maybe null" returns in <code class="inline">Optional</code>:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch11-malloc-mojo">Mojo</button>
+        <button class="tab-btn" data-tab="ch11-malloc-out">output</button>
+      </div>
+      <div class="tab-content active" id="ch11-malloc-mojo">
+        <pre><span class="kw">from</span> std.ffi <span class="kw">import</span> external_call, c_size_t
+
+<span class="kw">def</span> <span class="fn">create_buffer</span>(n: c_size_t) -&gt; Optional[Pointer[<span class="type">UInt8</span>, MutUntrackedOrigin]]:
+    <span class="kw">return</span> <span class="fn">external_call</span>[
+        <span class="str">"malloc"</span>, Optional[Pointer[<span class="type">UInt8</span>, MutUntrackedOrigin]]
+    ](n)
+
+<span class="kw">def</span> <span class="fn">main</span>() <span class="kw">raises</span>:
+    <span class="kw">var</span> buf = <span class="fn">create_buffer</span>(c_size_t(<span class="num">16</span>))
+    <span class="kw">if</span> <span class="kw">not</span> buf:
+        <span class="kw">raise</span> <span class="type">Error</span>(<span class="str">"malloc failed"</span>)
+    <span class="kw">var</span> ptr = buf.<span class="fn">value</span>()
+
+    ptr[unsafe_offset=<span class="num">0</span>] = <span class="num">42</span>
+    <span class="fn">print</span>(ptr[unsafe_offset=<span class="num">0</span>])
+
+    <span class="fn">external_call</span>[<span class="str">"free"</span>, NoneType](ptr.<span class="fn">unsafe_bitcast</span>[NoneType]())</pre>
+      </div>
+      <div class="tab-content" id="ch11-malloc-out">
+        <pre>42</pre>
+      </div>
+    </div>
+
+    <p><code class="inline">MutUntrackedOrigin</code> tells Mojo not to reason about this pointer's lifetime — no Mojo value owns the memory, so keeping it valid and freeing it is entirely on you.</p>
+
+    <h3>Free C memory automatically</h3>
+    <p>Pairing every <code class="inline">malloc()</code> with a <code class="inline">free()</code> by hand is easy to get wrong — and this is exactly the job of a context manager (Chapter 10). When the block exits, <code class="inline">__exit__()</code> frees the buffer, even after a raised error:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch11-cbuffer">CBuffer context manager</button>
+      </div>
+      <div class="tab-content active" id="ch11-cbuffer">
+        <pre><span class="kw">struct</span> <span class="type">CBuffer</span>:
+    <span class="kw">var</span> ptr: Pointer[<span class="type">UInt8</span>, MutUntrackedOrigin]
+    <span class="kw">var</span> size: c_size_t
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">out</span> <span class="kw">self</span>, n: c_size_t) <span class="kw">raises</span>:
+        <span class="kw">self</span>.size = n
+        <span class="kw">var</span> allocated = <span class="fn">external_call</span>[
+            <span class="str">"malloc"</span>, Optional[Pointer[<span class="type">UInt8</span>, MutUntrackedOrigin]]
+        ](n)
+        <span class="kw">if</span> <span class="kw">not</span> allocated:
+            <span class="kw">raise</span> <span class="type">Error</span>(<span class="str">"malloc failed"</span>)
+        <span class="kw">self</span>.ptr = allocated.<span class="fn">value</span>()
+
+    <span class="kw">def</span> <span class="fn">__enter__</span>(<span class="kw">self</span>) -&gt; Pointer[<span class="type">UInt8</span>, MutUntrackedOrigin]:
+        <span class="kw">return</span> <span class="kw">self</span>.ptr
+
+    <span class="kw">def</span> <span class="fn">__exit__</span>(<span class="kw">self</span>):
+        <span class="fn">external_call</span>[<span class="str">"free"</span>, NoneType](<span class="kw">self</span>.ptr.<span class="fn">unsafe_bitcast</span>[NoneType]())
+
+<span class="kw">def</span> <span class="fn">main</span>() <span class="kw">raises</span>:
+    <span class="kw">with</span> <span class="fn">CBuffer</span>(c_size_t(<span class="num">1024</span>)) <span class="kw">as</span> buf:
+        buf[unsafe_offset=<span class="num">0</span>] = <span class="num">42</span>
+        <span class="fn">print</span>(buf[unsafe_offset=<span class="num">0</span>])   <span class="cmt"># 42</span>
+    <span class="cmt"># The buffer is freed here.</span></pre>
+      </div>
+    </div>
+
+    <div class="info-box warning-box">
+      <strong>⚠️ Watch Out:</strong>
+      <p>Declaring a non-optional <code class="inline">Pointer</code> for a "maybe null" C return <em>compiles</em> — and then treats C's null as a valid pointer. Dereferencing it is undefined behavior and typically crashes the program. Always wrap in <code class="inline">Optional</code>.</p>
+    </div>
+
+    <h3>Origins keep Mojo values alive</h3>
+    <p>Pointers into Mojo memory carry an origin that tracks the value's lifetime. Derive a pointer from a variable and Mojo keeps that variable alive as long as the pointer lives — it rejects code that would let the value die first. No manual lifetime workarounds needed. But the protection ends where C stores your pointer somewhere Mojo can't see: a call returning doesn't mean C is <em>finished</em> with what you passed. Check the C docs for functions that retain pointers.</p>
+
+    <h3>Safety: you are the type checker</h3>
+    <p>Inside Mojo, the compiler checks types, tracks lifetimes through origins, and refuses use-after-death. None of that crosses the C boundary — C has no origins, no ownership, no type information Mojo can read. The compiler emits exactly the call you described and <strong>trusts you to have described it correctly</strong>. The C header is the contract:</p>
+    <ul>
+      <li><strong>Declare what C declares.</strong> Use the <code class="inline">std.ffi</code> aliases so types track the target ABI. A mismatch isn't a compile error — it's a wrong answer. Declaring <code class="inline">strchr</code>'s <code class="inline">char*</code> return as <code class="inline">c_int</code> silently keeps only the low 32 bits.</li>
+      <li><strong>Free memory on the side that allocated it.</strong></li>
+      <li><strong>Assume undefined behavior, not exceptions.</strong> A mismatched declaration usually produces a plausible result rather than a crash — a passing test is weak evidence.</li>
+    </ul>
+
+    <p>Mojo marks the operations it can't check with the <code class="inline">unsafe_</code> prefix — the same convention used throughout the standard library. This chapter used four: <code class="inline">unsafe_ptr()</code> to hand C a raw pointer, <code class="inline">unsafe_bitcast()</code> to reinterpret one, <code class="inline">unsafe_offset=</code> to index past the first element, and <code class="inline">String(unsafe_from_utf8_ptr=)</code> to trust bytes C gave you. Each is a guarantee you've taken over from the compiler.</p>
+  </section>
+
+  <section id="summary">
+    <h2>11. Chapter Summary</h2>
+    <ul>
+      <li><strong>Python from Mojo</strong>: <code class="inline">Python.import_module("numpy")</code> wraps the module in a <code class="inline">PythonObject</code>; no global scope, so import per function or pass it along. Python becomes a <em>runtime</em> dependency.</li>
+      <li><strong>PythonObject</strong> forwards attribute access, indexing, and comparisons to Python. Build collections with <code class="inline">Python.dict/list/tuple/evaluate</code>; convert back with <code class="inline">Int(py=…)</code>-style constructors.</li>
+      <li><strong>Mojo from Python</strong> (Beta): export <code class="inline">PyInit_&lt;module&gt;() abi("C")</code>, register with <code class="inline">PythonModuleBuilder</code>, and <code class="inline">import mojo.importer</code> on the Python side compiles/caches into <code class="inline">__mojocache__</code>.</li>
+      <li><strong>abi("C") can't raise</strong> — catch inside <code class="inline">PyInit</code> and <code class="inline">abort()</code>. Registered functions need no <code class="inline">@export</code> and may raise; the generated wrapper translates errors into Python exceptions.</li>
+      <li><strong>Bindings</strong>: <code class="inline">add_type</code> + <code class="inline">def_py_init</code>/<code class="inline">def_method</code>/<code class="inline">def_staticmethod</code>; methods are <code class="inline">@staticmethod</code>s over <code class="inline">py_self</code> or <code class="inline">self_ptr</code>. Keyword args via trailing <code class="inline">StringDict[PythonObject]</code>; variadics via <code class="inline">def_py_function</code>.</li>
+      <li><strong>C FFI</strong>: <code class="inline">external_call["name", RetType](args…)</code> emits a native call — as fast as handwritten C. Use <code class="inline">std.ffi</code> aliases (<code class="inline">c_int</code>, <code class="inline">c_long</code>…) so types track the target ABI; pass <code class="inline">num_fixed_args</code> for variadics.</li>
+      <li><strong>Dynamic libraries</strong>: <code class="inline">OwnedDLHandle</code> + <code class="inline">platform_map</code> for names, <code class="inline">get_function[Ret]("sym")</code> for symbols, <code class="inline">check_symbol</code>/try-except for optional features.</li>
+      <li><strong>Data across the boundary</strong>: <code class="inline">Pointer(to=value)</code> for out-params, thin <code class="inline">abi("C")</code> callbacks for qsort-style APIs, <code class="inline">RegisterPassable</code> structs mirroring C layout, <code class="inline">Array</code>/<code class="inline">Span</code> for buffers, <code class="inline">as_c_string_slice()</code>/<code class="inline">String(unsafe_from_utf8_ptr=)</code> for strings.</li>
+      <li><strong>Ownership stops at the boundary</strong>: C memory freed with <code class="inline">free()</code> (wrap null-able returns in <code class="inline">Optional</code>; a context manager can automate the pairing). Origins protect pointers Mojo can still see — you are the type checker for everything else.</li>
+    </ul>
+  </section>
+
+  <nav class="chapnav">
+    <a href="mojo_10_errors.html" class="navbtn">← Ch 10 · Errors &amp; Context Managers</a>
+    <a href="mojo_12_modules.html" class="navbtn">Ch 12 · Modules, Packages &amp; Toolchain →</a>
+  </nav>
+</div>
+</div>
+
+<script>
+const progress = document.getElementById('progress');
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  progress.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+});
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    const group=this.closest('.code-tabs');
+    group.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    group.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+    this.classList.add('active');
+    const target=group.querySelector('#'+this.getAttribute('data-tab'));
+    if(target) target.classList.add('active');
+  });
+});
+
+const sections=[...document.querySelectorAll('section[id]')];
+const dots=document.querySelectorAll('#miniToc a');
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      dots.forEach(d=>d.classList.toggle('active',d.getAttribute('href')==='#'+entry.target.id));
+    }
+  });
+},{rootMargin:'-40% 0px -50% 0px'});
+sections.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

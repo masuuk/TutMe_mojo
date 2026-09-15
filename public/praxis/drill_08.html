@@ -1,0 +1,51 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mojo 1.0 · Drill 08 · Structs &amp; Traits</title><link rel="stylesheet" href="../styles.css"><link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><defs><linearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22><stop offset=%220%22 stop-color=%22%235bd4ff%22/><stop offset=%221%22 stop-color=%22%232f8fe0%22/></linearGradient></defs><rect width=%2240%22 height=%2240%22 rx=%2210%22 fill=%22url(%23g)%22/><g fill=%22none%22 stroke=%22%2306101c%22 stroke-width=%222.4%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 transform=%22translate(8 8)%22><path d=%22M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z%22/><path d=%22M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z%22/></g></svg>"></head><body>
+<nav><div class="wrap navin"><a class="brand" href="../index.html"><span class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/></svg></span><span>TutMe🔥 <span style="color:#5bd4ff">Learning Hub</span></span></a>
+<div class="navlinks"><a class="pill" href="../index.html">Home</a><a class="pill" href="../mojo_v1/index.html">Fundamentals</a><a class="pill" href="../data_science/index.html">Data Science</a><a class="pill" href="../applications/index.html">Applications</a><a class="pill" href="../praxis/index.html">Praxis</a></div></div></nav>
+<main><section><div class="wrap hero"><span class="eyebrow">PRAXIS · CH 06</span><h1>Drill 08 · Structs &amp; Traits</h1><p class="lead">Model a domain value as a struct and make it satisfy a trait contract.</p><div class="card big"><h3>Your task</h3><p>Define a `struct Point` with `var x: Int` and `var y: Int` via `__init__(out self)`. Give it a `mut` setter, a `@staticmethod` factory `Point.from_origin()`, and conform to `Copyable`. Then define a `trait HasMagnitude` with a required `magnitude(self) -> Float64` method and make a generic function that uses it (`Some[T]`). Build a `Complex` type that overloads `__add__`.</p><div class="notice">Based on <a href="../mojo_v1/mojo_06_structs.html" style="color:#5bd4ff">Chapter 6 · Structs &amp; Traits</a>. Do the problem before looking for a solution or answering the checkpoint. If you forget syntax, use the <a href="../mojo_v1/index.html" style="color:#5bd4ff">Mojo Library</a>.</div></div>
+<div class="card big quiz" data-quiz><h3>Checkpoint · multiple choice</h3><p class="q">What does declaring `struct Point(Copyable):` mean for copying a `Point`?</p>
+<label class="opt"><input type="radio" name="d8q1" value="a">Copies are forbidden by the compiler.</label>
+<label class="opt" data-correct="true"><input type="radio" name="d8q1" value="b">The type guarantees a copy constructor, so copies are legal.</label>
+<label class="opt"><input type="radio" name="d8q1" value="c">It only affects hashing, not copying.</label>
+<label class="opt"><input type="radio" name="d8q1" value="d">It makes every field public.</label>
+<div class="actions qactions"><button type="button" class="btn check">Check answer</button><button type="button" class="btn reset">Try again</button></div><p class="feedback"></p>
+<div class="explain" hidden><strong>Why:</strong> Conforming to the `Copyable` trait declares that the type provides a working copy, which the compiler uses to allow value copies.</div></div>
+<details class="solution"><summary>Solution</summary><p>Reference code: a copyable struct, a trait with a generic consumer, and operator overloading.</p><pre class="code">trait HasMagnitude:
+    fn magnitude(self) -&gt; Float64
+
+fn report[T: HasMagnitude](v: T) -&gt; Float64:
+    return v.magnitude()
+
+struct Point(Copyable, HasMagnitude):
+    var x: Int
+    var y: Int
+
+    fn __init__(inout self):
+        self.x = 0
+        self.y = 0
+
+    fn __init__(inout self, x: Int, y: Int):
+        self.x = x
+        self.y = y
+
+    fn magnitude(self) -&gt; Float64:
+        return ((self.x * self.x + self.y * self.y).to_f64()) ** 0.5
+
+    @staticmethod
+    fn from_origin() -&gt; Point:
+        return Point(0, 0)
+
+struct Complex:
+    var re: Float64
+    var im: Float64
+
+    fn __add__(self, other: Complex) -&gt; Complex:
+        return Complex(self.re + other.re, self.im + other.im)
+
+def main():
+    var p = Point(3, 4)
+    print(report(p))          # 5.0 via the trait
+    var c = Complex(1, 2) + Complex(3, 4)
+    print(c.re, c.im)         # 4.0 6.0</pre></details>
+<div class="actions"><a class="btn" href="index.html">← Praxis</a><a class="btn primary" href="../mojo_v1/mojo_06_structs.html">Review chapter →</a></div></div></section></main><footer><div class="wrap">TutMe🔥 · A structured path from syntax → fundamentals → applications → practice.</div></footer>
+<script defer src="praxis.js"></script></body></html>

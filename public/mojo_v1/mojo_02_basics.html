@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 2 — Language Basics · Mojo 1.0 Textbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --font-sans:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --bg-primary:#0b0d15;--bg-secondary:#12162b;--bg-card:rgba(255,255,255,0.04);
+  --bg-code:rgba(0,0,0,0.4);
+  --text-primary:#ffffff;--text-secondary:#d8def0;--text-muted:#a8b6d4;
+  --accent-1:#6c5ce7;--accent-2:#00b4d8;--accent-3:#f77f00;
+  --accent-gradient:linear-gradient(135deg,#6c5ce7,#00b4d8,#f77f00);
+  --border-color:rgba(255,255,255,0.18);--radius:16px;--radius-sm:8px;
+  --transition:0.3s cubic-bezier(0.4,0,0.2,1);--max-width:900px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.7;overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+::selection{background:rgba(108,92,231,0.4);color:#fff;}
+::-webkit-scrollbar{width:8px;}
+::-webkit-scrollbar-track{background:var(--bg-primary);}
+::-webkit-scrollbar-thumb{background:var(--accent-1);border-radius:10px;}
+
+.progress{position:fixed;top:0;left:0;height:3px;background:var(--accent-gradient);z-index:100;width:0%;transition:width .1s;}
+
+.header{position:sticky;top:0;z-index:100;height:64px;background:rgba(11,13,21,0.85);backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between;padding:0 5vw;}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.05rem;}
+.logo-icon{width:32px;height:32px;border-radius:var(--radius-sm);background:var(--accent-gradient);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;}
+.logo span{color:var(--text-secondary);font-weight:400;}
+.logo .mojo{background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.chnum{font-family:var(--font-mono);font-size:0.78rem;color:var(--accent-2);letter-spacing:0.04em;}
+
+.container{max-width:var(--max-width);margin:0 auto;padding:0 24px;}
+.wrap{padding:5rem 0 8rem;}
+
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent-2);background:rgba(0,180,216,0.12);padding:4px 16px;border-radius:100px;border:1px solid rgba(0,180,216,0.15);margin-bottom:16px;}
+h1{font-size:clamp(2rem,4vw,3rem);font-weight:800;letter-spacing:-0.03em;line-height:1.15;margin-bottom:12px;}
+h1 .highlight{background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.dek{font-size:1.1rem;color:var(--text-secondary);max-width:600px;margin-bottom:40px;line-height:1.8;}
+
+h2{font-size:1.6rem;font-weight:700;letter-spacing:-0.02em;margin:3rem 0 1rem;padding-top:1rem;border-top:1px solid var(--border-color);}
+h2:first-of-type{border-top:none;}
+h3{font-size:1.2rem;font-weight:600;margin:2rem 0 0.8rem;color:var(--text-primary);}
+p{color:var(--text-secondary);margin:0 0 1.1rem;line-height:1.8;}
+p strong{color:var(--text-primary);}
+ul,ol{color:var(--text-secondary);padding-left:24px;line-height:1.8;}
+li{margin-bottom:6px;}
+code.inline{font-family:var(--font-mono);font-size:0.85em;background:rgba(108,92,231,0.12);padding:2px 8px;border-radius:6px;color:#c084fc;border:1px solid rgba(108,92,231,0.2);}
+
+.info-box{padding:20px 24px;border-radius:var(--radius);background:rgba(108,92,231,0.06);border:1px solid rgba(108,92,231,0.12);margin:20px 0;}
+.info-box strong{color:var(--text-primary);}
+.info-box p{margin-top:4px;color:var(--text-secondary);}
+.tip-box{background:rgba(0,180,216,0.05);border-color:rgba(0,180,216,0.12);}
+.tip-box strong{color:var(--accent-2);}
+.warning-box{background:rgba(247,127,0,0.06);border-color:rgba(247,127,0,0.12);}
+.warning-box strong{color:var(--accent-3);}
+
+.code-tabs{margin:20px 0;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border-color);background:var(--bg-code);}
+.tabs-header{display:flex;gap:2px;padding:8px 12px 0;background:rgba(0,0,0,0.3);border-bottom:1px solid var(--border-color);}
+.tab-btn{padding:8px 18px;font-family:var(--font-mono);font-size:0.75rem;font-weight:500;background:none;border:none;color:var(--text-muted);cursor:pointer;border-radius:var(--radius-sm) var(--radius-sm) 0 0;transition:var(--transition);position:relative;}
+.tab-btn:hover{color:var(--text-primary);background:rgba(255,255,255,0.04);}
+.tab-btn.active{color:var(--text-primary);background:rgba(255,255,255,0.18);}
+.tab-btn.active::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:2px;background:var(--accent-gradient);border-radius:4px;}
+.tab-content{display:none;padding:16px 20px;overflow-x:auto;background:rgba(0,0,0,0.2);}
+.tab-content.active{display:block;}
+pre{font-family:var(--font-mono);font-size:0.85rem;line-height:1.8;color:#e2e8f0;margin:0;white-space:pre-wrap;}
+pre .kw{color:#c084fc;}pre .fn{color:#60a5fa;}pre .str{color:#4ade80;}pre .num{color:#fbbf24;}pre .cmt{color:#a8b6d4;font-style:italic;}pre .op{color:#f472b6;}pre .type{color:#34d399;}pre .var{color:#fcd34d;}
+
+table.cheat{width:100%;border-collapse:collapse;margin:20px 0;font-size:0.88rem;}
+table.cheat th{font-family:var(--font-mono);font-size:0.75rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;text-align:left;padding:12px 16px;background:rgba(0,0,0,0.3);color:var(--accent-2);border-bottom:2px solid var(--border-color);}
+table.cheat td{padding:10px 16px;border-bottom:1px solid var(--border-color);color:var(--text-secondary);vertical-align:top;}
+table.cheat tr:hover td{background:rgba(255,255,255,0.02);}
+table.cheat td:first-child{font-weight:600;color:var(--text-primary);white-space:nowrap;}
+table.cheat code{font-family:var(--font-mono);font-size:0.82em;color:#c084fc;}
+
+.chapnav{display:flex;justify-content:space-between;margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border-color);gap:16px;flex-wrap:wrap;}
+.navbtn{font-family:var(--font-mono);font-size:0.85rem;color:var(--text-secondary);text-decoration:none;border:1px solid var(--border-color);padding:10px 16px;border-radius:var(--radius-sm);transition:var(--transition);}
+.navbtn:hover{border-color:var(--accent-1);color:var(--text-primary);}
+.navbtn.disabled{opacity:0.4;pointer-events:none;}
+
+.mini-toc{position:fixed;right:2vw;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:14px;z-index:30;}
+.mini-toc a{width:8px;height:8px;border-radius:50%;background:var(--border-color);display:block;transition:background .2s,transform .2s;}
+.mini-toc a.active{background:var(--accent-2);transform:scale(1.3);}
+@media(max-width:900px){.mini-toc{display:none;}}
+
+@media(max-width:600px){
+  h1{font-size:2rem;}
+  .wrap{padding:3rem 0 5rem;}
+  table.cheat{font-size:0.78rem;}
+  table.cheat th,table.cheat td{padding:8px 10px;}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header class="header">
+  <a class="logo" href="mojo_book_1.html">
+    <span class="logo-icon">M</span>
+    <span><span class="mojo">Mojo</span> <span>Textbook</span></span>
+  </a>
+  <span class="chnum">Ch 02 — Language Basics</span> <a href="mojo_book_2.html" style="font-size:.8em;opacity:.75;text-decoration:underline;margin-left:8px;">Book 2 · Data Science &amp; AI →</a>
+</header>
+
+<div class="mini-toc" id="miniToc">
+  <a href="#variables"></a>
+  <a href="#scopes"></a>
+  <a href="#copy-move"></a>
+  <a href="#ref-bindings"></a>
+  <a href="#comptime"></a>
+  <a href="#putting-together"></a>
+</div>
+
+<div class="wrap">
+<div class="container">
+  <span class="kicker">Chapter 2</span>
+  <h1>Language <span class="highlight">Basics</span></h1>
+  <p class="dek">Variables and declarations, block scoping and shadowing, copying versus moving values, reference bindings, and compile-time constants.</p>
+
+  <section id="variables">
+    <h2>1. Declaring Variables</h2>
+    <p>A variable is a name that holds a value or object. All variables in Mojo are <strong>mutable by default</strong> — their value can change. To define a constant that can't change at runtime, use the <code class="inline">comptime</code> keyword (Section 5).</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch2-decl-mojo">Mojo</button>
+      </div>
+      <div class="tab-content active" id="ch2-decl-mojo">
+        <pre><span class="kw">def</span> <span class="fn">main</span>():
+    <span class="kw">var</span> greeting: <span class="type">String</span> = <span class="str">"Hello World"</span></pre>
+      </div>
+    </div>
+
+    <p>A <code class="inline">var</code> declaration does three things:</p>
+    <ul>
+      <li><strong>Declares a logical storage location</strong>, tied to a particular type.</li>
+      <li><strong>Binds the name</strong> to that storage location.</li>
+      <li><strong>Initializes the storage</strong> with a newly created value. The new value is <em>owned by</em> the variable — no other variable can own it unless you transfer ownership (Section 3).</li>
+    </ul>
+
+    <h3>Inference, annotation, and deferred initialization</h3>
+    <p>You can give a variable a value, a type annotation, or both. The more you annotate, the more explicit your code:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch2-infer-mojo">Mojo</button>
+      </div>
+      <div class="tab-content active" id="ch2-infer-mojo">
+        <pre><span class="kw">var</span> a = <span class="num">5</span>              <span class="cmt"># Mojo infers that a is type Int</span>
+<span class="kw">var</span> b: <span class="type">Float64</span> = <span class="num">3.14</span>   <span class="cmt"># Explicit declaration of Float64 type</span>
+<span class="kw">var</span> c: <span class="type">String</span>           <span class="cmt"># Name created but uninitialized (assigned later)</span></pre>
+      </div>
+    </div>
+
+    <h3>Types are permanent</h3>
+    <p>A variable's type <strong>never changes</strong>. Its storage is strongly typed upon creation and can only hold values of that type:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch2-strong-mojo">Mojo</button>
+        <button class="tab-btn" data-tab="ch2-strong-py">Python</button>
+      </div>
+      <div class="tab-content active" id="ch2-strong-mojo">
+        <pre><span class="kw">var</span> count = <span class="num">8</span>     <span class="cmt"># count is type Int</span>
+count = <span class="str">"Nine?"</span>   <span class="cmt"># Error: can't implicitly convert 'StringLiteral' to 'Int'</span></pre>
+      </div>
+      <div class="tab-content" id="ch2-strong-py">
+        <pre>count = <span class="num">8</span>       <span class="cmt"># int</span>
+count = <span class="str">"Nine?"</span> <span class="cmt"># Fine: names are untyped, objects carry types</span></pre>
+      </div>
+    </div>
+
+    <div class="info-box warning-box">
+      <strong>⚠️ Watch Out:</strong>
+      <p>There is no <code class="inline">let</code> keyword in Mojo 1.0. Older tutorials use <code class="inline">let</code> for immutable variables — that syntax has been removed. If you want immutability, reach for <code class="inline">comptime</code> constants or immutable function arguments.</p>
+    </div>
+  </section>
+
+  <section id="scopes">
+    <h2>2. Scopes &amp; Shadowing</h2>
+    <p>Variables in Mojo use <strong>lexical scoping</strong>: a variable's definition is determined by where it appears in the source code, not when it executes at runtime. Variables have <strong>block-level scope</strong>:</p>
+    <ul>
+      <li>Nested code can read and modify variables defined in an outer scope.</li>
+      <li>An outer scope can't read variables defined in an inner scope.</li>
+    </ul>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch2-scope-mojo">Mojo</button>
+      </div>
+      <div class="tab-content active" id="ch2-scope-mojo">
+        <pre><span class="kw">def</span> <span class="fn">lexical_scopes</span>():
+    <span class="kw">var</span> num = <span class="num">1</span>
+    <span class="kw">var</span> dig = <span class="num">1</span>
+    <span class="kw">if</span> num == <span class="num">1</span>:
+        <span class="fn">print</span>(<span class="str">"num:"</span>, num)   <span class="cmt"># Reads the outer-scope "num"</span>
+        <span class="kw">var</span> num = <span class="num">2</span>          <span class="cmt"># Creates a NEW inner-scope "num"</span>
+        <span class="fn">print</span>(<span class="str">"num:"</span>, num)   <span class="cmt"># Reads the inner-scope "num"</span>
+        dig = <span class="num">2</span>              <span class="cmt"># Updates the outer-scope "dig"</span>
+    <span class="fn">print</span>(<span class="str">"num:"</span>, num)       <span class="cmt"># Reads the outer-scope "num"</span>
+    <span class="fn">print</span>(<span class="str">"dig:"</span>, dig)       <span class="cmt"># Reads the outer-scope "dig"</span>
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="fn">lexical_scopes</span>()</pre>
+      </div>
+    </div>
+
+    <p>Output:</p>
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch2-scope-out">output</button>
+      </div>
+      <div class="tab-content active" id="ch2-scope-out">
+        <pre>num: 1
+num: 2
+num: 1
+dig: 2</pre>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <strong>💡 Key Insight:</strong>
+      <p>The <code class="inline">var</code> statement inside the <code class="inline">if</code> creates a <em>new</em> variable with the same name as the outer one. This is called <strong>variable shadowing</strong>: the inner variable hides the outer one until the block ends. The inner <code class="inline">num</code>'s lifetime ends exactly where the <code class="inline">if</code> block ends, because that's the scope in which it was defined.</p>
+    </div>
+  </section>
+
+  <section id="copy-move">
+    <h2>3. Copying &amp; Moving Values</h2>
+    <p>An assignment of a newly created value establishes ownership:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch2-own-mojo">Mojo</button>
+      </div>
+      <div class="tab-content active" id="ch2-own-mojo">
+        <pre><span class="kw">var</span> owning_variable = <span class="str">"Owned value"</span></pre>
+      </div>
+    </div>
+
+    <p>An assignment of an <em>existing</em> variable's value either copies or transfers ownership:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch2-cpmv-mojo">Mojo</button>
+        <button class="tab-btn" data-tab="ch2-cpmv-py">Python</button>
+      </div>
+      <div class="tab-content active" id="ch2-cpmv-mojo">
+        <pre><span class="kw">var</span> source = <span class="type">String</span>(<span class="str">"Hello"</span>)
+<span class="kw">var</span> copied = source   <span class="cmt"># A copy — both names stay valid</span>
+<span class="kw">var</span> moved = source^   <span class="cmt"># A transfer — source is now uninitialized!</span></pre>
+      </div>
+      <div class="tab-content" id="ch2-cpmv-py">
+        <pre>source = <span class="str">"Hello"</span>
+copied = source       <span class="cmt"># No copy — same object, two references</span>
+moved = source        <span class="cmt"># Still the same object; source stays valid</span></pre>
+      </div>
+    </div>
+
+    <p>The transfer sigil (<code class="inline">^</code>) moves the value to the new variable and leaves <code class="inline">source</code> uninitialized — you can't use it again until you assign it a new value. A transfer may move the value to a different memory location, so it requires the type to be <strong>Movable</strong>.</p>
+
+    <h3>Implicitly copyable vs explicitly copyable</h3>
+    <p>Simple value types like <code class="inline">Int</code>, <code class="inline">Float64</code>, and <code class="inline">Bool</code> conform to <code class="inline">ImplicitlyCopyable</code>, so plain assignment copies them automatically:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch2-impcopy-mojo">Mojo</button>
+      </div>
+      <div class="tab-content active" id="ch2-impcopy-mojo">
+        <pre><span class="kw">var</span> one_value = <span class="num">15</span>
+<span class="kw">var</span> another_value = one_value   <span class="cmt"># implicit copy — fine</span></pre>
+      </div>
+    </div>
+
+    <p>Larger types like <code class="inline">List</code> are <code class="inline">Copyable</code> but not implicitly, because copying could be expensive. Assigning one without a transfer is an error:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch2-listerr-mojo">Mojo</button>
+      </div>
+      <div class="tab-content active" id="ch2-listerr-mojo">
+        <pre><span class="kw">var</span> first: <span class="type">List</span>[<span class="type">Int</span>] = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]
+<span class="kw">var</span> second = first
+<span class="cmt"># Error: 'List[Int]' is not implicitly copyable because</span>
+<span class="cmt"># it doesn't conform to 'ImplicitlyCopyable'</span></pre>
+      </div>
+    </div>
+
+    <p>You have two clean options — copy explicitly, or move:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch2-fix-mojo">Mojo</button>
+      </div>
+      <div class="tab-content active" id="ch2-fix-mojo">
+        <pre><span class="kw">var</span> first: <span class="type">List</span>[<span class="type">Int</span>] = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]
+
+<span class="kw">var</span> second = first.<span class="fn">copy</span>()   <span class="cmt"># Independent copy; `first` unchanged</span>
+second.<span class="fn">append</span>(<span class="num">4</span>)             <span class="cmt"># [1, 2, 3, 4] — only in `second`</span>
+<span class="fn">print</span>(first)                 <span class="cmt"># [1, 2, 3]</span>
+
+<span class="kw">var</span> third = first^           <span class="cmt"># Transfer ownership; `first` unusable now</span></pre>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <strong>💡 Key Insight:</strong>
+      <p>This is where Mojo most differs from Python. In Python, assignment binds a second name to the same object. In Mojo, assignment gives you an independent owned value — an automatic copy for trivial types, an error for expensive ones unless you say <code class="inline">.copy()</code> or <code class="inline">^</code>. Data flow stays explicit, and safe parallelism falls out naturally. Full details in Chapter 7.</p>
+    </div>
+  </section>
+
+  <section id="ref-bindings">
+    <h2>4. Reference Bindings</h2>
+    <p>Sometimes you want Python-like aliasing instead of copies. When you retrieve a value from a collection, the collection returns a <em>reference</em>, not a copy — but assigning that reference to a <code class="inline">var</code> creates a copy (if the value is implicitly copyable):</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch2-refcopy-mojo">Mojo</button>
+      </div>
+      <div class="tab-content active" id="ch2-refcopy-mojo">
+        <pre><span class="kw">var</span> items: <span class="type">List</span>[<span class="type">Int</span>] = [<span class="num">99</span>, <span class="num">77</span>, <span class="num">33</span>, <span class="num">12</span>]
+<span class="kw">var</span> item = items[<span class="num">1</span>]   <span class="cmt"># item is a COPY of items[1]</span>
+
+item += <span class="num">1</span>             <span class="cmt"># increments the copy</span>
+<span class="fn">print</span>(items[<span class="num">1</span>])        <span class="cmt"># prints 77 — list untouched</span></pre>
+      </div>
+    </div>
+
+    <p>To name a reference instead, use the <code class="inline">ref</code> keyword to create a <strong>reference binding</strong>:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch2-refbind-mojo">Mojo</button>
+      </div>
+      <div class="tab-content active" id="ch2-refbind-mojo">
+        <pre><span class="kw">var</span> items: <span class="type">List</span>[<span class="type">Int</span>] = [<span class="num">99</span>, <span class="num">77</span>, <span class="num">33</span>, <span class="num">12</span>]
+
+<span class="kw">ref</span> item_ref = items[<span class="num">1</span>]   <span class="cmt"># item_ref IS items[1] — no copy</span>
+item_ref += <span class="num">1</span>              <span class="cmt"># increments items[1]</span>
+<span class="fn">print</span>(items[<span class="num">1</span>])            <span class="cmt"># prints 78</span>
+
+<span class="cmt"># ref item_ref = items[2]  # Error: invalid redefinition of item_ref</span></pre>
+      </div>
+    </div>
+
+    <ul>
+      <li>All reads and writes through <code class="inline">item_ref</code> go to the item it references — <code class="inline">items[1]</code>.</li>
+      <li>Reference bindings <strong>cannot be reassigned</strong>; the binding is fixed at creation.</li>
+    </ul>
+
+    <div class="info-box tip-box">
+      <strong>🚀 Pro Tip:</strong>
+      <p>Mentally file these three tools together — <code class="inline">var x = y</code> (own a copy), <code class="inline">var x = y^</code> (take over ownership), <code class="inline">ref x = y</code> (alias without owning). Choosing among them deliberately is the core skill of idiomatic Mojo. We build the full model in Chapter 7.</p>
+    </div>
+  </section>
+
+  <section id="comptime">
+    <h2>5. Compile-Time Constants</h2>
+    <p>Since all variables are mutable by default, Mojo needs another way to express a value that can't change at runtime. That's the <code class="inline">comptime</code> keyword:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch2-comptime-mojo">Mojo</button>
+      </div>
+      <div class="tab-content active" id="ch2-comptime-mojo">
+        <pre><span class="kw">comptime</span> MAX_RETRIES = <span class="num">3</span>
+<span class="kw">comptime</span> GREETING = <span class="str">"Hello"</span>
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="fn">print</span>(t<span class="str">"{GREETING}, world! Retries: {MAX_RETRIES}"</span>)</pre>
+      </div>
+    </div>
+
+    <p>A <code class="inline">comptime</code> value is computed once, at compile time, and cannot be reassigned. Beyond simple constants, <code class="inline">comptime</code> unlocks far more powerful metaprogramming — compile-time functions, loops, and reflection — covered thoroughly in Chapter 8.</p>
+
+    <div class="info-box">
+      <strong>💡 Key Insight:</strong>
+      <p>Think of <code class="inline">var</code> as "runtime storage" and <code class="inline">comptime</code> as "compile-time knowledge." The compiler can fold comptime values directly into generated machine code — zero runtime cost.</p>
+    </div>
+  </section>
+
+  <section id="putting-together">
+    <h2>6. Putting It Together</h2>
+    <p>A small program exercising everything from this chapter:</p>
+
+    <div class="code-tabs">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ch2-demo-mojo">basics.mojo</button>
+      </div>
+      <div class="tab-content active" id="ch2-demo-mojo">
+        <pre><span class="kw">comptime</span> LIMIT = <span class="num">5</span>
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="kw">var</span> scores: <span class="type">List</span>[<span class="type">Float64</span>] = [<span class="num">91.5</span>, <span class="num">84.0</span>, <span class="num">77.25</span>, <span class="num">98.5</span>]
+
+    <span class="cmt"># Reference binding: mutate the top score in place</span>
+    <span class="kw">ref</span> best = scores[<span class="num">3</span>]
+    best += <span class="num">0.5</span>
+
+    <span class="cmt"># Copy: work on an independent snapshot</span>
+    <span class="kw">var</span> snapshot = scores.<span class="fn">copy</span>()
+    snapshot[<span class="num">0</span>] = <span class="num">0.0</span>
+
+    <span class="cmt"># Shadowing inside the loop body block</span>
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(scores)):
+        <span class="kw">var</span> position = i + <span class="num">1</span>
+        <span class="fn">print</span>(t<span class="str">"{position}: {scores[i]}"</span>)
+        <span class="kw">if</span> position == LIMIT:
+            <span class="fn">print</span>(<span class="str">"Limit reached"</span>)
+
+    <span class="fn">print</span>(t<span class="str">"original top score: {scores[3]}, snapshot first: {snapshot[0]}"</span>)</pre>
+      </div>
+    </div>
+
+    <div class="info-box warning-box">
+      <strong>⚠️ Watch Out:</strong>
+      <p>The snapshot edit (<code class="inline">snapshot[0] = 0.0</code>) does <em>not</em> affect <code class="inline">scores</code> — they're independent lists after <code class="inline">.copy()</code>. But the reference binding edit (<code class="inline">best += 0.5</code>) <em>does</em> change <code class="inline">scores[3]</code>, because <code class="inline">best</code> aliases that slot.</p>
+    </div>
+
+    <div class="info-box">
+      <strong>📋 Summary:</strong>
+      <p>You now know how Mojo stores, scopes, copies, moves, and aliases values — plus how to pin constants at compile time. Next we survey the type system itself: numbers, strings, SIMD vectors, tuples, and collections.</p>
+    </div>
+  </section>
+
+  <div class="chapnav">
+    <a class="navbtn" href="mojo_01_intro.html">← Ch 01 · Introduction &amp; Getting Started</a>
+    <a class="navbtn" href="mojo_03_types.html">Ch 03 · Types &amp; Values →</a>
+  </div>
+</div>
+</div>
+
+<script>
+const progress = document.getElementById('progress');
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  progress.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+});
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    const group=this.closest('.code-tabs');
+    group.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    group.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+    this.classList.add('active');
+    const target=group.querySelector('#'+this.getAttribute('data-tab'));
+    if(target) target.classList.add('active');
+  });
+});
+
+const sections=[...document.querySelectorAll('section[id]')];
+const dots=document.querySelectorAll('#miniToc a');
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      dots.forEach(d=>d.classList.toggle('active',d.getAttribute('href')==='#'+entry.target.id));
+    }
+  });
+},{rootMargin:'-40% 0px -50% 0px'});
+sections.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>
