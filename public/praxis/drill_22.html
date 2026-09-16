@@ -13,26 +13,27 @@
 <details class="solution"><summary>Solution</summary><p>Reference Mojo for a Point struct, distance, bbox, and nearest-neighbour printing.</p><pre class="code">struct Point:
     var x: Float64
     var y: Float64
-    fn __init__(inout self, x: Float64, y: Float64):
+    def __init__(out self, x: Float64, y: Float64):
         self.x = x
         self.y = y
 
-fn distance(a: Point, b: Point) -&gt; Float64:
+def distance(a: Point, b: Point) -&gt; Float64:
     return ((a.x - b.x) ** 2 + (a.y - b.y) ** 2) ** 0.5
 
+@fieldwise_init
 struct BBox:
     var min_x: Float64
     var min_y: Float64
     var max_x: Float64
     var max_y: Float64
 
-fn bounding_box(pts: List[Point]) -&gt; BBox:
+def bounding_box(pts: List[Point]) -&gt; BBox:
     var b = BBox(pts[0].x, pts[0].y, pts[0].x, pts[0].y)
     for p in pts:
-        b.min_x = min(b.min_x, p.x)
-        b.min_y = min(b.min_y, p.y)
-        b.max_x = max(b.max_x, p.x)
-        b.max_y = max(b.max_y, p.y)
+        b.min_x = p.x if p.x &lt; b.min_x else b.min_x
+        b.min_y = p.y if p.y &lt; b.min_y else b.min_y
+        b.max_x = p.x if p.x &gt; b.max_x else b.max_x
+        b.max_y = p.y if p.y &gt; b.max_y else b.max_y
     return b
 
 def main():

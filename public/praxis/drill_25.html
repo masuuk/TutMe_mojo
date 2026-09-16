@@ -12,6 +12,7 @@
 <div class="explain" hidden><strong>Why:</strong> The 2D similarity model packs rotation θ and scale s into a = s·cos θ and b = s·sin θ, leaving two translations tx, ty — four parameters in total. Seven parameters is the 3D Helmert model.</div></div>
 <details class="solution"><summary>Solution</summary><p>Reference Mojo for geodetic → ECEF, ENU and a 4-parameter site calibration with residuals.</p><pre class="code">from math import sin, cos, sqrt, atan2, radians
 
+@fieldwise_init
 struct Ellipsoid:
     var a: Float64      # semi-major axis (m)
     var f: Float64      # flattening
@@ -39,7 +40,7 @@ def enu(dx: Float64, dy: Float64, dz: Float64, lat: Float64, lon: Float64) -> (F
     return (e, n, u)
 
 # 4-parameter similarity: E = a*x - b*y + tx ; N = b*x + a*y + ty
-fn apply_sim4(x: Float64, y: Float64, a: Float64, b: Float64, tx: Float64, ty: Float64) -> (Float64, Float64):
+def apply_sim4(x: Float64, y: Float64, a: Float64, b: Float64, tx: Float64, ty: Float64) -> (Float64, Float64):
     return (a * x - b * y + tx, b * x + a * y + ty)
 
 def main():

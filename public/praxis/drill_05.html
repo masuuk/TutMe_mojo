@@ -17,8 +17,8 @@
     var t: Bool = True
     print(i, f, b, t)
 
-    v1 = SIMD[DType.int8, 4](1, 2, 3, 4)
-    v2 = SIMD[DType.int8, 4](2, 3, 4, 5)
+    var v1 = SIMD[DType.int8, 4](1, 2, 3, 4)
+    var v2 = SIMD[DType.int8, 4](2, 3, 4, 5)
     print(v1 * v2)             # [2, 6, 12, 20]
 
     var s = String("héllo")

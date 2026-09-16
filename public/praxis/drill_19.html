@@ -19,7 +19,7 @@
 
 def monthly_payment(principal: Float64, annual: Float64, years: Int) -&gt; Float64:
     var r = annual / 100.0 / 12.0
-    var n = (years * 12).to_f64()
+    var n = Float64(years * 12)
     return principal * r / (1.0 - ((1.0 + r) ** -n))
 
 def amortise(principal: Float64, annual: Float64, years: Int):
@@ -31,6 +31,7 @@ def amortise(principal: Float64, annual: Float64, years: Int):
         var interest = balance * r
         var principal_part = pmt - interest
         balance = balance - principal_part
+        print(month + 1, "interest", interest, "principal", principal_part, "balance", balance)
     print("payment", pmt)     # 599.55 for the 30y / 6% version
 
 def main():

@@ -18,7 +18,7 @@ def present_value(fv: Float64, rate: Float64, years: Int) -&gt; Float64:
 
 def fvifa(rate: Float64, n: Int) -&gt; Float64:
     if rate == 0.0:
-        return n.to_f64()
+        return Float64(n)
     var r = rate / 100.0
     return ((1.0 + r) ** n - 1.0) / r
 

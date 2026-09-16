@@ -10,17 +10,16 @@
 <label class="opt"><input type="radio" name="d23q1" value="d">4,000</label>
 <div class="actions qactions"><button type="button" class="btn check">Check answer</button><button type="button" class="btn reset">Try again</button></div><p class="feedback"></p>
 <div class="explain" hidden><strong>Why:</strong> 40 × 60 + 30 × 40 = 2400 + 1200 = 3600 — the same value the dual achieves, confirming strong duality.</div></div>
-<details class="solution"><summary>Solution</summary><p>Reference Mojo enumerating corners, checking feasibility, and reporting the optimum.</p><pre class="code">struct Corner:
+<details class="solution"><summary>Solution</summary><p>Reference Mojo enumerating corners, checking feasibility, and reporting the optimum.</p><pre class="code">@fieldwise_init
+struct Corner:
     var x1: Int
     var x2: Int
 
-fn feasible(c: Corner) -&gt; Bool:
-    return c.x1 + c.x2 &lt;= 100 \
-       and 2 * c.x1 + c.x2 &lt;= 160 \
-       and c.x1 &lt;= 60 \
-       and c.x1 &gt;= 0 and c.x2 &gt;= 0
+def feasible(c: Corner) -&gt; Bool:
+    return (c.x1 + c.x2 &lt;= 100 and 2 * c.x1 + c.x2 &lt;= 160
+            and c.x1 &lt;= 60 and c.x1 &gt;= 0 and c.x2 &gt;= 0)
 
-fn objective(c: Corner) -&gt; Int:
+def objective(c: Corner) -&gt; Int:
     return 40 * c.x1 + 30 * c.x2
 
 def main():

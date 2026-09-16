@@ -292,6 +292,19 @@
   }
   pre.py::before{content:"python — reference"}
   pre.mojo::before{content:"mojo 1.0 — native port";color:#82aaff}
+  /* A data-label attribute overrides the default snippet captions above */
+  pre.py[data-label]::before,
+  pre.mojo[data-label]::before{content:attr(data-label)}
+
+  /* Small caption introducing a code pair */
+  .code-note{
+    font-family:Consolas,'Courier New',monospace;
+    font-size:11px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+    margin:32px 0 -4px;
+  }
 
   /* Calculator */
   .calc-grid{
@@ -608,6 +621,25 @@
 
     <p>The term <strong>(1 + r)<sup>n</sup></strong> is called the <em>Future Value Interest Factor</em> (FVIF). It is the multiplier by which a single sum grows over time.</p>
 
+    <p class="code-note">Formula 1.1 — in code</p>
+
+<pre class="py" data-label="python — future value"><span class="kw">def</span> <span class="fn">fv_single</span>(pv, r, n):
+    <span class="str">"""FV = PV · (1 + r)^n"""</span>
+    <span class="kw">return</span> pv * (<span class="num">1</span> + r) ** n
+
+<span class="com"># $1,000 at 6% for 10 years</span>
+<span class="fn">print</span>(<span class="str">f"FV = ${fv_single(1000, 0.06, 10):,.2f}"</span>)   <span class="com"># FV = $1,790.85</span></pre>
+
+<pre class="mojo" data-label="mojo 1.0 — future value"><span class="kw">from</span> math <span class="kw">import</span> pow
+
+<span class="kw">def</span> <span class="fn">fv_single</span>(pv: Float64, r: Float64, n: Int) -&gt; Float64:
+    <span class="str">"""FV = PV · (1 + r)^n"""</span>
+    <span class="kw">return</span> pv * pow(<span class="num">1.0</span> + r, Float64(n))
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="com"># $1,000 at 6% for 10 years</span>
+    <span class="fn">print</span>(<span class="str">"FV = $"</span>, fv_single(<span class="num">1000.0</span>, <span class="num">0.06</span>, <span class="num">10</span>))  <span class="com"># 1790.847...</span></pre>
+
     <div class="card">
       <h4>A small example</h4>
       <p style="margin:0">Invest $1,000 at 6% per year for 10 years. The FVIF is (1.06)<sup>10</sup> ≈ 1.7908. Your $1,000 becomes <strong>$1,790.85</strong>. The extra $790.85 is the gift of time.</p>
@@ -690,11 +722,63 @@
 
     <p>So: <strong>FV = PMT × FVIFA(r, n)</strong>.</p>
 
+    <p class="code-note">Formulas 3.1 &amp; 3.2 — in code</p>
+
+<pre class="py" data-label="python — fvifa &amp; fv_annuity"><span class="kw">def</span> <span class="fn">fvifa</span>(r, n):
+    <span class="str">"""[ (1 + r)^n - 1 ] / r"""</span>
+    <span class="kw">if</span> r == <span class="num">0</span>:
+        <span class="kw">return</span> <span class="fn">float</span>(n)
+    <span class="kw">return</span> ((<span class="num">1</span> + r) ** n - <span class="num">1</span>) / r
+
+<span class="kw">def</span> <span class="fn">fv_annuity</span>(pmt, r, n, due=<span class="kw">False</span>):
+    <span class="str">"""FV = PMT × FVIFA(r, n), × (1 + r) if due"""</span>
+    factor = <span class="fn">fvifa</span>(r, n)
+    <span class="kw">if</span> due:
+        factor *= (<span class="num">1</span> + r)
+    <span class="kw">return</span> pmt * factor
+
+<span class="com"># $200 / month, 20 years, 7% compounded monthly</span>
+r, n = <span class="num">0.07</span> / <span class="num">12</span>, <span class="num">20</span> * <span class="num">12</span>
+<span class="fn">print</span>(<span class="str">f"FVIFA = {fvifa(r, n):,.4f}"</span>)              <span class="com"># 520.9267</span>
+<span class="fn">print</span>(<span class="str">f"FV    = ${fv_annuity(200, r, n):,.2f}"</span>)  <span class="com"># $104,185.34</span></pre>
+
+<pre class="mojo" data-label="mojo 1.0 — fvifa &amp; fv_annuity"><span class="kw">from</span> math <span class="kw">import</span> pow
+
+<span class="kw">def</span> <span class="fn">fvifa</span>(r: Float64, n: Int) -&gt; Float64:
+    <span class="str">"""[ (1 + r)^n - 1 ] / r"""</span>
+    <span class="kw">if</span> r == <span class="num">0.0</span>:
+        <span class="kw">return</span> Float64(n)
+    <span class="kw">return</span> (pow(<span class="num">1.0</span> + r, Float64(n)) - <span class="num">1.0</span>) / r
+
+<span class="kw">def</span> <span class="fn">fv_annuity</span>(pmt: Float64, r: Float64, n: Int, due: Bool = <span class="kw">False</span>) -&gt; Float64:
+    <span class="str">"""FV = PMT × FVIFA(r, n), × (1 + r) if due"""</span>
+    <span class="kw">var</span> factor = fvifa(r, n)
+    <span class="kw">if</span> due:
+        factor *= (<span class="num">1.0</span> + r)
+    <span class="kw">return</span> pmt * factor
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="com"># $200 / month, 20 years, 7% compounded monthly</span>
+    <span class="kw">var</span> r = <span class="num">0.07</span> / <span class="num">12.0</span>
+    <span class="kw">var</span> n = <span class="num">240</span>
+    <span class="fn">print</span>(<span class="str">"FVIFA = "</span>, fvifa(r, n))              <span class="com"># 520.9267...</span>
+    <span class="fn">print</span>(<span class="str">"FV    = $"</span>, fv_annuity(<span class="num">200.0</span>, r, n))  <span class="com"># 104185.34...</span></pre>
+
     <h3>For an Annuity Due</h3>
     <div class="formula">
       <span class="label">Formula 3.3 — FV of Annuity Due</span>
       FV<sub>due</sub> = PMT · FVIFA(r, n) · (1 + r)
     </div>
+
+    <p class="code-note">Formula 3.3 — one extra term</p>
+
+<pre class="py" data-label="python — annuity due"><span class="com"># Same stream, paid at the start of each period instead</span>
+fv_due = <span class="fn">fv_annuity</span>(<span class="num">200</span>, r, n, due=<span class="kw">True</span>)
+<span class="fn">print</span>(<span class="str">f"FV due = ${fv_due:,.2f}"</span>)   <span class="com"># $104,793.09</span></pre>
+
+<pre class="mojo" data-label="mojo 1.0 — annuity due"><span class="com"># Same stream, paid at the start of each period instead</span>
+<span class="kw">var</span> fv_due = fv_annuity(<span class="num">200.0</span>, r, n, due=<span class="kw">True</span>)
+<span class="fn">print</span>(<span class="str">"FV due = $"</span>, fv_due)   <span class="com"># 104793.09...</span></pre>
 
     <h2>A Numerical Example</h2>
     <p>Save $200 per month for 20 years at 7% annual interest, compounded monthly.</p>
@@ -740,11 +824,60 @@
       PVIFA(r, n) = [ 1 − (1 + r)<sup>−n</sup> ] / r
     </div>
 
+    <p class="code-note">Formulas 4.1 &amp; 4.2 — in code</p>
+
+<pre class="py" data-label="python — pvifa &amp; pv_annuity"><span class="kw">def</span> <span class="fn">pvifa</span>(r, n):
+    <span class="str">"""[ 1 - (1 + r)^-n ] / r"""</span>
+    <span class="kw">if</span> r == <span class="num">0</span>:
+        <span class="kw">return</span> <span class="fn">float</span>(n)
+    <span class="kw">return</span> (<span class="num">1</span> - (<span class="num">1</span> + r) ** -n) / r
+
+<span class="kw">def</span> <span class="fn">pv_annuity</span>(pmt, r, n, due=<span class="kw">False</span>):
+    <span class="str">"""PV = PMT × PVIFA(r, n), × (1 + r) if due"""</span>
+    factor = <span class="fn">pvifa</span>(r, n)
+    <span class="kw">if</span> due:
+        factor *= (<span class="num">1</span> + r)
+    <span class="kw">return</span> pmt * factor
+
+<span class="com"># $50,000 a year for 20 years, discounted at 5%</span>
+<span class="fn">print</span>(<span class="str">f"PVIFA = {pvifa(0.05, 20):,.4f}"</span>)                <span class="com"># 12.4622</span>
+<span class="fn">print</span>(<span class="str">f"PV    = ${pv_annuity(50000, 0.05, 20):,.2f}"</span>)  <span class="com"># $623,110.50</span></pre>
+
+<pre class="mojo" data-label="mojo 1.0 — pvifa &amp; pv_annuity"><span class="kw">from</span> math <span class="kw">import</span> pow
+
+<span class="kw">def</span> <span class="fn">pvifa</span>(r: Float64, n: Int) -&gt; Float64:
+    <span class="str">"""[ 1 - (1 + r)^-n ] / r"""</span>
+    <span class="kw">if</span> r == <span class="num">0.0</span>:
+        <span class="kw">return</span> Float64(n)
+    <span class="kw">return</span> (<span class="num">1.0</span> - pow(<span class="num">1.0</span> + r, -Float64(n))) / r
+
+<span class="kw">def</span> <span class="fn">pv_annuity</span>(pmt: Float64, r: Float64, n: Int, due: Bool = <span class="kw">False</span>) -&gt; Float64:
+    <span class="str">"""PV = PMT × PVIFA(r, n), × (1 + r) if due"""</span>
+    <span class="kw">var</span> factor = pvifa(r, n)
+    <span class="kw">if</span> due:
+        factor *= (<span class="num">1.0</span> + r)
+    <span class="kw">return</span> pmt * factor
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="com"># $50,000 a year for 20 years, discounted at 5%</span>
+    <span class="fn">print</span>(<span class="str">"PVIFA = "</span>, pvifa(<span class="num">0.05</span>, <span class="num">20</span>))              <span class="com"># 12.4622...</span>
+    <span class="fn">print</span>(<span class="str">"PV    = $"</span>, pv_annuity(<span class="num">50000.0</span>, <span class="num">0.05</span>, <span class="num">20</span>))  <span class="com"># 623110.50...</span></pre>
+
     <h3>For an Annuity Due</h3>
     <div class="formula">
       <span class="label">Formula 4.3 — PV of Annuity Due</span>
       PV<sub>due</sub> = PMT · PVIFA(r, n) · (1 + r)
     </div>
+
+    <p class="code-note">Formula 4.3 — one extra term</p>
+
+<pre class="py" data-label="python — annuity due"><span class="com"># The same lottery, paid at the start of each year</span>
+pv_due = <span class="fn">pv_annuity</span>(<span class="num">50000</span>, <span class="num">0.05</span>, <span class="num">20</span>, due=<span class="kw">True</span>)
+<span class="fn">print</span>(<span class="str">f"PV due = ${pv_due:,.2f}"</span>)   <span class="com"># $654,266.02</span></pre>
+
+<pre class="mojo" data-label="mojo 1.0 — annuity due"><span class="com"># The same lottery, paid at the start of each year</span>
+<span class="kw">var</span> pv_due = pv_annuity(<span class="num">50000.0</span>, <span class="num">0.05</span>, <span class="num">20</span>, due=<span class="kw">True</span>)
+<span class="fn">print</span>(<span class="str">"PV due = $"</span>, pv_due)   <span class="com"># 654266.02...</span></pre>
 
     <h2>The Relationship</h2>
     <p>Notice the elegant symmetry:</p>

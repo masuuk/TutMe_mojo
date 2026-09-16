@@ -23,12 +23,12 @@
     print(bump())                 # 4
     print(bump())                 # 5
 
-    var square = lambda a: a * a  # lambda
+    var square = lambda (a: Int) -&gt; Int: a * a  # lambda
     print(square(9))              # 81
 
-    def apply_thin(cb: fn() -&gt; Int) -&gt; Int:
+    def apply_thin(cb: def () thin -&gt; Int) -&gt; Int:
         return cb()
-    var r = apply_thin(lambda: 42)  # no captures - thin lambda
+    var r = apply_thin(lambda () -&gt; Int: 42)  # no captures - thin lambda
     print(r)                        # 42</pre></details>
 <div class="actions"><a class="btn" href="index.html">← Praxis</a><a class="btn primary" href="../mojo_v1/mojo_13_closures.html">Review chapter →</a></div></div></section></main><footer><div class="wrap">TutMe🔥 · A structured path from syntax → fundamentals → applications → practice.</div></footer>
 <script defer src="praxis.js"></script></body></html>

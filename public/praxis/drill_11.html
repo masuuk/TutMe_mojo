@@ -5,11 +5,11 @@
 <main><section><div class="wrap hero"><span class="eyebrow">PRAXIS · CH 09</span><h1>Drill 11 · Mojo vs Python</h1><p class="lead">Port everyday Python to Mojo 1.0 and translate your muscle memory.</p><div class="card big"><h3>Your task</h3><p>Take the classic Python quadratic solver — `x = (-b ± √(b²-4ac)) / 2a` returning a tuple — and rewrite it in Mojo with typed parameters and a `raises` guard for the negative discriminant. Then translate a Python `@dataclass` into a Mojo struct with `@fieldwise_init`. Finally port a Python `for` loop that sums squares into Mojo, declaring variables with `var`.</p><div class="notice">Based on <a href="../mojo_v1/mojo_09_syntax_tour.html" style="color:#5bd4ff">Chapter 9 · Mojo vs Python: A Side-by-Side Syntax Tour</a>. Do the problem before looking for a solution or answering the checkpoint. If you forget syntax, use the <a href="../mojo_v1/index.html" style="color:#5bd4ff">Mojo Library</a>.</div></div>
 <div class="card big quiz" data-quiz><h3>Checkpoint · multiple choice</h3><p class="q">In Mojo, is it required to annotate the type of every function parameter?</p>
 <label class="opt"><input type="radio" name="d11q1" value="a">No — Mojo allows untyped `def` parameters like Python.</label>
-<label class="opt" data-correct="true"><input type="radio" name="d11q1" value="b">Yes — every parameter must carry a type annotation; uninitialized `var`s are invalid, and `let`/`var` are required.</label>
+<label class="opt" data-correct="true"><input type="radio" name="d11q1" value="b">Yes — every parameter must carry a type annotation, and every local is declared with `var`.</label>
 <label class="opt"><input type="radio" name="d11q1" value="c">Only when returning a value.</label>
 <label class="opt"><input type="radio" name="d11q1" value="d">Only inside structs.</label>
 <div class="actions qactions"><button type="button" class="btn check">Check answer</button><button type="button" class="btn reset">Try again</button></div><p class="feedback"></p>
-<div class="explain" hidden><strong>Why:</strong> To compile 1.0 code, function parameters require explicit types, and every local must be declared with `let` or `var` (with `var` initialized before use).</div></div>
+<div class="explain" hidden><strong>Why:</strong> To compile 1.0 code, function parameters require explicit types, and every local is declared with `var` (initialized before first use).</div></div>
 <details class="solution"><summary>Solution</summary><p>Reference ports of the quadratic solver, a dataclass, and a summing loop.</p><pre class="code">def quad(a: Float64, b: Float64, c: Float64) raises -&gt; (Float64, Float64):
     var disc = b * b - 4.0 * a * c
     if disc &lt; 0:
@@ -23,8 +23,11 @@ struct User:
     var name: String
 
 def main():
-    var (x1, x2) = quad(1.0, -3.0, 2.0)   # x1==2.0, x2==1.0
-    print(x1, x2)
+    try:
+        var (x1, x2) = quad(1.0, -3.0, 2.0)   # x1==2.0, x2==1.0
+        print(x1, x2)
+    except e:
+        print("no real roots:", e)
 
     var u = User(7, "ada")
     print(u.id, u.name)

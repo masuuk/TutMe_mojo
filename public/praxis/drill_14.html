@@ -11,13 +11,13 @@
 <div class="actions qactions"><button type="button" class="btn check">Check answer</button><button type="button" class="btn reset">Try again</button></div><p class="feedback"></p>
 <div class="explain" hidden><strong>Why:</strong> In Mojo 1.0, a package directory is marked by a `__init__.mojo` file, which can re-export the public API.</div></div>
 <details class="solution"><summary>Solution</summary><p>Reference layout and code for modules, packages, compile-time defines, and the target.</p><pre class="code"># math.mojo
-fn square(x: Int) -&gt; Int:
+def square(x: Int) -&gt; Int:
     return x * x
 
 # main.mojo
 import math
-from std.env import get_defined_bool, is_defined
-from std.os import compilation_config
+from std.sys import get_defined_bool, is_defined
+from std.sys import CompilationTarget
 
 def main():
     print(math.square(9))               # 81
@@ -26,13 +26,19 @@ def main():
     # from mypackage import helper
 
     # compile-time defined flag
-    comptime if is_defined["MY_FLAG"]:
+    comptime if is_defined["MY_FLAG"]():
         print("MY_FLAG was defined at build time")
-    var has_fast = get_defined_bool["MOJO_ACCELERATOR"]
+    var has_fast = get_defined_bool["MOJO_ACCELERATOR"]()
     print(has_fast)
 
-    var conf = compilation_config
-    print(conf.target)                  # e.g. AArch64
-    print(conf.accelerator_usage)</pre></details>
+    # platform &amp; accelerator detection (compile-time queries)
+    comptime if CompilationTarget.is_x86():
+        print("target: x86")
+    elif CompilationTarget.is_apple_silicon():
+        print("target: Apple Silicon")
+    comptime if CompilationTarget.has_avx512f():
+        print("accelerator: AVX-512")
+    elif CompilationTarget.has_neon():
+        print("accelerator: NEON")</pre></details>
 <div class="actions"><a class="btn" href="index.html">← Praxis</a><a class="btn primary" href="../mojo_v1/mojo_12_modules.html">Review chapter →</a></div></div></section></main><footer><div class="wrap">TutMe🔥 · A structured path from syntax → fundamentals → applications → practice.</div></footer>
 <script defer src="praxis.js"></script></body></html>

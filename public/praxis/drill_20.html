@@ -12,12 +12,12 @@
 <div class="explain" hidden><strong>Why:</strong> PV = PMT × PVIFA = 50,000 × 12.4622 ≈ $623,110 — much less than the $1M headline because of the time value of money.</div></div>
 <details class="solution"><summary>Solution</summary><p>Reference Mojo for PVIFA/FVIFA, annuity functions, and solving for the payment.</p><pre class="code">def fvifa(r: Float64, n: Int) -&gt; Float64:
     if r == 0.0:
-        return n.to_f64()
+        return Float64(n)
     return ((1.0 + r) ** n - 1.0) / r
 
 def pvifa(r: Float64, n: Int) -&gt; Float64:
     if r == 0.0:
-        return n.to_f64()
+        return Float64(n)
     return (1.0 - (1.0 + r) ** -n) / r
 
 def pv_annuity(pmt: Float64, r: Float64, n: Int, due: Bool = False) -&gt; Float64:

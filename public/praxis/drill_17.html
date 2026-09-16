@@ -11,11 +11,14 @@
 <div class="actions qactions"><button type="button" class="btn check">Check answer</button><button type="button" class="btn reset">Try again</button></div><p class="feedback"></p>
 <div class="explain" hidden><strong>Why:</strong> Structured labels are validated against the signature the compiler knows — missing or extra labels raise a doc mismatch diagnostic.</div></div>
 <details class="solution"><summary>Solution</summary><p>Reference docstring for `resize`, plus a helper hidden with `@doc_hidden`.</p><pre class="code">@doc_hidden
-def _pad(data: List[Scalar[dtype]], size: Int, fill: Scalar[dtype]) -&gt; List[Scalar[dtype]]:
-    ...
+def _pad[dtype: DType](data: List[Scalar[dtype]], size: Int, fill: Scalar[dtype]) -&gt; List[Scalar[dtype]]:
+    var out = List[Scalar[dtype]]()
+    for i in range(size):
+        out.append(data[i] if i &lt; len(data) else fill)
+    return out
 
 def resize[dtype: DType](data: List[Scalar[dtype]], size: Int, fill: Scalar[dtype] = 0) raises -&gt; List[Scalar[dtype]]:
-    \"\"\"Resize a list of scalar values to a target length.
+    """Resize a list of scalar values to a target length.
 
     Parameters:
         dtype: The element type of the data.
@@ -33,7 +36,7 @@ def resize[dtype: DType](data: List[Scalar[dtype]], size: Int, fill: Scalar[dtyp
 
     Preconditions:
         `size >= 0`.
-    \"\"\"
+    """
     return _pad(data, size, fill)</pre></details>
 <div class="actions"><a class="btn" href="index.html">← Praxis</a><a class="btn primary" href="../mojo_v1/mojo_15_docstrings.html">Review chapter →</a></div></div></section></main><footer><div class="wrap">TutMe🔥 · A structured path from syntax → fundamentals → applications → practice.</div></footer>
 <script defer src="praxis.js"></script></body></html>

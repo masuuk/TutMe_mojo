@@ -11,7 +11,7 @@
 <div class="actions qactions"><button type="button" class="btn check">Check answer</button><button type="button" class="btn reset">Try again</button></div><p class="feedback"></p>
 <div class="explain" hidden><strong>Why:</strong> The CPython-interop bridge lets Mojo call into the Python runtime so you can keep using mature libraries like numpy instead of reimplementing them.</div></div>
 <details class="solution"><summary>Solution</summary><p>Reference code for numpy interop plus a libc `external_call`.</p><pre class="code">from std.python import Python
-from std.ffi import external_call
+from std.ffi import external_call, c_int
 
 def main():
     var np = Python.import_module("numpy")
@@ -25,9 +25,8 @@ def main():
     print(doubled)        # 7.4
 
     # libc abs via the FFI
-    var n: Int = -17
-    var r: Int = external_call[__cconv_macos_arm64](  # platform ABI
-        "abs", "int", ("int",), n)
+    var n = c_int(-17)
+    var r = external_call["abs", c_int](n)
     print(r)              # 17</pre></details>
 <div class="actions"><a class="btn" href="index.html">← Praxis</a><a class="btn primary" href="../mojo_v1/mojo_11_interop.html">Review chapter →</a></div></div></section></main><footer><div class="wrap">TutMe🔥 · A structured path from syntax → fundamentals → applications → practice.</div></footer>
 <script defer src="praxis.js"></script></body></html>

@@ -20,8 +20,8 @@
     print(moved)              # Hello
     # print(source)           # ERROR - source was moved out
 
-    comptime var n = 42       # comptime constant, evaluated at compile time
-    # n = 43                  # ERROR - comptime vars cannot be reassigned
+    comptime n = 42           # comptime constant, evaluated at compile time
+    # n = 43                  # ERROR - comptime constants cannot be reassigned
 
     var m = 10
     ref r = m
