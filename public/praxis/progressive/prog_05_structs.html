@@ -226,7 +226,7 @@ footer a:hover{text-decoration:underline}
 <li>If incorrect, try again — a hint unlocks after two misses, or reveal the solution.</li>
 </ol>
 <div class="tip">
-<strong>Core concept:</strong> A <code>struct</code>'s fields need explicit types. Mojo 1.x does not auto-generate a constructor — write <code>fn __init__(inout self, …)</code> or decorate the struct with <code>@fieldwise_init</code>. Traits like <code>Stringable</code> are conformed to by implementing their required methods.
+<strong>Core concept:</strong> A <code>struct</code>'s fields need explicit types. Mojo 1.x does not auto-generate a constructor — write <code>def __init__(out self, …)</code> or decorate the struct with <code>@fieldwise_init</code>. Traits like <code>Stringable</code> are conformed to by implementing their required methods.
 </div>
 </section>
 
@@ -238,7 +238,7 @@ footer a:hover{text-decoration:underline}
     <span class="kw">var</span> station: <span class="tp">String</span>
     <span class="kw">var</span> celsius: <span class="tp">Float64</span>
 
-    <span class="kw">fn</span> <span class="fn">__init__</span>(<span class="kw">inout</span> self, station: <span class="tp">String</span>, celsius: <span class="tp">Float64</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">out</span> self, station: <span class="tp">String</span>, celsius: <span class="tp">Float64</span>):
         self.station = station
         self.celsius = celsius
 
@@ -257,21 +257,21 @@ footer a:hover{text-decoration:underline}
 <div id="s1" class="solution">
 <strong>Solution</strong>
 <pre><code>KIAMBU 21.5</code></pre>
-<p>The hand-written <code>__init__(inout self, …)</code> fills the two typed fields; printing shows both values.</p>
+<p>The hand-written <code>def __init__(out self, …)</code> fills the two typed fields; printing shows both values.</p>
 </div>
 </section>
 
 <section class="card level" data-level="2">
-<h2><span class="lvl-check">2</span>Level 2 — Mutating via inout self</h2>
+<h2><span class="lvl-check">2</span>Level 2 — Mutating via mut self</h2>
 <div class="meta"><span class="tag">Beginner+</span><span class="tag">Methods</span></div>
 <p><strong>Challenge:</strong> What is printed?</p>
 <pre><code><span class="kw">struct</span> <span class="tp">Counter</span>:
     <span class="kw">var</span> n: <span class="tp">Int</span>
 
-    <span class="kw">fn</span> <span class="fn">__init__</span>(<span class="kw">inout</span> self):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">out</span> self):
         self.n = 0
 
-    <span class="kw">fn</span> <span class="fn">bump</span>(<span class="kw">inout</span> self):
+    <span class="kw">def</span> <span class="fn">bump</span>(<span class="kw">mut</span> self):
         self.n += 1
 
 <span class="kw">def</span> <span class="fn">main</span>():
@@ -292,7 +292,7 @@ footer a:hover{text-decoration:underline}
 <div id="s2" class="solution">
 <strong>Solution</strong>
 <pre><code>3</code></pre>
-<p>Methods that change the struct take <code>inout self</code> — the same convention as mutating arguments. Three bumps leave <code>n</code> at 3.</p>
+<p>Methods that change the struct take <code>mut self</code> — the same convention as <code>mut</code> arguments. Three bumps leave <code>n</code> at 3.</p>
 </div>
 </section>
 
@@ -333,10 +333,10 @@ footer a:hover{text-decoration:underline}
 <pre><code><span class="kw">struct</span> <span class="tp">Temp</span>: <span class="tp">Stringable</span>:
     <span class="kw">var</span> c: <span class="tp">Float64</span>
 
-    <span class="kw">fn</span> <span class="fn">__init__</span>(<span class="kw">inout</span> self, c: <span class="tp">Float64</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">out</span> self, c: <span class="tp">Float64</span>):
         self.c = c
 
-    <span class="kw">fn</span> <span class="fn">__str__</span>(self) -&gt; <span class="tp">String</span>:
+    <span class="kw">def</span> <span class="fn">__str__</span>(self) -&gt; <span class="tp">String</span>:
         <span class="kw">return</span> <span class="tp">String</span>(self.c) + <span class="st">"C"</span>
 
 <span class="kw">def</span> <span class="fn">main</span>():
@@ -362,7 +362,7 @@ footer a:hover{text-decoration:underline}
 <h2><span class="lvl-check">5</span>Level 5 — Generic over a Trait</h2>
 <div class="meta"><span class="tag">Advanced</span><span class="tag">Generics</span></div>
 <p><strong>Challenge:</strong> What is printed?</p>
-<pre><code><span class="kw">fn</span> <span class="fn">larger</span>[T: <span class="tp">Comparable</span>](a: <span class="tp">T</span>, b: <span class="tp">T</span>) -&gt; <span class="tp">T</span>:
+<pre><code><span class="kw">def</span> <span class="fn">larger</span>[T: <span class="tp">Comparable</span>](a: <span class="tp">T</span>, b: <span class="tp">T</span>) -&gt; <span class="tp">T</span>:
     <span class="kw">if</span> b &gt; a:
         <span class="kw">return</span> b
     <span class="kw">return</span> a

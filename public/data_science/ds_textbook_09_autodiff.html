@@ -294,11 +294,11 @@ dw, db = grad_fn(<span class="tok-num">1.0</span>, <span class="tok-num">0.0</sp
 
   <section id="materialize">
     <h2>Materialization: compile-time type transformations</h2>
-    <p>Materialization in Mojo refers to the process where the compiler converts abstract type information into concrete machine code. When you write a parameterized function, the compiler generates different code for each combination of type parameters — this is called <b>monomorphization</b>. Mojo takes this further with <code class="inline">alias</code> and <code class="inline">type</code> declarations that are resolved at compile time.</p>
+    <p>Materialization in Mojo refers to the process where the compiler converts abstract type information into concrete machine code. When you write a parameterized function, the compiler generates different code for each combination of type parameters — this is called <b>monomorphization</b>. Mojo takes this further with <code class="inline">comptime</code> and <code class="inline">type</code> declarations that are resolved at compile time.</p>
 
     <div class="code-block">
       <div class="head">materialization patterns</div>
-      <pre><span class="tok-com"># alias creates compile-time constants</span>
+      <pre><span class="tok-com"># comptime creates compile-time constants</span>
 <span class="tok-kw">comptime</span> BATCH_SIZE = <span class="tok-num">64</span>
 <span class="tok-kw">comptime</span> N_FEATURES = <span class="tok-num">784</span>
 <span class="tok-kw">comptime</span> DTYPE = DType.float32

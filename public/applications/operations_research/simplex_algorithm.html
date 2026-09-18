@@ -1830,7 +1830,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // ---- lightweight syntax highlighting for the code listings ----
   var PY_KW  = ['def','return','if','else','elif','for','while','in','not','and','or','is','None','True','False','import','from','as','raise','try','except','pass','lambda','class','with','break','continue'];
-  var MJ_KW  = ['def','var','let','alias','struct','fn','raises','raise','return','for','in','while','if','else','elif','True','False','try','except','break','continue','and','or','not','None','import','from','pass','is','as'];
+  var MJ_KW  = ['def','var','comptime','mut','struct','imm','raises','raise','return','for','in','while','if','else','elif','True','False','try','except','break','continue','and','or','not','None','import','from','pass','is','as','out'];
   var PY_FN  = ['print','len','range','min','max','all','abs','sum','enumerate','float','list','map','int','str','ValueError','RuntimeError','np','array','zeros','eye','argmin','inf'];
   var MJ_FN  = ['print','len','range','abs','List','Float64','Int','Tuple','Bool','Error','copy','append'];
   var TOKEN = /("""[\s\S]*?"""|'''[\s\S]*?'''|"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'|#[^\n]*|\bdef\s+[A-Za-z_]\w*|\b\d+(?:\.\d+)?(?:[eE][+-]?\d+)?\b|\b[A-Za-z_]\w*\b)/g;

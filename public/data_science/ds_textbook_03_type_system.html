@@ -348,9 +348,9 @@ print(<span class="tok-fn">mean</span>(int_vals))    <span class="tok-com"># 20<
 <span class="tok-kw">comptime</span>:
     print(<span class="tok-str">"This prints during compilation!"</span>)
     <span class="tok-kw">if</span> <span class="tok-ty">sys</span>.<span class="tok-ty">arch</span> == <span class="tok-str">"x86_64"</span>:
-        alias SIMD_WIDTH = <span class="tok-num">8</span>
+        <span class="tok-kw">comptime</span> SIMD_WIDTH = <span class="tok-num">8</span>
     <span class="tok-kw">else</span>:
-        alias SIMD_WIDTH = <span class="tok-num">4</span>
+        <span class="tok-kw">comptime</span> SIMD_WIDTH = <span class="tok-num">4</span>
 
 <span class="tok-com"># comptime parameters in functions</span>
 <span class="tok-kw">def</span> <span class="tok-fn">matrix_multiply</span>[<span class="tok-ty">M</span>: Int, <span class="tok-ty">N</span>: Int, <span class="tok-ty">K</span>: Int](
@@ -367,14 +367,14 @@ print(<span class="tok-fn">mean</span>(int_vals))    <span class="tok-com"># 20<
 <span class="tok-com"># Conditional compilation</span>
 <span class="tok-kw">@parameter</span>
 <span class="tok-kw">if</span> <span class="tok-ty">DType</span>.<span class="tok-ty">float32</span>.is_floating_point():
-    alias default_dt = <span class="tok-ty">DType</span>.<span class="tok-ty">float32</span>
+    <span class="tok-kw">comptime</span> default_dt = <span class="tok-ty">DType</span>.<span class="tok-ty">float32</span>
 <span class="tok-kw">else</span>:
-    alias default_dt = <span class="tok-ty">DType</span>.<span class="tok-ty">float64</span>
+    <span class="tok-kw">comptime</span> default_dt = <span class="tok-ty">DType</span>.<span class="tok-ty">float64</span>
 
 <span class="tok-com"># Compile-time loop unrolling</span>
 <span class="tok-kw">def</span> <span class="tok-fn">unrolled_sum</span>[<span class="tok-ty">N</span>: Int](data: <span class="tok-ty">Tensor</span>[<span class="tok-ty">DType</span>.<span class="tok-ty">float32</span>, <span class="tok-ty">N</span>]) -&gt; Float32:
     <span class="tok-kw">var</span> total: Float32 = <span class="tok-num">0</span>
-    <span class="tok-ty">alias</span> UNROLL = <span class="tok-num">4</span>
+    <span class="tok-kw">comptime</span> UNROLL = <span class="tok-num">4</span>
     <span class="tok-kw">for</span> i <span class="tok-kw">in</span> range(<span class="tok-num">0</span>, <span class="tok-ty">N</span>, UNROLL):
         <span class="tok-kw">for</span> j <span class="tok-kw">in</span> range(UNROLL):
             total += data[i + j]
@@ -440,12 +440,12 @@ SIMD_WIDTH = <span class="tok-num">8</span> <span class="tok-kw">if</span> IS_X8
 
     <div class="quiz">
       <div class="qlbl">✅ Quick check</div>
-      <div class="qtext">What happens when you declare <code>alias x = 42</code> vs <code>var x = 42</code>?</div>
+      <div class="qtext">What happens when you declare <code>comptime x = 42</code> vs <code>var x = 42</code>?</div>
       <div class="opts" id="quiz2">
-        <button class="opt" data-correct="false">They are identical — alias is just syntactic sugar</button>
-        <button class="opt" data-correct="false">alias creates a stack variable, var creates a heap variable</button>
-        <button class="opt" data-correct="true">alias is resolved at compile time and baked into the binary; var is a runtime variable</button>
-        <button class="opt" data-correct="false">alias makes the variable immutable at runtime</button>
+        <button class="opt" data-correct="false">They are identical — comptime is just syntactic sugar</button>
+        <button class="opt" data-correct="false">comptime creates a stack variable, var creates a heap variable</button>
+        <button class="opt" data-correct="true">comptime is resolved at compile time and baked into the binary; var is a runtime variable</button>
+        <button class="opt" data-correct="false">comptime makes the variable immutable at runtime</button>
       </div>
       <div class="feedback" id="feedback2"></div>
     </div>
@@ -468,9 +468,9 @@ SIMD_WIDTH = <span class="tok-num">8</span> <span class="tok-kw">if</span> IS_X8
     <div class="exercises">
       <ol>
         <li>Write a generic function <code class="inline">elementwise_max</code> that takes two <code class="inline">SIMD</code> vectors of the same type and width, and returns a new vector containing the element-wise maximum. Test it with both <code class="inline">Float32</code> and <code class="inline">Int32</code>.</li>
-        <li>Use a <code class="inline">comptime</code> block to detect the platform architecture and set an alias <code class="inline">TENSOR_WIDTH</code> to 8 on x86_64 and 4 on other platforms. Then write a function that creates a <code class="inline">SIMD</code> vector of that width filled with ones.</li>
+        <li>Use a <code class="inline">comptime</code> block to detect the platform architecture and set a <code class="inline">comptime</code> constant <code class="inline">TENSOR_WIDTH</code> to 8 on x86_64 and 4 on other platforms. Then write a function that creates a <code class="inline">SIMD</code> vector of that width filled with ones.</li>
         <li>Define a trait <code class="inline">Differentiable</code> with a method <code class="inline">derivative</code> that returns a <code class="inline">Float64</code>. Implement it for at least two structs (e.g., <code class="inline">Polynomial</code> and <code class="inline">Exponential</code>), then write a generic function that takes any <code class="inline">Differentiable</code> type and evaluates its derivative at a given point.</li>
-        <li>Write a comptime function <code class="inline">factorial</code> that computes N! at compile time, then use it to create an alias that holds the value of 10!.</li>
+        <li>Write a comptime function <code class="inline">factorial</code> that computes N! at compile time, then use it to create a <code class="inline">comptime</code> constant that holds the value of 10!.</li>
       </ol>
     </div>
   </section>

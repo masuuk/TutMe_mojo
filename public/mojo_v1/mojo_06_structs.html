@@ -709,7 +709,7 @@ me.name = <span class="str">"John"</span>   <span class="cmt"># reinitialize the
     <span class="fn">print</span>(sensor.<span class="fn">fetch_reading</span>())
     sensor.<span class="fn">log</span>(<span class="str">"Polling sensor"</span>)
 
-<span class="cmt"># Reuse a combination via an alias:</span>
+<span class="cmt"># Reuse a combination via comptime:</span>
 <span class="kw">comptime</span> SensorLike = <span class="type">DeflectionSensing</span> &amp; <span class="type">Loggable</span></pre>
       </div>
     </div>

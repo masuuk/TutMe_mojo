@@ -1,5 +1,7 @@
 ## The Mojo Language Blue Print
 
+Language reference: https://mojolang.org/docs/manual/
+
 ### Mojo Changelogs
 
 Mojo 1.1

@@ -202,7 +202,7 @@ footer a:hover{text-decoration:underline}
 <a class="backlink" href="../index.html">&larr; Praxis shelf</a>
 <div><span class="badge">Mojo 1.x &bull; Praxis &bull; Progressive Drills</span></div>
 <h1>Ownership: Borrow, Mutate, Move</h1>
-<p class="subtitle">Learn by doing. Start with a simple borrowed read and progressively move toward <code>inout</code> mutation, <code>owned</code> consumption, and move tracing.</p>
+<p class="subtitle">Learn by doing. Start with a simple read and progressively move toward <code>mut</code> mutation, <code>var</code> consumption, and move tracing.</p>
 </div>
 </header>
 
@@ -226,7 +226,7 @@ footer a:hover{text-decoration:underline}
 <li>If incorrect, try again — a hint unlocks after two misses, or reveal the solution.</li>
 </ol>
 <div class="tip">
-<strong>Core concept:</strong> Arguments are <code>borrowed</code> by default (read-only). <code>inout</code> lets a function mutate the caller's value; <code>owned</code> takes ownership, usually paired with <code>^</code> at the call site to transfer (move) a value out of its variable.
+<strong>Core concept:</strong> Arguments are <code>imm</code> by default (read-only references). <code>mut</code> lets a function mutate the caller's value; <code>var</code> takes ownership, usually paired with <code>^</code> at the call site to transfer (move) a value out of its variable.
 </div>
 </section>
 
@@ -234,7 +234,7 @@ footer a:hover{text-decoration:underline}
 <h2><span class="lvl-check">1</span>Level 1 — A Borrowed Read</h2>
 <div class="meta"><span class="tag">Beginner</span><span class="tag">Output Prediction</span></div>
 <p><strong>Challenge:</strong> What is printed?</p>
-<pre><code><span class="kw">fn</span> <span class="fn">double</span>(x: <span class="tp">Int</span>) -&gt; <span class="tp">Int</span>:
+<pre><code><span class="kw">def</span> <span class="fn">double</span>(x: <span class="tp">Int</span>) -&gt; <span class="tp">Int</span>:
     <span class="kw">return</span> x * 2
 
 <span class="kw">def</span> <span class="fn">main</span>():
@@ -259,7 +259,7 @@ footer a:hover{text-decoration:underline}
 <h2><span class="lvl-check">2</span>Level 2 — Shadowing Meets Borrowing</h2>
 <div class="meta"><span class="tag">Beginner+</span><span class="tag">Scope</span></div>
 <p><strong>Challenge:</strong> What is printed?</p>
-<pre><code><span class="kw">fn</span> <span class="fn">double</span>(x: <span class="tp">Int</span>) -&gt; <span class="tp">Int</span>:
+<pre><code><span class="kw">def</span> <span class="fn">double</span>(x: <span class="tp">Int</span>) -&gt; <span class="tp">Int</span>:
     <span class="kw">return</span> x * 2
 
 <span class="kw">def</span> <span class="fn">main</span>():
@@ -284,10 +284,10 @@ footer a:hover{text-decoration:underline}
 </section>
 
 <section class="card level" data-level="3">
-<h2><span class="lvl-check">3</span>Level 3 — inout Mutation</h2>
-<div class="meta"><span class="tag">Intermediate</span><span class="tag">inout</span></div>
+<h2><span class="lvl-check">3</span>Level 3 — mut Mutation</h2>
+<div class="meta"><span class="tag">Intermediate</span><span class="tag">mut</span></div>
 <p><strong>Challenge:</strong> What is printed?</p>
-<pre><code><span class="kw">fn</span> <span class="fn">bump</span>(<span class="kw">inout</span> n: <span class="tp">Int</span>):
+<pre><code><span class="kw">def</span> <span class="fn">bump</span>(<span class="kw">mut</span> n: <span class="tp">Int</span>):
     n = n + 1
 
 <span class="kw">def</span> <span class="fn">main</span>():
@@ -301,29 +301,29 @@ footer a:hover{text-decoration:underline}
 <button class="ghost" id="hintbtn3" onclick="showHint(3)" style="display:none">💡 Hint</button>
 <span class="attempts" id="att3"></span>
 </div>
-<div id="h3" class="hint"><code>inout</code> means the function sees the caller's real variable, not a copy. What does that do to <code>n</code> after the call?</div>
+<div id="h3" class="hint"><code>mut</code> means the function sees the caller's real variable, not a copy. What does that do to <code>n</code> after the call?</div>
 <div id="f3" class="feedback"></div>
 <div id="s3" class="solution">
 <strong>Solution</strong>
 <pre><code>11</code></pre>
-<p><code>inout</code> gives the function a mutable reference to the caller's variable, so the change to <code>n</code> is visible after the call. Note the caller writes <code>bump(n)</code> — no keyword repeated at the call site.</p>
+<p><code>mut</code> gives the function a mutable reference to the caller's variable, so the change to <code>n</code> is visible after the call. Note the caller writes <code>bump(n)</code> — no keyword repeated at the call site.</p>
 </div>
 </section>
 
 <section class="card level" data-level="4">
 <h2><span class="lvl-check">4</span>Level 4 — Borrowed Can't Mutate</h2>
 <div class="meta"><span class="tag">Intermediate+</span><span class="tag">Conventions</span></div>
-<p><strong>Challenge:</strong> This version does NOT compile. Which line is wrong, and what keyword fixes it? (answer like: line a, inout)</p>
-<pre><code><span class="kw">fn</span> <span class="fn">set_to_99</span>(x: <span class="tp">Int</span>):
+<p><strong>Challenge:</strong> This version does NOT compile. Which line is wrong, and what keyword fixes it? (answer like: line a, mut)</p>
+<pre><code><span class="kw">def</span> <span class="fn">set_to_99</span>(x: <span class="tp">Int</span>):
     x = 99          <span class="cm"># line A</span>
 
 <span class="kw">def</span> <span class="fn">main</span>():
     <span class="kw">var</span> m = 1
     <span class="fn">set_to_99</span>(m)    <span class="cm"># line B</span>
     <span class="fn">print</span>(m)</code></pre>
-<textarea id="a4" placeholder="Write the output or answer here..." onkeydown="onKey(event,4,'line a, inout')"></textarea>
+<textarea id="a4" placeholder="Write the output or answer here..." onkeydown="onKey(event,4,'line a, mut')"></textarea>
 <div class="btnrow">
-<button class="primary" onclick="check(4,'line a, inout')">Check Answer</button>
+<button class="primary" onclick="check(4,'line a, mut')">Check Answer</button>
 <button class="secondary" onclick="show(4)">Show Solution</button>
 <button class="ghost" id="hintbtn4" onclick="showHint(4)" style="display:none">💡 Hint</button>
 <span class="attempts" id="att4"></span>
@@ -332,10 +332,10 @@ footer a:hover{text-decoration:underline}
 <div id="f4" class="feedback"></div>
 <div id="s4" class="solution">
 <strong>Solution</strong>
-<p>Line A is the culprit — declare <code>x</code> as <code>inout</code>:</p>
-<pre><code><span class="kw">fn</span> <span class="fn">set_to_99</span>(<span class="kw">inout</span> x: <span class="tp">Int</span>):
+<p>Line A is the culprit — declare <code>x</code> as <code>mut</code>:</p>
+<pre><code><span class="kw">def</span> <span class="fn">set_to_99</span>(<span class="kw">mut</span> x: <span class="tp">Int</span>):
     x = 99</code></pre>
-<p>A borrowed argument is read-only, so <code>x = 99</code> fails to compile. Changing the signature to <code>fn set_to_99(inout x: Int)</code> fixes it, and <code>main</code> then prints 99.</p>
+<p>A default (immutable) argument is read-only, so <code>x = 99</code> fails to compile. Changing the signature to <code>def set_to_99(mut x: Int)</code> fixes it, and <code>main</code> then prints 99.</p>
 </div>
 </section>
 
@@ -343,7 +343,7 @@ footer a:hover{text-decoration:underline}
 <h2><span class="lvl-check">5</span>Level 5 — Move with ^</h2>
 <div class="meta"><span class="tag">Advanced</span><span class="tag">Ownership Trace</span></div>
 <p><strong>Challenge:</strong> Predict the three lines printed.</p>
-<pre><code><span class="kw">fn</span> <span class="fn">consume</span>(<span class="kw">owned</span> s: <span class="tp">String</span>):
+<pre><code><span class="kw">def</span> <span class="fn">consume</span>(<span class="kw">var</span> s: <span class="tp">String</span>):
     <span class="fn">print</span>(<span class="st">"got:"</span>, s)
 
 <span class="kw">def</span> <span class="fn">main</span>():
@@ -372,8 +372,8 @@ done</code></pre>
 <section class="card level" data-level="6">
 <h2><span class="lvl-check">6</span>Level 6 — Expert Challenge</h2>
 <div class="meta"><span class="tag">Advanced</span><span class="tag">Code Reasoning Modification</span></div>
-<p><strong>Challenge:</strong> The program below fails to compile. Rewrite it so it prints <code>10</code> then <code>done</code> using an <code>inout</code> function, and explain which argument convention each call uses.</p>
-<pre><code><span class="kw">fn</span> <span class="fn">report</span>(x: <span class="tp">Int</span>):
+<p><strong>Challenge:</strong> The program below fails to compile. Rewrite it so it prints <code>10</code> then <code>done</code> using a <code>mut</code> function, and explain which argument convention each call uses.</p>
+<pre><code><span class="kw">def</span> <span class="fn">report</span>(x: <span class="tp">Int</span>):
     x = x * 10
     <span class="fn">print</span>(x)
 
@@ -381,9 +381,9 @@ done</code></pre>
     <span class="kw">var</span> n = 1
     <span class="fn">report</span>(n)
     <span class="fn">print</span>(<span class="st">"done"</span>)</code></pre>
-<textarea id="a6" placeholder="Write the output or answer here..." onkeydown="onKey(event,6,'inout')"></textarea>
+<textarea id="a6" placeholder="Write the output or answer here..." onkeydown="onKey(event,6,'mut')"></textarea>
 <div class="btnrow">
-<button class="primary" onclick="check(6,'inout')">Check Answer</button>
+<button class="primary" onclick="check(6,'mut')">Check Answer</button>
 <button class="secondary" onclick="show(6)">Show Solution</button>
 <button class="ghost" id="hintbtn6" onclick="showHint(6)" style="display:none">💡 Hint</button>
 <span class="attempts" id="att6"></span>
@@ -394,7 +394,7 @@ done</code></pre>
 <strong>Solution</strong>
 <pre><code><span class="cm"># Possible solution</span>
 
-<span class="kw">fn</span> <span class="fn">report</span>(<span class="kw">inout</span> x: <span class="tp">Int</span>):
+<span class="kw">def</span> <span class="fn">report</span>(<span class="kw">mut</span> x: <span class="tp">Int</span>):
     x = x * 10
     <span class="fn">print</span>(x)
 
@@ -402,7 +402,7 @@ done</code></pre>
     <span class="kw">var</span> n = 1
     <span class="fn">report</span>(n)
     <span class="fn">print</span>(<span class="st">"done"</span>)</code></pre>
-<p>Only <code>inout</code> permits the assignment inside <code>report</code>. The borrow convention is read-only, and <code>owned</code> would require <code>n^</code> at the call site and would move the value away. Reason about which convention each call needs — not just about matching the output.</p>
+<p>Only <code>mut</code> permits the assignment inside <code>report</code>. The default convention is read-only, and <code>var</code> would require <code>n^</code> at the call site and would move the value away. Reason about which convention each call needs — not just about matching the output.</p>
 </div>
 </section>
 
@@ -410,7 +410,7 @@ done</code></pre>
 <h2 style="font-family:var(--serif);font-weight:600">Mastery Check</h2>
 <p>Before moving on, explain these ideas in your own words:</p>
 <ul class="mastery">
-<li>What is the difference between a borrowed, an <code>inout</code> and an <code>owned</code> argument?</li>
+<li>What is the difference between a default (<code>imm</code>), a <code>mut</code>, and a <code>var</code> (owning) argument?</li>
 <li>What does the <code>^</code> operator do at a call site?</li>
 <li>Why must a moved-from variable not be used afterwards?</li>
 <li>Why is copying an <code>Int</code> cheap while moving a <code>String</code> avoids a heap copy?</li>

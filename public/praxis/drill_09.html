@@ -9,7 +9,7 @@
 <label class="opt"><input type="radio" name="d9q1" value="c">It transfers ownership away from the caller permanently.</label>
 <label class="opt"><input type="radio" name="d9q1" value="d">It only works if the caller also uses `ref`.</label>
 <div class="actions qactions"><button type="button" class="btn check">Check answer</button><button type="button" class="btn reset">Try again</button></div><p class="feedback"></p>
-<div class="explain" hidden><strong>Why:</strong> `mut` (like `inout`) is a mutable reference: the function sees and can modify the caller's storage, and the change survives the call.</div></div>
+<div class="explain" hidden><strong>Why:</strong> `mut` is a mutable reference: the function sees and can modify the caller's storage, and the change survives the call.</div></div>
 <details class="solution"><summary>Solution</summary><p>Reference code demonstrating arguments by value, `mut`, `var` (owned), `ref` returns, and `origin_of()`.</p><pre class="code">def add(mut x: Int, y: Int):
     x += y               # mut: caller sees the change
 
