@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chapter 12 — Modules, Packages &amp; Toolchain · Mojo 1.0 Textbook</title>
+<title>Chapter 12 — Modules, Packages &amp; Toolchain · Mojo 1.x Textbook</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -233,7 +233,7 @@ table.cheat code{font-family:var(--font-mono);font-size:0.82em;color:#c084fc;}
       </div>
     </div>
 
-    <p>This is exactly how the accelerator library works. The <code class="inline">functional</code> module lives in <code class="inline">max.algorithm</code> — moved out of the standard library in Mojo 1.0 / MAX 26.5, when GPU and algorithm APIs migrated to the <code class="inline">max</code> package — so both of these import its <code class="inline">map()</code> — the second works because <code class="inline">algorithm/__init__.mojo</code> re-exports its submodules:</p>
+    <p>This is exactly how the accelerator library works. The <code class="inline">functional</code> module lives in <code class="inline">max.algorithm</code> — moved out of the standard library in Mojo 1.x / MAX 26.5, when GPU and algorithm APIs migrated to the <code class="inline">max</code> package — so both of these import its <code class="inline">map()</code> — the second works because <code class="inline">algorithm/__init__.mojo</code> re-exports its submodules:</p>
 
     <div class="code-tabs">
       <div class="tabs-header">

@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geomatics Praxis — Geodetic to ECEF</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c12;
+  --bg2:#0d1119;
+  --surface:#12161f;
+  --card:#141922;
+  --card2:#171d28;
+  --border:#232a38;
+  --border-soft:#1a202c;
+  --ink:#e7e9f0;
+  --muted:#8892a4;
+  --muted2:#5c6478;
+  --accent:#ff6a39;
+  --accent-dim:#ff6a3922;
+  --accent2:#ffb238;
+  --ok:#4ade80;
+  --ok-bg:#0f2416;
+  --bad:#fb7185;
+  --bad-bg:#2a1116;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Consolas,monospace;
+  --serif:'Fraunces',Georgia,serif;
+}
+*{box-sizing:border-box}
+::selection{background:var(--accent);color:#0a0c12}
+body{
+  margin:0;
+  font-family:var(--mono);
+  background:
+    radial-gradient(1200px 600px at 15% -10%, #2a170a55, transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, #1a0f2a55, transparent 55%),
+    var(--bg);
+  color:var(--ink);
+  line-height:1.65;
+  font-size:15px;
+}
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:radial-gradient(#ffffff08 1px, transparent 1px);
+  background-size:26px 26px;
+  pointer-events:none;
+  z-index:0;
+}
+header{
+  position:relative;
+  background:linear-gradient(160deg,#161014 0%,#0f1118 55%,#0a0c12 100%);
+  border-bottom:1px solid var(--border);
+  padding:52px 20px 60px;
+  overflow:hidden;
+}
+header::after{
+  content:'';
+  position:absolute; right:-120px; top:-160px;
+  width:420px; height:420px; border-radius:50%;
+  background:radial-gradient(circle, #ff6a3933, transparent 70%);
+  filter:blur(10px);
+}
+.hero{max-width:1080px;margin:auto;position:relative;z-index:1}
+.badge{
+  display:inline-block;padding:6px 14px;border:1px solid #ff6a3955;
+  color:var(--accent2);border-radius:999px;font-size:.72rem;letter-spacing:.08em;
+  margin-bottom:18px;background:#ff6a390d;text-transform:uppercase;font-weight:600;
+}
+h1{
+  font-family:var(--serif);font-weight:700;font-style:normal;
+  font-size:clamp(2rem,4.4vw,3.1rem);margin:0 0 14px;letter-spacing:-.01em;
+  color:#f5f1ea;
+}
+.subtitle{color:var(--muted);max-width:700px;font-size:1rem}
+.backlink{display:inline-block;margin-bottom:6px;color:#a9b1c9;text-decoration:none;font-size:.82rem;opacity:.8;transition:opacity .15s}
+.backlink:hover{opacity:1;color:var(--accent2)}
+
+.progress-wrap{
+  position:sticky;top:0;z-index:20;
+  background:#0a0c12ee;backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);padding:14px 18px;
+}
+.progress{max-width:1080px;margin:auto;display:flex;align-items:center;gap:16px}
+#progressText{font-size:.82rem;color:var(--muted);white-space:nowrap;font-weight:600}
+.bar{flex:1;height:8px;background:var(--surface);border-radius:99px;overflow:hidden;border:1px solid var(--border-soft)}
+.fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .4s cubic-bezier(.4,0,.2,1);box-shadow:0 0 14px #ff6a3966}
+.dots{display:flex;gap:6px}
+.dot{
+  width:11px;height:11px;border-radius:50%;border:1.5px solid var(--border);
+  background:var(--surface);cursor:pointer;transition:.2s;flex-shrink:0;
+}
+.dot:hover{border-color:var(--accent2)}
+.dot.done{background:var(--ok);border-color:var(--ok)}
+.dot.current{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+.stat-pill{font-size:.72rem;color:var(--muted2);white-space:nowrap;display:none}
+@media(min-width:720px){.stat-pill{display:inline}}
+
+.container{max-width:1080px;margin:40px auto;padding:0 18px;position:relative;z-index:1}
+.card{
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  border:1px solid var(--border);border-radius:16px;padding:30px;margin-bottom:26px;
+  box-shadow:0 10px 30px -12px #00000066;
+  opacity:0;transform:translateY(14px);
+  animation:rise .5s ease forwards;
+}
+@keyframes rise{to{opacity:1;transform:none}}
+.card.intro{animation-delay:.02s}
+.level{border-left:3px solid var(--border);transition:border-color .3s}
+.level.unlocked{border-left-color:var(--accent)}
+.level.mastered{border-left-color:var(--ok)}
+.level h2{
+  margin:0 0 4px;font-family:var(--serif);font-weight:600;font-size:1.5rem;color:#f2eee6;
+  display:flex;align-items:center;gap:10px;
+}
+.lvl-check{
+  display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;
+  border-radius:50%;border:1.5px solid var(--border);font-size:.7rem;color:var(--muted2);
+  flex-shrink:0;transition:.25s;
+}
+.mastered .lvl-check{background:var(--ok);border-color:var(--ok);color:#0a0c12}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 20px}
+.tag{background:#ff6a3915;color:var(--accent2);padding:4px 11px;border-radius:999px;font-size:.72rem;border:1px solid #ff6a3930;letter-spacing:.02em}
+p{color:#c9cedb}
+strong{color:var(--ink)}
+
+pre{
+  background:#080a0f;color:#dfe3ee;padding:20px;border-radius:12px;overflow:auto;
+  font-size:.87rem;border:1px solid var(--border-soft);position:relative;
+  box-shadow:inset 0 1px 0 #ffffff08;
+}
+pre::before{
+  content:'●  ●  ●';content:'';
+}
+code{font-family:var(--mono)}
+.kw{color:#ff8a5c;font-weight:600}
+.tp{color:#7dd3fc}
+.st{color:#a5e3a5}
+.cm{color:#5c6478;font-style:italic}
+.fn{color:#ffd580}
+
+textarea{
+  width:100%;min-height:96px;padding:14px;border:1px solid var(--border);
+  border-radius:10px;font:14px/1.5 var(--mono);resize:vertical;
+  background:var(--surface);color:var(--ink);transition:border-color .2s,box-shadow .2s;
+}
+textarea::placeholder{color:var(--muted2)}
+textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+textarea.shake{animation:shake .35s}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+
+.btnrow{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px;align-items:center}
+button{
+  border:0;border-radius:9px;padding:10px 18px;cursor:pointer;font-weight:600;
+  font-family:var(--mono);font-size:.85rem;transition:.15s;
+}
+.primary{background:var(--accent);color:#150a05}
+.primary:hover{background:var(--accent2);transform:translateY(-1px)}
+.secondary{background:var(--surface);color:#c9cedb;border:1px solid var(--border)}
+.secondary:hover{border-color:var(--accent2);color:var(--accent2)}
+.ghost{background:transparent;color:var(--muted2);border:1px dashed var(--border);padding:9px 14px;font-size:.78rem}
+.ghost:hover{color:var(--accent2);border-color:var(--accent2)}
+.attempts{font-size:.75rem;color:var(--muted2);margin-left:auto}
+
+.hint{
+  display:none;margin-top:14px;padding:13px 16px;background:#2a1c0a;border:1px solid #6b4a1f;
+  border-radius:10px;color:#f3c98a;font-size:.85rem;
+}
+.solution{display:none;margin-top:18px;padding:20px;background:#0d1f14;border:1px solid #1e4a2d;border-radius:12px}
+.solution strong{color:#8be6a8}
+.feedback{display:none;margin-top:14px;padding:12px 15px;border-radius:10px;font-size:.87rem;font-weight:600}
+.correct{background:var(--ok-bg);color:var(--ok);border:1px solid #1e4a2d}
+.incorrect{background:var(--bad-bg);color:var(--bad);border:1px solid #4a1e28}
+
+.tip{background:#12100a;border:1px solid #3a2a10;padding:16px 18px;border-radius:12px;color:#ecd9ad}
+.tip code{color:var(--accent2)}
+
+.mastery li{margin:9px 0;color:#c9cedb}
+.mastery textarea{margin-top:14px;min-height:70px}
+
+.summary-card{
+  background:linear-gradient(135deg,#171014,#0f1118);border:1px solid var(--accent);
+  text-align:center;padding:40px 28px;
+}
+.summary-card h3{font-family:var(--serif);font-size:1.7rem;margin:0 0 8px;color:#f5f1ea}
+.summary-card p{color:var(--muted)}
+.confetti{position:fixed;top:-20px;font-size:1.4rem;pointer-events:none;z-index:50;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(360deg);opacity:.2}}
+
+footer{text-align:center;color:var(--muted2);padding:40px 20px;font-size:.85rem;position:relative;z-index:1}
+footer a{color:var(--accent2);text-decoration:none}
+footer a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<header>
+<div class="hero">
+<a class="backlink" href="../../index.html">&larr; TutMe🔥 Learning Hub</a><br>
+<a class="backlink" href="../index.html">&larr; Praxis shelf</a>
+<div><span class="badge">GEOMATICS &bull; PRAXIS &bull; PROGRESSIVE DRILLS</span></div>
+<h1>Geodetic ↔ ECEF</h1>
+<p class="subtitle">Learn by doing. Start with the WGS84 eccentricity and progressively move toward the prime-vertical radius, full geodetic→ECEF conversion and the inverse longitude.</p>
+</div>
+</header>
+
+<div class="progress-wrap">
+<div class="progress">
+<strong id="progressText">Level 1 of 6</strong>
+<div class="bar"><div class="fill" id="fill"></div></div>
+<div class="dots" id="dots"></div>
+<span class="stat-pill" id="statPill">0 attempts</span>
+</div>
+</div>
+
+<main class="container">
+<section class="card intro">
+<h2 style="font-family:var(--serif);font-weight:600">How the Praxis Works</h2>
+<ol>
+<li>Read the code.</li>
+<li>Predict what happens.</li>
+<li>Submit your answer.</li>
+<li>If correct, move to the next level.</li>
+<li>If incorrect, try again or reveal the solution.</li>
+</ol>
+<div class="tip">
+<strong>Core concept:</strong> WGS84: a = 6,378,137.0 m, f = 1/298.257223563, e² = 2f − f². The prime-vertical radius N = a/√(1 − e²sin²φ); then X = (N+h)cosφcosλ, Y = (N+h)cosφsinλ, Z = (N(1−e²)+h)sinφ.
+</div>
+</section>
+
+<section class="card level" data-level="1">
+<h2><span class="lvl-check">1</span>Level 1 — Eccentricity Squared</h2>
+<div class="meta"><span class="tag">Beginner</span><span class="tag">WGS84</span></div>
+<p><strong>Challenge:</strong> What is printed?</p>
+<pre><code><span class="kw">def</span> <span class="fn">main</span>():
+    <span class="kw">var</span> a = 6378137.0
+    <span class="kw">var</span> f = 1.0 / 298.257223563
+    <span class="kw">var</span> e2 = 2.0 * f - f * f
+    <span class="fn">print</span>(e2)</code></pre>
+<textarea id="a1" placeholder="Write the output or answer here..." onkeydown="onKey(event,1,'0.00669438')"></textarea>
+<div class="btnrow">
+<button class="primary" onclick="check(1,'0.00669438')">Check Answer</button>
+<button class="secondary" onclick="show(1)">Show Solution</button>
+<button class="ghost" id="hintbtn1" onclick="showHint(1)" style="display:none">💡 Hint</button>
+<span class="attempts" id="att1"></span>
+</div>
+<div id="h1" class="hint">The eccentricity squared is built from flattening alone — twice f minus f squared. Only f flows into this line, not the semi-major axis a.</div>
+<div id="f1" class="feedback"></div>
+<div id="s1" class="solution">
+<strong>Solution</strong>
+<pre><code>0.0066943799901413165</code></pre>
+<p>From flattening f, the eccentricity squared is e² = 2f − f² ≈ 0.00669437999. Every geodetic→ECEF formula uses this one constant.</p>
+</div>
+</section>
+
+<section class="card level" data-level="2">
+<h2><span class="lvl-check">2</span>Level 2 — Latitude in Radians</h2>
+<div class="meta"><span class="tag">Beginner+</span><span class="tag">Trig</span></div>
+<p><strong>Challenge:</strong> What is printed?</p>
+<pre><code><span class="kw">from</span> math <span class="kw">import</span> <span class="fn">radians</span>, <span class="fn">sin</span>
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="kw">var</span> lat = <span class="fn">radians</span>(45.0)
+    <span class="fn">print</span>(<span class="fn">sin</span>(lat))</code></pre>
+<textarea id="a2" placeholder="Write the output or answer here..." onkeydown="onKey(event,2,'0.70710678')"></textarea>
+<div class="btnrow">
+<button class="primary" onclick="check(2,'0.70710678')">Check Answer</button>
+<button class="secondary" onclick="show(2)">Show Solution</button>
+<button class="ghost" id="hintbtn2" onclick="showHint(2)" style="display:none">💡 Hint</button>
+<span class="attempts" id="att2"></span>
+</div>
+<div id="h2" class="hint">Trig functions want radians, and <code>radians()</code> converts the degree value first. Now ask what sin of a 45° angle equals, to full precision.</div>
+<div id="f2" class="feedback"></div>
+<div id="s2" class="solution">
+<strong>Solution</strong>
+<pre><code>0.7071067811865476</code></pre>
+<p>Trig functions take radians: sin(45°) = √2/2 ≈ 0.7071. Surveying code converts degrees to radians at the boundary once, then works in radians.</p>
+</div>
+</section>
+
+<section class="card level" data-level="3">
+<h2><span class="lvl-check">3</span>Level 3 — The Prime-Vertical Radius</h2>
+<div class="meta"><span class="tag">Intermediate</span><span class="tag">N</span></div>
+<p><strong>Challenge:</strong> What is N at latitude 45° on WGS84 (rounded to 2 decimals)?</p>
+<pre><code><span class="kw">from</span> math <span class="kw">import</span> <span class="fn">sqrt</span>, <span class="fn">radians</span>, <span class="fn">sin</span>
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="kw">var</span> a = 6378137.0
+    <span class="kw">var</span> e2 = 0.0066943799901413165
+    <span class="kw">var</span> lat = <span class="fn">radians</span>(45.0)
+    <span class="kw">var</span> N = a / <span class="fn">sqrt</span>(1.0 - e2 * <span class="fn">sin</span>(lat) * <span class="fn">sin</span>(lat))
+    <span class="fn">print</span>(N)</code></pre>
+<textarea id="a3" placeholder="Write the output or answer here..." onkeydown="onKey(event,3,'6388838.29')"></textarea>
+<div class="btnrow">
+<button class="primary" onclick="check(3,'6388838.29')">Check Answer</button>
+<button class="secondary" onclick="show(3)">Show Solution</button>
+<button class="ghost" id="hintbtn3" onclick="showHint(3)" style="display:none">💡 Hint</button>
+<span class="attempts" id="att3"></span>
+</div>
+<div id="h3" class="hint">N scales the semi-major axis by <code>1/√(1 − e²sin²φ)</code>. At 45° the denominator is just under 1, so N should sit a few thousand metres above a.</div>
+<div id="f3" class="feedback"></div>
+<div id="s3" class="solution">
+<strong>Solution</strong>
+<pre><code>6388838.290121148</code></pre>
+<p>N = a/√(1 − e²sin²φ) ≈ 6,388,838.29 m — slightly larger than a=6,378,137 because the ellipsoid curves elsewhere at mid-latitude.</p>
+</div>
+</section>
+
+<section class="card level" data-level="4">
+<h2><span class="lvl-check">4</span>Level 4 — Sanity Check at the Equator</h2>
+<div class="meta"><span class="tag">Intermediate+</span><span class="tag">ECEF</span></div>
+<p><strong>Challenge:</strong> What is X for a point at (0°, 0°, h = 0)?</p>
+<pre><code><span class="kw">from</span> math <span class="kw">import</span> <span class="fn">cos</span>, <span class="fn">radians</span>, <span class="fn">sin</span>, <span class="fn">sqrt</span>
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="kw">var</span> a = 6378137.0
+    <span class="kw">var</span> e2 = 0.0066943799901413165
+    <span class="kw">var</span> lat = <span class="fn">radians</span>(0.0)
+    <span class="kw">var</span> lon = <span class="fn">radians</span>(0.0)
+    <span class="kw">var</span> h = 0.0
+    <span class="kw">var</span> N = a / <span class="fn">sqrt</span>(1.0 - e2 * <span class="fn">sin</span>(lat) * <span class="fn">sin</span>(lat))
+    <span class="kw">var</span> x = (N + h) * <span class="fn">cos</span>(lat) * <span class="fn">cos</span>(lon)
+    <span class="fn">print</span>(x)</code></pre>
+<textarea id="a4" placeholder="Write the output or answer here..." onkeydown="onKey(event,4,'6378137')"></textarea>
+<div class="btnrow">
+<button class="primary" onclick="check(4,'6378137')">Check Answer</button>
+<button class="secondary" onclick="show(4)">Show Solution</button>
+<button class="ghost" id="hintbtn4" onclick="showHint(4)" style="display:none">💡 Hint</button>
+<span class="attempts" id="att4"></span>
+</div>
+<div id="h4" class="hint">At φ = 0 the square of sin vanishes and the two cosines both equal 1. The whole expression collapses onto a single known value — read it off in metres.</div>
+<div id="f4" class="feedback"></div>
+<div id="s4" class="solution">
+<strong>Solution</strong>
+<pre><code>6378137.0</code></pre>
+<p>At the equator sinφ = 0 so N = a, and cosφ = cosλ = 1: X = 6378137.0 — the point sits on the equatorial (X) axis of the ellipsoid, a perfect sanity check for the formula.</p>
+</div>
+</section>
+
+<section class="card level" data-level="5">
+<h2><span class="lvl-check">5</span>Level 5 — Full Forward Conversion</h2>
+<div class="meta"><span class="tag">Advanced</span><span class="tag">ECEF</span></div>
+<p><strong>Challenge:</strong> Convert (45°, 8°, 500 m) to ECEF. Predict the three printed lines, one per coordinate.</p>
+<pre><code><span class="kw">from</span> math <span class="kw">import</span> <span class="fn">cos</span>, <span class="fn">radians</span>, <span class="fn">sin</span>, <span class="fn">sqrt</span>
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="kw">var</span> a = 6378137.0
+    <span class="kw">var</span> e2 = 0.0066943799901413165
+    <span class="kw">var</span> lat = <span class="fn">radians</span>(45.0)
+    <span class="kw">var</span> lon = <span class="fn">radians</span>(8.0)
+    <span class="kw">var</span> h = 500.0
+    <span class="kw">var</span> N = a / <span class="fn">sqrt</span>(1.0 - e2 * <span class="fn">sin</span>(lat) * <span class="fn">sin</span>(lat))
+    <span class="fn">print</span>((N + h) * <span class="fn">cos</span>(lat) * <span class="fn">cos</span>(lon))
+    <span class="fn">print</span>((N + h) * <span class="fn">cos</span>(lat) * <span class="fn">sin</span>(lon))
+    <span class="fn">print</span>((N * (1.0 - e2) + h) * <span class="fn">sin</span>(lat))</code></pre>
+<textarea id="a5" placeholder="Write the output or answer here..." onkeydown="onKey(event,5,'4473976.1076\n628776.3366\n4487701.9623')"></textarea>
+<div class="btnrow">
+<button class="primary" onclick="check(5,'4473976.1076\n628776.3366\n4487701.9623')">Check Answer</button>
+<button class="secondary" onclick="show(5)">Show Solution</button>
+<button class="ghost" id="hintbtn5" onclick="showHint(5)" style="display:none">💡 Hint</button>
+<span class="attempts" id="att5"></span>
+</div>
+<div id="h5" class="hint">The same N feeds all three lines. X and Y share <code>(N+h)cosφ</code> and differ only in cos λ vs sin λ; the Z line uses the flattening-corrected <code>N(1−e²)</code> times sin φ. Expect Y to be far smaller than X and Z.</div>
+<div id="f5" class="feedback"></div>
+<div id="s5" class="solution">
+<strong>Solution</strong>
+<pre><code>4473976.107595565
+628776.336600037
+4487701.962256514</code></pre>
+<p>X ≈ 4,473,976.11, Y ≈ 628,776.34, Z ≈ 4,487,701.96 (metres). Y is tiny because the point is only 8° of longitude east of the X-axis; Z is huge because it is 45° of latitude north.</p>
+</div>
+</section>
+
+<section class="card level" data-level="6">
+<h2><span class="lvl-check">6</span>Level 6 — Expert Challenge</h2>
+<div class="meta"><span class="tag">Advanced</span><span class="tag">Code Reasoning Modification</span></div>
+<p><strong>Challenge:</strong> Complete the inverse step: recover the longitude from the Level-5 X and Y by assigning lon. The needed identity is λ = atan2(Y, X). What is printed (converted to degrees)?</p>
+<pre><code><span class="kw">from</span> math <span class="kw">import</span> <span class="fn">atan2</span>
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="kw">var</span> x = 4473976.107595565
+    <span class="kw">var</span> y = 628776.336600037
+    <span class="kw">var</span> lon = 0.0                <span class="cm"># your line</span>
+    <span class="fn">print</span>(lon * (180.0 / 3.141592653589793))</code></pre>
+<textarea id="a6" placeholder="Write the output or answer here..." onkeydown="onKey(event,6,'8')"></textarea>
+<div class="btnrow">
+<button class="primary" onclick="check(6,'8')">Check Answer</button>
+<button class="secondary" onclick="show(6)">Show Solution</button>
+<button class="ghost" id="hintbtn6" onclick="showHint(6)" style="display:none">💡 Hint</button>
+<span class="attempts" id="att6"></span>
+</div>
+<div id="h6" class="hint">λ comes from the two-argument inverse tangent, so pass Y as the first argument and X as the second. The expression then multiplies your radians value by <code>180/π</code> — the printed number is a clean whole degree.</div>
+<div id="f6" class="feedback"></div>
+<div id="s6" class="solution">
+<strong>Solution</strong>
+<pre><code>Possible solution
+
+<span class="kw">var</span> lon = <span class="fn">atan2</span>(y, x)
+<span class="fn">print</span>(lon * (180.0 / 3.141592653589793))   <span class="cm"># 8.0</span></code></pre>
+<p>atan2(Y, X) recovers λ = 8.0° — the forward and inverse are exact inverses. In real code the full inversion (finding φ and h as well) is iterated until φ converges.</p>
+</div>
+</section>
+
+<section class="card">
+<h2 style="font-family:var(--serif);font-weight:600">Mastery Check</h2>
+<p>Before moving on, explain these ideas in your own words:</p>
+<ul class="mastery">
+<li>What do the two WGS84 constants a and f describe?</li>
+<li>Why does N depend on latitude?</li>
+<li>What happens to X, Y, Z at the equator with h = 0?</li>
+<li>Why is ECEF → geodetic solved iteratively rather than in closed form?</li>
+</ul>
+<textarea id="masteryNotes" placeholder="Jot your own explanations here — saved automatically as you type..." oninput="saveNotes()"></textarea>
+<p><em>Mastery rule:</em> if you can predict every output without running the program and explain why, proceed to the next Praxis topic. If not, return to Level 3 and repeat.</p>
+</section>
+
+<section class="card summary-card" id="summaryCard" style="display:none">
+<h3>🔥 All Six Levels Mastered</h3>
+<p id="summaryStats">Nicely done — ownership, borrowing and moves are locked in.</p>
+<button class="ghost" onclick="resetProgress()" style="margin-top:14px">Reset progress</button>
+</section>
+</main>
+
+<footer>
+Geomatics Programming Praxis &bull; Learn &rarr; Attempt &rarr; Check &rarr; Retry &rarr; Master<br>
+<a href="prog_11_amort.html">&larr; Previous: Amortisation &amp; the Level Payment</a><br><a href="prog_13_simplex.html">Next: Simplex over the Feasible Region &rarr;</a><br><a href="../../progressive.html">Also: Scope &amp; Shadowing course &rarr;</a><br><a href="../index.html">Back to the Praxis shelf</a>
+</footer>
+
+<script>
+var LEVELS = 6;
+var STORE_KEY = 'praxis_prog12_ecef_v2';
+
+var state = loadState();
+
+function loadState(){
+  try{
+    var raw = localStorage.getItem(STORE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return {solved:{}, attempts:{}, hintShown:{}, answers:{}, notes:''};
+}
+function saveState(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
+}
+
+function norm(s){return s.trim().toLowerCase().replace(/\s+/g,' ').replace(/,$/,'');}
+
+function onKey(e, n, expected){
+  if(e.key === 'Enter' && (e.metaKey || e.ctrlKey)){
+    e.preventDefault();
+    check(n, expected);
+  }
+}
+
+function check(n, expected){
+  var ta = document.getElementById('a'+n);
+  var v = ta.value;
+  var f = document.getElementById('f'+n);
+  var a = norm(v), b = norm(expected);
+  var ok = (a === b);
+  if(!ok){
+    var fa = parseFloat(a), fb = parseFloat(b);
+    if(!isNaN(fa) && !isNaN(fb) && a.length < 6 && Math.abs(fa-fb) <= Math.max(0.011, Math.abs(fb)*0.005)) ok = true;
+  }
+  f.style.display = 'block';
+  state.answers[n] = v;
+
+  if(ok){
+    f.className = 'feedback correct';
+    f.textContent = '✅ Correct! Move on to the next level.';
+    if(!state.solved[n]){
+      state.solved[n] = true;
+      celebrate(n);
+    }
+  } else {
+    f.className = 'feedback incorrect';
+    f.textContent = '❌ Not quite. Re-read the code, predict again, or reveal the solution.';
+    state.attempts[n] = (state.attempts[n]||0) + 1;
+    ta.classList.remove('shake'); void ta.offsetWidth; ta.classList.add('shake');
+    if(state.attempts[n] >= 2){
+      document.getElementById('hintbtn'+n).style.display = 'inline-block';
+    }
+  }
+  saveState();
+  render();
+}
+
+function showHint(n){
+  var h = document.getElementById('h'+n);
+  h.style.display = (h.style.display === 'block') ? 'none' : 'block';
+  state.hintShown[n] = true;
+  saveState();
+}
+
+function show(n){
+  var s = document.getElementById('s'+n);
+  s.style.display = (s.style.display === 'block') ? 'none' : 'block';
+}
+
+function celebrate(n){
+  var colors = ['🔥','⚡','🟠','✨'];
+  for(var i=0;i<14;i++){
+    (function(i){
+      setTimeout(function(){
+        var el = document.createElement('div');
+        el.className = 'confetti';
+        el.textContent = colors[i % colors.length];
+        el.style.left = (Math.random()*100)+'vw';
+        el.style.animationDuration = (1.6 + Math.random()*1.2)+'s';
+        el.style.fontSize = (1 + Math.random()*0.8)+'rem';
+        document.body.appendChild(el);
+        setTimeout(function(){ el.remove(); }, 3000);
+      }, i*35);
+    })(i);
+  }
+}
+
+function buildDots(){
+  var wrap = document.getElementById('dots');
+  wrap.innerHTML = '';
+  for(var i=1;i<=LEVELS;i++){
+    var d = document.createElement('div');
+    d.className = 'dot';
+    d.title = 'Level ' + i;
+    d.onclick = (function(i){ return function(){
+      var card = document.querySelector('.level[data-level="'+i+'"]');
+      if(card) card.scrollIntoView({behavior:'smooth', block:'start'});
+    };})(i);
+    wrap.appendChild(d);
+  }
+}
+
+function render(){
+  var done = Object.keys(state.solved).filter(function(k){return state.solved[k];}).length;
+  var dots = document.querySelectorAll('.dot');
+  var nextUnsolved = null;
+  for(var i=1;i<=LEVELS;i++){
+    var solved = !!state.solved[i];
+    if(dots[i-1]){
+      dots[i-1].classList.toggle('done', solved);
+      dots[i-1].classList.toggle('current', !solved && nextUnsolved===null);
+    }
+    if(!solved && nextUnsolved===null) nextUnsolved = i;
+
+    var card = document.querySelector('.level[data-level="'+i+'"]');
+    if(card){
+      card.classList.toggle('mastered', solved);
+      card.classList.toggle('unlocked', !solved);
+      var chk = card.querySelector('.lvl-check');
+      chk.textContent = solved ? '✓' : i;
+    }
+  }
+
+  document.getElementById('progressText').textContent =
+    'Level ' + Math.min(done+1, LEVELS) + ' of ' + LEVELS + (done>=LEVELS ? ' — mastered!' : '');
+  document.getElementById('fill').style.width = (done/LEVELS*100) + '%';
+
+  var totalAttempts = Object.values(state.attempts).reduce(function(a,b){return a+b;},0);
+  document.getElementById('statPill').textContent = totalAttempts + ' attempt' + (totalAttempts===1?'':'s') + ' logged';
+
+  for(var i=1;i<=LEVELS;i++){
+    var a = state.attempts[i]||0;
+    var el = document.getElementById('att'+i);
+    if(el) el.textContent = a>0 ? (a + ' attempt' + (a===1?'':'s')) : '';
+    var hb = document.getElementById('hintbtn'+i);
+    if(hb && a>=2) hb.style.display = 'inline-block';
+  }
+
+  document.getElementById('summaryCard').style.display = (done>=LEVELS) ? 'block' : 'none';
+  if(done>=LEVELS){
+    document.getElementById('summaryStats').textContent =
+      'Solved all ' + LEVELS + ' levels in ' + totalAttempts + ' total attempt' + (totalAttempts===1?'':'s') + '. Ready for the next Praxis topic.';
+  }
+}
+
+function saveNotes(){
+  state.notes = document.getElementById('masteryNotes').value;
+  saveState();
+}
+
+function resetProgress(){
+  if(!confirm('Reset all progress on this page? This clears saved answers, attempts and notes.')) return;
+  state = {solved:{}, attempts:{}, hintShown:{}, answers:{}, notes:''};
+  saveState();
+  for(var i=1;i<=LEVELS;i++){
+    document.getElementById('a'+i).value = '';
+    document.getElementById('f'+i).style.display = 'none';
+    document.getElementById('h'+i).style.display = 'none';
+    document.getElementById('s'+i).style.display = 'none';
+    document.getElementById('hintbtn'+i).style.display = 'none';
+  }
+  document.getElementById('masteryNotes').value = '';
+  render();
+}
+
+function restoreInputs(){
+  for(var i=1;i<=LEVELS;i++){
+    if(state.answers[i]) document.getElementById('a'+i).value = state.answers[i];
+    if(state.hintShown[i]) document.getElementById('h'+i).style.display = 'block';
+  }
+  if(state.notes) document.getElementById('masteryNotes').value = state.notes;
+}
+
+buildDots();
+restoreInputs();
+render();
+</script>
+</body>
+</html>

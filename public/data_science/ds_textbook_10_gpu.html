@@ -157,10 +157,10 @@ td:first-child, th:first-child{color:var(--paper);font-family:'JetBrains Mono',m
 
   <section id="first-kernel">
     <h2>Your first Mojo GPU kernel</h2>
-    <p>Mojo 1.0's GPU story splits in two: the device-side built-ins stay in the standard library — <code class="inline">from std.gpu import thread_idx, block_idx, block_dim</code> identify each thread's position in the grid — while the host-side APIs (device discovery, memory allocation, kernel launch) moved to the <code class="inline">max.gpu</code> package that ships with MAX. A kernel is an ordinary <code class="inline">def</code> function that gets compiled to GPU machine code (PTX) and launched through a <code class="inline">DeviceContext</code>.</p>
+    <p>Mojo 1.x's GPU story splits in two: the device-side built-ins stay in the standard library — <code class="inline">from std.gpu import thread_idx, block_idx, block_dim</code> identify each thread's position in the grid — while the host-side APIs (device discovery, memory allocation, kernel launch) moved to the <code class="inline">max.gpu</code> package that ships with MAX. A kernel is an ordinary <code class="inline">def</code> function that gets compiled to GPU machine code (PTX) and launched through a <code class="inline">DeviceContext</code>.</p>
 
     <div class="callout">
-      <span class="lbl">As of Mojo 1.0 final</span>
+      <span class="lbl">As of Mojo 1.x final</span>
       <p>The accelerator APIs left the standard library: <code class="inline">std.gpu.host</code>, <code class="inline">std.gpu.memory</code>, <code class="inline">std.algorithm</code>, and friends are now <code class="inline">max.gpu.*</code> and <code class="inline">max.algorithm</code> in the MAX accelerator library. Also note: <code class="inline">Int</code> and <code class="inline">UInt</code> are no longer passable to GPU kernels — use fixed-width types like <code class="inline">Int32</code> for scalar kernel arguments.</p>
     </div>
 
@@ -170,7 +170,7 @@ td:first-child, th:first-child{color:var(--paper);font-family:'JetBrains Mono',m
         <div class="tab" data-lang="python" data-group="k1"><span class="sw"></span>kernel.py</div>
       </div>
       <div class="panes" data-group="k1">
-        <div class="pane active" data-lang="mojo"><pre><span class="tok-com"># Mojo — vector addition GPU kernel (Mojo 1.0 / MAX 26.5)</span>
+        <div class="pane active" data-lang="mojo"><pre><span class="tok-com"># Mojo — vector addition GPU kernel (Mojo 1.x / MAX 26.5)</span>
 <span class="tok-kw">from</span> std.gpu <span class="tok-kw">import</span> thread_idx, block_idx, block_dim
 <span class="tok-kw">from</span> max.gpu.host <span class="tok-kw">import</span> DeviceContext, DeviceBuffer
 <span class="tok-kw">from</span> std.math <span class="tok-kw">import</span> ceildiv

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operations Research Praxis — Simplex over the Feasible Region</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c12;
+  --bg2:#0d1119;
+  --surface:#12161f;
+  --card:#141922;
+  --card2:#171d28;
+  --border:#232a38;
+  --border-soft:#1a202c;
+  --ink:#e7e9f0;
+  --muted:#8892a4;
+  --muted2:#5c6478;
+  --accent:#ff6a39;
+  --accent-dim:#ff6a3922;
+  --accent2:#ffb238;
+  --ok:#4ade80;
+  --ok-bg:#0f2416;
+  --bad:#fb7185;
+  --bad-bg:#2a1116;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Consolas,monospace;
+  --serif:'Fraunces',Georgia,serif;
+}
+*{box-sizing:border-box}
+::selection{background:var(--accent);color:#0a0c12}
+body{
+  margin:0;
+  font-family:var(--mono);
+  background:
+    radial-gradient(1200px 600px at 15% -10%, #2a170a55, transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, #1a0f2a55, transparent 55%),
+    var(--bg);
+  color:var(--ink);
+  line-height:1.65;
+  font-size:15px;
+}
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:radial-gradient(#ffffff08 1px, transparent 1px);
+  background-size:26px 26px;
+  pointer-events:none;
+  z-index:0;
+}
+header{
+  position:relative;
+  background:linear-gradient(160deg,#161014 0%,#0f1118 55%,#0a0c12 100%);
+  border-bottom:1px solid var(--border);
+  padding:52px 20px 60px;
+  overflow:hidden;
+}
+header::after{
+  content:'';
+  position:absolute; right:-120px; top:-160px;
+  width:420px; height:420px; border-radius:50%;
+  background:radial-gradient(circle, #ff6a3933, transparent 70%);
+  filter:blur(10px);
+}
+.hero{max-width:1080px;margin:auto;position:relative;z-index:1}
+.badge{
+  display:inline-block;padding:6px 14px;border:1px solid #ff6a3955;
+  color:var(--accent2);border-radius:999px;font-size:.72rem;letter-spacing:.08em;
+  margin-bottom:18px;background:#ff6a390d;text-transform:uppercase;font-weight:600;
+}
+h1{
+  font-family:var(--serif);font-weight:700;font-style:normal;
+  font-size:clamp(2rem,4.4vw,3.1rem);margin:0 0 14px;letter-spacing:-.01em;
+  color:#f5f1ea;
+}
+.subtitle{color:var(--muted);max-width:700px;font-size:1rem}
+.backlink{display:inline-block;margin-bottom:6px;color:#a9b1c9;text-decoration:none;font-size:.82rem;opacity:.8;transition:opacity .15s}
+.backlink:hover{opacity:1;color:var(--accent2)}
+
+.progress-wrap{
+  position:sticky;top:0;z-index:20;
+  background:#0a0c12ee;backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);padding:14px 18px;
+}
+.progress{max-width:1080px;margin:auto;display:flex;align-items:center;gap:16px}
+#progressText{font-size:.82rem;color:var(--muted);white-space:nowrap;font-weight:600}
+.bar{flex:1;height:8px;background:var(--surface);border-radius:99px;overflow:hidden;border:1px solid var(--border-soft)}
+.fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .4s cubic-bezier(.4,0,.2,1);box-shadow:0 0 14px #ff6a3966}
+.dots{display:flex;gap:6px}
+.dot{
+  width:11px;height:11px;border-radius:50%;border:1.5px solid var(--border);
+  background:var(--surface);cursor:pointer;transition:.2s;flex-shrink:0;
+}
+.dot:hover{border-color:var(--accent2)}
+.dot.done{background:var(--ok);border-color:var(--ok)}
+.dot.current{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+.stat-pill{font-size:.72rem;color:var(--muted2);white-space:nowrap;display:none}
+@media(min-width:720px){.stat-pill{display:inline}}
+
+.container{max-width:1080px;margin:40px auto;padding:0 18px;position:relative;z-index:1}
+.card{
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  border:1px solid var(--border);border-radius:16px;padding:30px;margin-bottom:26px;
+  box-shadow:0 10px 30px -12px #00000066;
+  opacity:0;transform:translateY(14px);
+  animation:rise .5s ease forwards;
+}
+@keyframes rise{to{opacity:1;transform:none}}
+.card.intro{animation-delay:.02s}
+.level{border-left:3px solid var(--border);transition:border-color .3s}
+.level.unlocked{border-left-color:var(--accent)}
+.level.mastered{border-left-color:var(--ok)}
+.level h2{
+  margin:0 0 4px;font-family:var(--serif);font-weight:600;font-size:1.5rem;color:#f2eee6;
+  display:flex;align-items:center;gap:10px;
+}
+.lvl-check{
+  display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;
+  border-radius:50%;border:1.5px solid var(--border);font-size:.7rem;color:var(--muted2);
+  flex-shrink:0;transition:.25s;
+}
+.mastered .lvl-check{background:var(--ok);border-color:var(--ok);color:#0a0c12}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 20px}
+.tag{background:#ff6a3915;color:var(--accent2);padding:4px 11px;border-radius:999px;font-size:.72rem;border:1px solid #ff6a3930;letter-spacing:.02em}
+p{color:#c9cedb}
+strong{color:var(--ink)}
+
+pre{
+  background:#080a0f;color:#dfe3ee;padding:20px;border-radius:12px;overflow:auto;
+  font-size:.87rem;border:1px solid var(--border-soft);position:relative;
+  box-shadow:inset 0 1px 0 #ffffff08;
+}
+pre::before{
+  content:'●  ●  ●';content:'';
+}
+code{font-family:var(--mono)}
+.kw{color:#ff8a5c;font-weight:600}
+.tp{color:#7dd3fc}
+.st{color:#a5e3a5}
+.cm{color:#5c6478;font-style:italic}
+.fn{color:#ffd580}
+
+textarea{
+  width:100%;min-height:96px;padding:14px;border:1px solid var(--border);
+  border-radius:10px;font:14px/1.5 var(--mono);resize:vertical;
+  background:var(--surface);color:var(--ink);transition:border-color .2s,box-shadow .2s;
+}
+textarea::placeholder{color:var(--muted2)}
+textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+textarea.shake{animation:shake .35s}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+
+.btnrow{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px;align-items:center}
+button{
+  border:0;border-radius:9px;padding:10px 18px;cursor:pointer;font-weight:600;
+  font-family:var(--mono);font-size:.85rem;transition:.15s;
+}
+.primary{background:var(--accent);color:#150a05}
+.primary:hover{background:var(--accent2);transform:translateY(-1px)}
+.secondary{background:var(--surface);color:#c9cedb;border:1px solid var(--border)}
+.secondary:hover{border-color:var(--accent2);color:var(--accent2)}
+.ghost{background:transparent;color:var(--muted2);border:1px dashed var(--border);padding:9px 14px;font-size:.78rem}
+.ghost:hover{color:var(--accent2);border-color:var(--accent2)}
+.attempts{font-size:.75rem;color:var(--muted2);margin-left:auto}
+
+.hint{
+  display:none;margin-top:14px;padding:13px 16px;background:#2a1c0a;border:1px solid #6b4a1f;
+  border-radius:10px;color:#f3c98a;font-size:.85rem;
+}
+.solution{display:none;margin-top:18px;padding:20px;background:#0d1f14;border:1px solid #1e4a2d;border-radius:12px}
+.solution strong{color:#8be6a8}
+.feedback{display:none;margin-top:14px;padding:12px 15px;border-radius:10px;font-size:.87rem;font-weight:600}
+.correct{background:var(--ok-bg);color:var(--ok);border:1px solid #1e4a2d}
+.incorrect{background:var(--bad-bg);color:var(--bad);border:1px solid #4a1e28}
+
+.tip{background:#12100a;border:1px solid #3a2a10;padding:16px 18px;border-radius:12px;color:#ecd9ad}
+.tip code{color:var(--accent2)}
+
+.mastery li{margin:9px 0;color:#c9cedb}
+.mastery textarea{margin-top:14px;min-height:70px}
+
+.summary-card{
+  background:linear-gradient(135deg,#171014,#0f1118);border:1px solid var(--accent);
+  text-align:center;padding:40px 28px;
+}
+.summary-card h3{font-family:var(--serif);font-size:1.7rem;margin:0 0 8px;color:#f5f1ea}
+.summary-card p{color:var(--muted)}
+.confetti{position:fixed;top:-20px;font-size:1.4rem;pointer-events:none;z-index:50;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(360deg);opacity:.2}}
+
+footer{text-align:center;color:var(--muted2);padding:40px 20px;font-size:.85rem;position:relative;z-index:1}
+footer a{color:var(--accent2);text-decoration:none}
+footer a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<header>
+<div class="hero">
+<a class="backlink" href="../../index.html">&larr; TutMe🔥 Learning Hub</a><br>
+<a class="backlink" href="../index.html">&larr; Praxis shelf</a>
+<div><span class="badge">OPERATIONS RESEARCH &bull; PRAXIS &bull; PROGRESSIVE DRILLS</span></div>
+<h1>Simplex over the Feasible Region</h1>
+<p class="subtitle">Learn by doing. Start with one objective value and progressively move toward constraints, slack, corner-point evaluation and the entering-variable rule.</p>
+</div>
+</header>
+
+<div class="progress-wrap">
+<div class="progress">
+<strong id="progressText">Level 1 of 6</strong>
+<div class="bar"><div class="fill" id="fill"></div></div>
+<div class="dots" id="dots"></div>
+<span class="stat-pill" id="statPill">0 attempts</span>
+</div>
+</div>
+
+<main class="container">
+<section class="card intro">
+<h2 style="font-family:var(--serif);font-weight:600">How the Praxis Works</h2>
+<ol>
+<li>Read the code.</li>
+<li>Predict what happens.</li>
+<li>Submit your answer.</li>
+<li>If correct, move to the next level.</li>
+<li>If incorrect, try again or reveal the solution.</li>
+</ol>
+<div class="tip">
+<strong>Core concept:</strong> An LP is a linear objective plus linear constraints. The feasible region is a polytope and the optimum sits at a corner. Each simplex pivot walks one edge to a better corner; with x₁ + x₂ ≤ 6 and 2x₁ + x₂ ≤ 8, the optimum of Z = 4x₁ + 3x₂ is (2, 4) with Z = 20.
+</div>
+</section>
+
+<section class="card level" data-level="1">
+<h2><span class="lvl-check">1</span>Level 1 — The Objective at a Point</h2>
+<div class="meta"><span class="tag">Beginner</span><span class="tag">Objective</span></div>
+<p><strong>Challenge:</strong> What is printed?</p>
+<pre><code><span class="kw">def</span> <span class="fn">main</span>():
+    <span class="kw">var</span> x1 = 1.0
+    <span class="kw">var</span> x2 = 1.0
+    <span class="fn">print</span>(4.0 * x1 + 3.0 * x2)</code></pre>
+<textarea id="a1" placeholder="Write the output or answer here..." onkeydown="onKey(event,1,'7')"></textarea>
+<div class="btnrow">
+<button class="primary" onclick="check(1,'7')">Check Answer</button>
+<button class="secondary" onclick="show(1)">Show Solution</button>
+<button class="ghost" id="hintbtn1" onclick="showHint(1)" style="display:none">💡 Hint</button>
+<span class="attempts" id="att1"></span>
+</div>
+<div id="h1" class="hint">Only the objective runs here — no feasibility check in the code. Drop x₁ and x₂ straight into <code>Z = 4x₁ + 3x₂</code> and add up the weighted contributions.</div>
+<div id="f1" class="feedback"></div>
+<div id="s1" class="solution">
+<strong>Solution</strong>
+<pre><code>7.0</code></pre>
+<p>Z = 4x₁ + 3x₂ at (1, 1) is 4 + 3 = 7. The objective tells you how good a point is; the constraints decide whether you are allowed to use it.</p>
+</div>
+</section>
+
+<section class="card level" data-level="2">
+<h2><span class="lvl-check">2</span>Level 2 — Both Constraints at the Optimum</h2>
+<div class="meta"><span class="tag">Beginner+</span><span class="tag">Constraints</span></div>
+<p><strong>Challenge:</strong> What are the two constraint values at (x₁, x₂) = (2, 4)?</p>
+<pre><code><span class="kw">def</span> <span class="fn">main</span>():
+    <span class="kw">var</span> x1 = 2.0
+    <span class="kw">var</span> x2 = 4.0
+    <span class="fn">print</span>(x1 + x2)
+    <span class="fn">print</span>(2.0 * x1 + x2)</code></pre>
+<textarea id="a2" placeholder="Write the output or answer here..." onkeydown="onKey(event,2,'6\n8')"></textarea>
+<div class="btnrow">
+<button class="primary" onclick="check(2,'6\n8')">Check Answer</button>
+<button class="secondary" onclick="show(2)">Show Solution</button>
+<button class="ghost" id="hintbtn2" onclick="showHint(2)" style="display:none">💡 Hint</button>
+<span class="attempts" id="att2"></span>
+</div>
+<div id="h2" class="hint">Evaluate the two left-hand sides as ordinary sums — each prints one number. Given the point, both values should land exactly on their constraint limits.</div>
+<div id="f2" class="feedback"></div>
+<div id="s2" class="solution">
+<strong>Solution</strong>
+<pre><code>6.0
+8.0</code></pre>
+<p>x₁ + x₂ = 6 and 2x₁ + x₂ = 8 — exactly the two limits. A vertex where every constraint is binding like this is where LPs get solved.</p>
+</div>
+</section>
+
+<section class="card level" data-level="3">
+<h2><span class="lvl-check">3</span>Level 3 — Feasibility</h2>
+<div class="meta"><span class="tag">Intermediate</span><span class="tag">Feasible Region</span></div>
+<p><strong>Challenge:</strong> What is printed for x₁ = 5, x₂ = 2, and is the point feasible?</p>
+<pre><code><span class="kw">def</span> <span class="fn">main</span>():
+    <span class="kw">var</span> x1 = 5.0
+    <span class="kw">var</span> x2 = 2.0
+    <span class="fn">print</span>(x1 + x2)</code></pre>
+<textarea id="a3" placeholder="Write the output or answer here..." onkeydown="onKey(event,3,'7')"></textarea>
+<div class="btnrow">
+<button class="primary" onclick="check(3,'7')">Check Answer</button>
+<button class="secondary" onclick="show(3)">Show Solution</button>
+<button class="ghost" id="hintbtn3" onclick="showHint(3)" style="display:none">💡 Hint</button>
+<span class="attempts" id="att3"></span>
+</div>
+<div id="h3" class="hint">The program prints a plain sum; feasibility is decided by the given bound, not by the code. Compare the printed sum against the ≤ 6 cap to answer both parts.</div>
+<div id="f3" class="feedback"></div>
+<div id="s3" class="solution">
+<strong>Solution</strong>
+<pre><code>7.0</code></pre>
+<p>x₁ + x₂ = 7, but the constraint is ≤ 6 — violated, so (5, 2) sits outside the feasible region and must be rejected no matter how high its objective.</p>
+</div>
+</section>
+
+<section class="card level" data-level="4">
+<h2><span class="lvl-check">4</span>Level 4 — Slack Variables</h2>
+<div class="meta"><span class="tag">Intermediate+</span><span class="tag">Slack</span></div>
+<p><strong>Challenge:</strong> At the optimum (2, 4), how much of each resource is left over? (slack₁ = 6 − (x₁+x₂), slack₂ = 8 − (2x₁+x₂))</p>
+<pre><code><span class="kw">def</span> <span class="fn">main</span>():
+    <span class="kw">var</span> x1 = 2.0
+    <span class="kw">var</span> x2 = 4.0
+    <span class="kw">var</span> s1 = 6.0 - (x1 + x2)
+    <span class="kw">var</span> s2 = 8.0 - (2.0 * x1 + x2)
+    <span class="fn">print</span>(s1, s2)</code></pre>
+<textarea id="a4" placeholder="Write the output or answer here..." onkeydown="onKey(event,4,'0 0')"></textarea>
+<div class="btnrow">
+<button class="primary" onclick="check(4,'0 0')">Check Answer</button>
+<button class="secondary" onclick="show(4)">Show Solution</button>
+<button class="ghost" id="hintbtn4" onclick="showHint(4)" style="display:none">💡 Hint</button>
+<span class="attempts" id="att4"></span>
+</div>
+<div id="h4" class="hint">Slack is defined as limit minus usage. At (2, 4) each constraint binds exactly, so each slack is the difference of two equal numbers.</div>
+<div id="f4" class="feedback"></div>
+<div id="s4" class="solution">
+<strong>Solution</strong>
+<pre><code>0.0 0.0</code></pre>
+<p>Both constraints bind exactly, so both slacks are 0 — no capacity is wasted. That is why both resources carry a shadow price at the optimum.</p>
+</div>
+</section>
+
+<section class="card level" data-level="5">
+<h2><span class="lvl-check">5</span>Level 5 — Corner-Point Sweep</h2>
+<div class="meta"><span class="tag">Advanced</span><span class="tag">Vertices</span></div>
+<p><strong>Challenge:</strong> The feasible corners of this LP are (0,0), (4,0), (0,6), (2,4). What is the best Z found by this sweep?</p>
+<pre><code><span class="kw">def</span> <span class="fn">main</span>():
+    <span class="kw">var</span> z1 = 4.0 * 0.0 + 3.0 * 0.0   <span class="cm"># (0, 0)</span>
+    <span class="kw">var</span> z2 = 4.0 * 4.0 + 3.0 * 0.0   <span class="cm"># (4, 0)</span>
+    <span class="kw">var</span> z3 = 4.0 * 0.0 + 3.0 * 6.0   <span class="cm"># (0, 6)</span>
+    <span class="kw">var</span> z4 = 4.0 * 2.0 + 3.0 * 4.0   <span class="cm"># (2, 4)</span>
+    <span class="kw">var</span> best = z1
+    <span class="kw">if</span> z2 &gt; best:
+        best = z2
+    <span class="kw">if</span> z3 &gt; best:
+        best = z3
+    <span class="kw">if</span> z4 &gt; best:
+        best = z4
+    <span class="fn">print</span>(best)</code></pre>
+<textarea id="a5" placeholder="Write the output or answer here..." onkeydown="onKey(event,5,'20')"></textarea>
+<div class="btnrow">
+<button class="primary" onclick="check(5,'20')">Check Answer</button>
+<button class="secondary" onclick="show(5)">Show Solution</button>
+<button class="ghost" id="hintbtn5" onclick="showHint(5)" style="display:none">💡 Hint</button>
+<span class="attempts" id="att5"></span>
+</div>
+<div id="h5" class="hint">Track <code>best</code> across the four updates — it only changes when a candidate beats the current winner. Compute the four Z values and keep the largest one.</div>
+<div id="f5" class="feedback"></div>
+<div id="s5" class="solution">
+<strong>Solution</strong>
+<pre><code>20.0</code></pre>
+<p>Z at the corners: 0, 16, 18, 20 — the best is 20 at (2, 4). By the fundamental theorem of LP the optimum lies at a corner, so simplex never searches the interior.</p>
+</div>
+</section>
+
+<section class="card level" data-level="6">
+<h2><span class="lvl-check">6</span>Level 6 — Expert Challenge</h2>
+<div class="meta"><span class="tag">Advanced</span><span class="tag">Code Reasoning Modification</span></div>
+<p><strong>Challenge:</strong> The initial tableau's objective row holds the negated costs [−4, −3] for x₁, x₂. Complete the loop that applies Dantzig's rule — enter the column with the MOST negative reduced cost. What column (1-based) enters?</p>
+<pre><code><span class="kw">from</span> std.collections <span class="kw">import</span> <span class="tp">List</span>
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="kw">var</span> reduced = <span class="tp">List</span>[<span class="tp">Float64</span>](-4.0, -3.0)
+    <span class="kw">var</span> enter = 0
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(1, <span class="fn">len</span>(reduced)):
+        pass                     <span class="cm"># your line</span>
+    <span class="fn">print</span>(enter + 1)</code></pre>
+<textarea id="a6" placeholder="Write the output or answer here..." onkeydown="onKey(event,6,'1')"></textarea>
+<div class="btnrow">
+<button class="primary" onclick="check(6,'1')">Check Answer</button>
+<button class="secondary" onclick="show(6)">Show Solution</button>
+<button class="ghost" id="hintbtn6" onclick="showHint(6)" style="display:none">💡 Hint</button>
+<span class="attempts" id="att6"></span>
+</div>
+<div id="h6" class="hint">Dantzig's rule scans for the most negative reduced cost. The two candidates are −4 and −3, and the loop compares each against the current <code>enter</code>; your answer is the 1-based column index, not the value itself.</div>
+<div id="f6" class="feedback"></div>
+<div id="s6" class="solution">
+<strong>Solution</strong>
+<pre><code>Possible solution
+
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(1, <span class="fn">len</span>(reduced)):
+    <span class="kw">if</span> reduced[i] &lt; reduced[enter]:
+        enter = i
+<span class="fn">print</span>(enter + 1)   <span class="cm"># 1</span></code></pre>
+<p>Dantzig's rule picks the column whose reduced cost is most negative: −4 beats −3, so x₁ (column 1) enters the basis first. The ratio test then decides which basic variable leaves — the pivot that walks the simplex to the next corner.</p>
+</div>
+</section>
+
+<section class="card">
+<h2 style="font-family:var(--serif);font-weight:600">Mastery Check</h2>
+<p>Before moving on, explain these ideas in your own words:</p>
+<ul class="mastery">
+<li>What makes a candidate point feasible?</li>
+<li>What does a zero slack at a vertex mean?</li>
+<li>Why does the simplex method only inspect corner points?</li>
+<li>How does the Dantzig most-negative rule choose the entering variable?</li>
+</ul>
+<textarea id="masteryNotes" placeholder="Jot your own explanations here — saved automatically as you type..." oninput="saveNotes()"></textarea>
+<p><em>Mastery rule:</em> if you can predict every output without running the program and explain why, proceed to the next Praxis topic. If not, return to Level 3 and repeat.</p>
+</section>
+
+<section class="card summary-card" id="summaryCard" style="display:none">
+<h3>🔥 All Six Levels Mastered</h3>
+<p id="summaryStats">Nicely done — ownership, borrowing and moves are locked in.</p>
+<button class="ghost" onclick="resetProgress()" style="margin-top:14px">Reset progress</button>
+</section>
+</main>
+
+<footer>
+Operations Research Programming Praxis &bull; Learn &rarr; Attempt &rarr; Check &rarr; Retry &rarr; Master<br>
+<a href="prog_12_ecef.html">&larr; Previous: Geodetic to ECEF</a><br><a href="../../progressive.html">Also: Scope &amp; Shadowing course &rarr;</a><br><a href="../index.html">Back to the Praxis shelf</a>
+</footer>
+
+<script>
+var LEVELS = 6;
+var STORE_KEY = 'praxis_prog13_simplex_v2';
+
+var state = loadState();
+
+function loadState(){
+  try{
+    var raw = localStorage.getItem(STORE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return {solved:{}, attempts:{}, hintShown:{}, answers:{}, notes:''};
+}
+function saveState(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
+}
+
+function norm(s){return s.trim().toLowerCase().replace(/\s+/g,' ').replace(/,$/,'');}
+
+function onKey(e, n, expected){
+  if(e.key === 'Enter' && (e.metaKey || e.ctrlKey)){
+    e.preventDefault();
+    check(n, expected);
+  }
+}
+
+function check(n, expected){
+  var ta = document.getElementById('a'+n);
+  var v = ta.value;
+  var f = document.getElementById('f'+n);
+  var a = norm(v), b = norm(expected);
+  var ok = (a === b);
+  if(!ok){
+    var fa = parseFloat(a), fb = parseFloat(b);
+    if(!isNaN(fa) && !isNaN(fb) && a.length < 6 && Math.abs(fa-fb) <= Math.max(0.011, Math.abs(fb)*0.005)) ok = true;
+  }
+  f.style.display = 'block';
+  state.answers[n] = v;
+
+  if(ok){
+    f.className = 'feedback correct';
+    f.textContent = '✅ Correct! Move on to the next level.';
+    if(!state.solved[n]){
+      state.solved[n] = true;
+      celebrate(n);
+    }
+  } else {
+    f.className = 'feedback incorrect';
+    f.textContent = '❌ Not quite. Re-read the code, predict again, or reveal the solution.';
+    state.attempts[n] = (state.attempts[n]||0) + 1;
+    ta.classList.remove('shake'); void ta.offsetWidth; ta.classList.add('shake');
+    if(state.attempts[n] >= 2){
+      document.getElementById('hintbtn'+n).style.display = 'inline-block';
+    }
+  }
+  saveState();
+  render();
+}
+
+function showHint(n){
+  var h = document.getElementById('h'+n);
+  h.style.display = (h.style.display === 'block') ? 'none' : 'block';
+  state.hintShown[n] = true;
+  saveState();
+}
+
+function show(n){
+  var s = document.getElementById('s'+n);
+  s.style.display = (s.style.display === 'block') ? 'none' : 'block';
+}
+
+function celebrate(n){
+  var colors = ['🔥','⚡','🟠','✨'];
+  for(var i=0;i<14;i++){
+    (function(i){
+      setTimeout(function(){
+        var el = document.createElement('div');
+        el.className = 'confetti';
+        el.textContent = colors[i % colors.length];
+        el.style.left = (Math.random()*100)+'vw';
+        el.style.animationDuration = (1.6 + Math.random()*1.2)+'s';
+        el.style.fontSize = (1 + Math.random()*0.8)+'rem';
+        document.body.appendChild(el);
+        setTimeout(function(){ el.remove(); }, 3000);
+      }, i*35);
+    })(i);
+  }
+}
+
+function buildDots(){
+  var wrap = document.getElementById('dots');
+  wrap.innerHTML = '';
+  for(var i=1;i<=LEVELS;i++){
+    var d = document.createElement('div');
+    d.className = 'dot';
+    d.title = 'Level ' + i;
+    d.onclick = (function(i){ return function(){
+      var card = document.querySelector('.level[data-level="'+i+'"]');
+      if(card) card.scrollIntoView({behavior:'smooth', block:'start'});
+    };})(i);
+    wrap.appendChild(d);
+  }
+}
+
+function render(){
+  var done = Object.keys(state.solved).filter(function(k){return state.solved[k];}).length;
+  var dots = document.querySelectorAll('.dot');
+  var nextUnsolved = null;
+  for(var i=1;i<=LEVELS;i++){
+    var solved = !!state.solved[i];
+    if(dots[i-1]){
+      dots[i-1].classList.toggle('done', solved);
+      dots[i-1].classList.toggle('current', !solved && nextUnsolved===null);
+    }
+    if(!solved && nextUnsolved===null) nextUnsolved = i;
+
+    var card = document.querySelector('.level[data-level="'+i+'"]');
+    if(card){
+      card.classList.toggle('mastered', solved);
+      card.classList.toggle('unlocked', !solved);
+      var chk = card.querySelector('.lvl-check');
+      chk.textContent = solved ? '✓' : i;
+    }
+  }
+
+  document.getElementById('progressText').textContent =
+    'Level ' + Math.min(done+1, LEVELS) + ' of ' + LEVELS + (done>=LEVELS ? ' — mastered!' : '');
+  document.getElementById('fill').style.width = (done/LEVELS*100) + '%';
+
+  var totalAttempts = Object.values(state.attempts).reduce(function(a,b){return a+b;},0);
+  document.getElementById('statPill').textContent = totalAttempts + ' attempt' + (totalAttempts===1?'':'s') + ' logged';
+
+  for(var i=1;i<=LEVELS;i++){
+    var a = state.attempts[i]||0;
+    var el = document.getElementById('att'+i);
+    if(el) el.textContent = a>0 ? (a + ' attempt' + (a===1?'':'s')) : '';
+    var hb = document.getElementById('hintbtn'+i);
+    if(hb && a>=2) hb.style.display = 'inline-block';
+  }
+
+  document.getElementById('summaryCard').style.display = (done>=LEVELS) ? 'block' : 'none';
+  if(done>=LEVELS){
+    document.getElementById('summaryStats').textContent =
+      'Solved all ' + LEVELS + ' levels in ' + totalAttempts + ' total attempt' + (totalAttempts===1?'':'s') + '. Ready for the next Praxis topic.';
+  }
+}
+
+function saveNotes(){
+  state.notes = document.getElementById('masteryNotes').value;
+  saveState();
+}
+
+function resetProgress(){
+  if(!confirm('Reset all progress on this page? This clears saved answers, attempts and notes.')) return;
+  state = {solved:{}, attempts:{}, hintShown:{}, answers:{}, notes:''};
+  saveState();
+  for(var i=1;i<=LEVELS;i++){
+    document.getElementById('a'+i).value = '';
+    document.getElementById('f'+i).style.display = 'none';
+    document.getElementById('h'+i).style.display = 'none';
+    document.getElementById('s'+i).style.display = 'none';
+    document.getElementById('hintbtn'+i).style.display = 'none';
+  }
+  document.getElementById('masteryNotes').value = '';
+  render();
+}
+
+function restoreInputs(){
+  for(var i=1;i<=LEVELS;i++){
+    if(state.answers[i]) document.getElementById('a'+i).value = state.answers[i];
+    if(state.hintShown[i]) document.getElementById('h'+i).style.display = 'block';
+  }
+  if(state.notes) document.getElementById('masteryNotes').value = state.notes;
+}
+
+buildDots();
+restoreInputs();
+render();
+</script>
+</body>
+</html>

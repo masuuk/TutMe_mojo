@@ -3,7 +3,7 @@
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chapter 2 — Getting Started with Mojo · Mojo 1.0 Textbook</title>
+<title>Chapter 2 — Getting Started with Mojo · Mojo 1.x Textbook</title>
 <link rel="preconnect" href="https://fonts.googleapis.com/">
 <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
 
@@ -131,7 +131,7 @@ pre .kw{color:#c084fc;}pre .fn{color:#60a5fa;}pre .str{color:#4ade80;}pre .num{c
 
   <section id="installation">
     <h2>Installation</h2>
-    <p>Mojo is distributed as part of the <strong>Mojo SDK</strong>, which includes the compiler, debugger, and standard library. The recommended way to install it is through <code class="inline">curl</code> on macOS and Linux. Since Mojo 1.0, the entire language is also <strong>open source</strong> under Apache 2.0 (with LLVM exceptions), so you can build the compiler and standard library yourself from <a class="inline" href="https://github.com/modular/modular" target="_blank" rel="noopener">github.com/modular/modular</a>.</p>
+    <p>Mojo is distributed as part of the <strong>Mojo SDK</strong>, which includes the compiler, debugger, and standard library. The recommended way to install it is through <code class="inline">curl</code> on macOS and Linux. Since Mojo 1.x, the entire language is also <strong>open source</strong> under Apache 2.0 (with LLVM exceptions), so you can build the compiler and standard library yourself from <a class="inline" href="https://github.com/modular/modular" target="_blank" rel="noopener">github.com/modular/modular</a>.</p>
 
     <div class="code-tabs">
       <div class="tabs-header">
@@ -184,7 +184,7 @@ git clone https://github.com/modular/modular.git
 
   <section id="syntax">
     <h2>Basic Syntax: one keyword, <code class="inline">def</code></h2>
-    <p>Mojo 1.0 defines all functions with a single keyword: <code class="inline">def</code>. How strict your function is depends on whether you annotate it. Understanding this is critical to writing idiomatic Mojo.</p>
+    <p>Mojo 1.x defines all functions with a single keyword: <code class="inline">def</code>. How strict your function is depends on whether you annotate it. Understanding this is critical to writing idiomatic Mojo.</p>
 
     <h3>An unannotated <code class="inline">def</code></h3>
     <p>An unannotated <code class="inline">def</code> behaves almost exactly like a Python function. Parameters are dynamically typed, and you get the full flexibility (and looseness) of Python semantics. This makes it easy to port Python code to Mojo without changing every line.</p>
@@ -239,7 +239,7 @@ git clone https://github.com/modular/modular.git
 
   <section id="variables">
     <h2>Variables: <code class="inline">var</code></h2>
-    <p>Mojo 1.0 declares all local variables with a single keyword:</p>
+    <p>Mojo 1.x declares all local variables with a single keyword:</p>
     <ul>
       <li><strong><code class="inline">var</code></strong> — declares a variable. The keyword is mandatory: assigning to a new name without <code class="inline">var</code> is a deprecation error.</li>
     </ul>
@@ -439,7 +439,7 @@ avg = total / <span class="fn">len</span>(readings)
 
     <div class="quiz">
       <div class="qlbl">Quick Check 2</div>
-      <div class="qtext">Which keyword declares a local variable in Mojo 1.0?</div>
+      <div class="qtext">Which keyword declares a local variable in Mojo 1.x?</div>
       <div class="opts" id="quiz2">
         <button class="opt" data-correct="true"><code class="inline">var</code></button>
         <button class="opt" data-correct="false"><code class="inline">let</code></button>

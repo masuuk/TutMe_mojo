@@ -247,7 +247,7 @@ td:first-child, th:first-child{color:var(--paper);font-family:'JetBrains Mono',m
     <h2>Where Mojo actually fits today</h2>
     <p>It would be dishonest to present Mojo as a finished, drop-in replacement for Python — it isn't, and the language's own team is candid about that. Some things worth knowing before you go further into this book:</p>
     <div class="callout beta">
-      <span class="lbl">⚠️ Honest caveats, as of Mojo 1.0 — August 2026</span>
+      <span class="lbl">⚠️ Honest caveats, as of Mojo 1.x — August 2026</span>
       <p>Mojo is <b>not</b> a full superset of Python — most Python code does not simply run unmodified as Mojo. User-defined <b>classes</b> in the Python sense are still on the roadmap rather than shipped; Mojo instead uses <code class="inline">struct</code> types. There's no mature <b>async</b> story yet. The package ecosystem is small compared to Python's. What 1.0 does guarantee is <b>source stability</b>: code written against the stable language surface keeps compiling. And since the whole language — compiler, tooling, and standard library — is now open source under Apache 2.0 (with LLVM exceptions) at <code class="inline">github.com/modular/modular</code>, you can read the implementation itself when docs leave you guessing.</p>
     </div>
     <p>So who is this book for, realistically? People who want to:</p>
@@ -277,7 +277,7 @@ td:first-child, th:first-child{color:var(--paper);font-family:'JetBrains Mono',m
       <div class="qlbl">✅ Quick check</div>
       <div class="qtext">As of this chapter (August 2026), which of these is accurate about Mojo?</div>
       <div class="opts" id="quiz2">
-        <button class="opt" data-correct="false">Mojo 1.0 has been stable and final since 2024.</button>
+        <button class="opt" data-correct="false">Mojo 1.x has been stable and final since 2024.</button>
         <button class="opt" data-correct="true">Mojo shipped 1.0 with source stability in August 2026, and its compiler, toolchain, and standard library are now open source under Apache 2.0.</button>
         <button class="opt" data-correct="false">Mojo fully supports Python-style classes and async/await as of 1.0.</button>
         <button class="opt" data-correct="false">Mojo cannot call any existing Python libraries.</button>

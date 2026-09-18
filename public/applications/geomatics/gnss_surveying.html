@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>GNSS Surveying — Coordinate Frames, Site Calibration &amp; Georeferencing (Part 1 · Python + Mojo 1.0)</title>
+<title>GNSS Surveying — Coordinate Frames, Site Calibration &amp; Georeferencing (Part 1 · Python + Mojo 1.x)</title>
 <style>
   :root {
     --bg: #0f1720;
@@ -359,7 +359,7 @@
   <p class="lede fade-in">
     A complete, code-backed tutorial on <b>coordinate frames &amp; transformations</b>,
     <b>site calibration</b>, <b>georeferencing</b> and <b>GPS/GNSS theory</b> — every core
-    algorithm implemented in both Python and Mojo&nbsp;1.0, with worked surveying examples
+    algorithm implemented in both Python and Mojo&nbsp;1.x, with worked surveying examples
     and quality-control procedures throughout. The course continues in
     <b>Part&nbsp;2 — The Karney-Krüger Equations</b>, the Transverse Mercator / UTM
     projection deep dive that picks up exactly where this part's projection thread ends.
@@ -957,7 +957,7 @@ params, v, s, r = <span class="fn">calibrate_2d</span>(local, global_)
 </code></pre>
   </div>
 
-  <h3>3.2 Mojo 1.0 — least-squares 4-parameter calibration</h3>
+  <h3>3.2 Mojo 1.x — least-squares 4-parameter calibration</h3>
   <p class="topic-brief">
     No NumPy in Mojo: form AᵀA and AᵀL by hand, then solve the 4×4 normal equations with Gaussian
     elimination and partial pivoting — the same pattern reused in the georeferencing and GPS code.
@@ -1231,7 +1231,7 @@ params = <span class="fn">fit_affine</span>(gcps)
 </code></pre>
   </div>
 
-  <h3>4.3 Mojo 1.0 — affine fit from GCPs</h3>
+  <h3>4.3 Mojo 1.x — affine fit from GCPs</h3>
   <p class="topic-brief">
     The same affine fit without a linear-algebra library: accumulate a 6×6 normal matrix and a
     right-hand side, then solve the augmented 6×7 system in place.
@@ -1380,7 +1380,7 @@ points = [(<span class="num">100</span>, <span class="num">200</span>), (<span c
   </div>
 
   <div class="note">
-    <b>Mojo 1.0 syntax used in this tutorial:</b> functions are declared with
+    <b>Mojo 1.x syntax used in this tutorial:</b> functions are declared with
     <code>def</code> (the <code>fn</code> keyword is deprecated as of Mojo v26.2);
     <code>alias</code> has been replaced by <code>comptime</code> for compile-time constants;
     <code>let</code> is gone — all local bindings use <code>var</code>; structs use
@@ -1500,7 +1500,7 @@ sol = <span class="fn">gps_fix</span>(sats, ranges)
 </code></pre>
   </div>
 
-  <h3>5.3 Mojo 1.0 — iterative least-squares GPS fix</h3>
+  <h3>5.3 Mojo 1.x — iterative least-squares GPS fix</h3>
   <p class="topic-brief">
     The same Newton-style iteration in dependency-free Mojo: build the Jacobian each epoch, form
     the 4×4 normal equations, solve, update and test for convergence.
@@ -1877,7 +1877,7 @@ horizontal = <span class="typ">np</span>.linalg.<span class="fn">norm</span>(v, 
       deliberately treated the projection as one row in a table. Part 2 opens that row up: the
       n-series expansion, conformal latitude, forward and inverse (Newton) transformations,
       Clenshaw summation, Southern African grid constants (UTM 36S, LO belts) — with the same
-      Python + Mojo 1.0 dual implementations throughout.
+      Python + Mojo 1.x dual implementations throughout.
     </p>
   </div>
   <a class="continue-btn" href="karney_krueger_equations.html">Continue to Part 2 →</a>
@@ -1890,7 +1890,7 @@ horizontal = <span class="typ">np</span>.linalg.<span class="fn">norm</span>(v, 
     <div style="font-weight:700;color:#bde0fe;letter-spacing:.06em;">GNSS SURVEYING — PART 1</div>
     <p style="margin:10px 0 0;">Part 1 of a two-part course ·
       <a href="karney_krueger_equations.html" style="color:var(--accent);">Part 2 — The Karney-Krüger Equations (Transverse Mercator / UTM)</a><br>
-      Python 3.x and Mojo 1.0 · September 2026<br>
+      Python 3.x and Mojo 1.x · September 2026<br>
     Educational material. CRSs, datum transformations, geoid models and survey tolerances must be
     selected for the specific survey jurisdiction, equipment and project specification.</p>
   </div>

@@ -3,7 +3,7 @@
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chapter 1 — Why Mojo for DS/ML? · Mojo 1.0</title>
+<title>Chapter 1 — Why Mojo for DS/ML? · Mojo 1.x</title>
 <style>
 :root{
   --bg:#0f1115;--surface:#16181d;--surface-hover:#1e2128;
@@ -92,7 +92,7 @@ code{font-family:var(--font-mono);font-size:0.88em;background:rgba(108,92,231,0.
 <div class="progress" id="progress" style="width: 87.9634%;"></div>
 
 <header class="header">
-  <a class="brand" href="../mojo_v1/mojo_book_2.html"><span class="icon">M</span> Mojo 1.0</a>
+  <a class="brand" href="../mojo_v1/mojo_book_2.html"><span class="icon">M</span> Mojo 1.x</a>
   <span class="chnum">Chapter 01 / 17</span> <a href="../mojo_v1/mojo_book_1.html" style="font-size:.8em;opacity:.75;text-decoration:underline;margin-left:8px;">← Book 1 · Language Fundamentals</a>
 </header>
 
@@ -141,7 +141,7 @@ code{font-family:var(--font-mono);font-size:0.88em;background:rgba(108,92,231,0.
 
   <section id="install">
     <h2>Getting Mojo onto Your Machine</h2>
-    <p>Mojo 1.0 runs on Mac, Linux, or Windows with WSL. You can install it with any Python or Conda package manager, but the two recommended routes are <code>uv</code> and <code>pixi</code>:</p>
+    <p>Mojo 1.x runs on Mac, Linux, or Windows with WSL. You can install it with any Python or Conda package manager, but the two recommended routes are <code>uv</code> and <code>pixi</code>:</p>
 
     <div class="code-playground">
       <div class="tabs"><div class="tab active" data-target="install-uv">uv</div><div class="tab" data-target="install-pixi">pixi</div></div>
@@ -188,7 +188,7 @@ Temperature Analyzer</code></pre>
 
     <div class="code-playground">
       <div class="tabs">
-        <div class="tab active" data-target="mojo">Mojo 1.0</div>
+        <div class="tab active" data-target="mojo">Mojo 1.x</div>
         <div class="tab" data-target="python">Python</div>
       </div>
       <div class="code-content">
@@ -233,7 +233,7 @@ Temperature Analyzer</code></pre>
 
   <section id="milestone">
     <h2>The 1.0 Milestone</h2>
-    <p>Mojo 1.0 shipped with source stability in 2026, and the compiler, standard library, and toolchain are open source under Apache 2.0 (with LLVM exceptions) in the <code>modular/modular</code> GitHub repository. For a data scientist, that matters more than a version number: the language you're betting a pipeline on is now inspectable, forkable, and community-driven.</p>
+    <p>Mojo 1.x shipped with source stability in 2026, and the compiler, standard library, and toolchain are open source under Apache 2.0 (with LLVM exceptions) in the <code>modular/modular</code> GitHub repository. For a data scientist, that matters more than a version number: the language you're betting a pipeline on is now inspectable, forkable, and community-driven.</p>
     <p>The 1.0 release also settled the syntax this series teaches: <code>def</code> is the one function keyword (<code>fn</code> removed), <code>var</code> is mandatory (<code>let</code> removed), <code>mut</code> replaces <code>inout</code>, <code>comptime</code> replaces <code>alias</code>, and t-strings (<code>t"...{expr}..."</code>) give you interpolation without f-string allocation churn.</p>
   </section>
 

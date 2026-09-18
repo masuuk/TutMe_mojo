@@ -834,7 +834,7 @@
             </h1>
             <p class="hero-subtitle">
                 Master the mathematics of money growth with worked examples in
-                Python and Mojo 1.0 side by side, and beautifully explained financial formulas.
+                Python and Mojo 1.x side by side, and beautifully explained financial formulas.
             </p>
             <div class="hero-formula-preview">
                 <span class="formula">FV</span> = <span class="formula">PV</span> × <span class="formula">(1 + r)<sup>n</sup></span>
@@ -899,7 +899,7 @@ result = future_value(pv, rate, years)
                     </div>
                 </div>
                 <div class="card">
-                    <h3>🔥 Mojo 1.0 Implementation</h3>
+                    <h3>🔥 Mojo 1.x Implementation</h3>
                     <p>Same formula, typed end to end — <code>Float64</code> in and out, so the compiler checks every money computation and the result needs no <code>round()</code> boxing:</p>
                     <div class="code-section">
                         <h4><span class="python-icon">⚡</span> Mojo Code</h4>
@@ -957,7 +957,7 @@ factor = fvif(<span class="number">7</span>, <span class="number">10</span>)
                     </div>
                 </div>
                 <div class="card">
-                    <h3>🔥 Mojo 1.0 Implementation</h3>
+                    <h3>🔥 Mojo 1.x Implementation</h3>
                     <p>One factor, one line — and because the exponent is an <code>Int</code> promoted explicitly, there's no ambiguity about what <code>pow</code> receives:</p>
                     <div class="code-section">
                         <h4><span class="python-icon">⚡</span> Mojo Code</h4>
@@ -1020,7 +1020,7 @@ result = fv_annuity(<span class="number">500</span>, <span class="number">6</spa
                     </div>
                 </div>
                 <div class="card">
-                    <h3>🔥 Mojo 1.0 Implementation</h3>
+                    <h3>🔥 Mojo 1.x Implementation</h3>
                     <p>The FVIFA formula ports line for line — and when the payments come as a whole portfolio, the same loop runs over a <code>Tensor</code> of terms at compiled speed:</p>
                     <div class="code-section">
                         <h4><span class="python-icon">⚡</span> Mojo Code</h4>
@@ -1083,7 +1083,7 @@ result = fv_annuity_due(<span class="number">500</span>, <span class="number">6<
                     </div>
                 </div>
                 <div class="card">
-                    <h3>🔥 Mojo 1.0 Implementation</h3>
+                    <h3>🔥 Mojo 1.x Implementation</h3>
                     <p>The <code>(1 + r)</code> bump for annuity-due becomes a <code>Bool</code> flag the compiler specializes on — one function, two variants, zero runtime branching cost:</p>
                     <div class="code-section">
                         <h4><span class="python-icon">⚡</span> Mojo Code</h4>
@@ -1147,7 +1147,7 @@ result = present_value(<span class="number">50000</span>, <span class="number">7
                     </div>
                 </div>
                 <div class="card">
-                    <h3>🔥 Mojo 1.0 Implementation</h3>
+                    <h3>🔥 Mojo 1.x Implementation</h3>
                     <p>Discounting is division by the same FVIF — in Mojo the negative exponent is explicit, and a whole ladder of future cashflows discounts in one typed loop:</p>
                     <div class="code-section">
                         <h4><span class="python-icon">⚡</span> Mojo Code</h4>
@@ -1205,7 +1205,7 @@ expected = capm_return(<span class="number">0.03</span>, <span class="number">1.
                 </div>
 
                 <div class="card">
-                    <h3>🔥 Mojo 1.0 Implementation</h3>
+                    <h3>🔥 Mojo 1.x Implementation</h3>
                     <p>Same one-liner in Mojo — rates are <code>Float64</code> decimals by type, so a stray percent can't slip in unnoticed, and screening a whole watchlist of betas is one compiled loop:</p>
                     <div class="code-section">
                         <h4><span class="python-icon">⚡</span> Mojo Code</h4>
@@ -1244,7 +1244,7 @@ market  = [<span class="number">0.01</span>, -<span class="number">0.02</span>, 
                 </div>
 
                 <div class="card">
-                    <h3>🔥 Mojo 1.0 Implementation</h3>
+                    <h3>🔥 Mojo 1.x Implementation</h3>
                     <p>The covariance/variance loop is the canonical Mojo workload — pure <code>Float64</code> arithmetic over paired series, no boxes, no interpreter per element. This exact shape scales from six returns to six million:</p>
                     <div class="code-section">
                         <h4><span class="python-icon">⚡</span> Mojo Code</h4>

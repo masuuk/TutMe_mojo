@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Linear Regression – Python &amp; Mojo 1.0</title>
+    <title>Linear Regression – Python &amp; Mojo 1.x</title>
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
     
@@ -589,7 +589,7 @@
                 <div class="logo">📈</div>
                 <div class="brand-text">
                     <h1>Linear Regression</h1>
-                    <p>Python · Mojo 1.0</p>
+                    <p>Python · Mojo 1.x</p>
                 </div>
             </div>
             <div class="tocscroll">
@@ -613,7 +613,7 @@
                     <li><a href="#ch10">10. Sales Forecasting</a></li>
 
                     <li class="chapter">Why Mojo</li>
-                    <li><a href="#ch11">11. Python vs Mojo 1.0</a></li>
+                    <li><a href="#ch11">11. Python vs Mojo 1.x</a></li>
 
                     <li class="chapter">Reference</li>
                     <li><a href="#ch12">12. Quick Reference</a></li>
@@ -652,7 +652,7 @@
         <p>
             The goal is to find coefficients <strong>β</strong> that minimize the sum of squared
             residuals (ordinary least squares). We implement everything from scratch in
-            <strong>Python</strong> (with NumPy) and <strong>Mojo 1.0</strong> — a high-performance
+            <strong>Python</strong> (with NumPy) and <strong>Mojo 1.x</strong> — a high-performance
             Python superset designed for AI systems. Learning the mathematics first, then expressing
             the same kernel twice, is how the "two-world" gap between prototyping and production
             finally closes.
@@ -685,7 +685,7 @@
         <p>
             What is being asked here is quietly profound: find the two numbers that make the
             averaged squared mistakes as small as they can possibly be. Below is a clean class-based
-            implementation — Python leans on vectorized NumPy, while Mojo 1.0 uses explicit typed
+            implementation — Python leans on vectorized NumPy, while Mojo 1.x uses explicit typed
             loops for systems-level performance and memory safety.
         </p>
 
@@ -722,10 +722,10 @@ model.fit(X, y)
 <span class="keyword">print</span>(f<span class="string">"w = {model.w:.3f}, b = {model.b:.3f}"</span>)  <span class="comment"># w = 0.700, b = 2.200</span></pre>
         </div>
 
-        <h4>Mojo 1.0 — equivalent</h4>
+        <h4>Mojo 1.x — equivalent</h4>
         <div class="code-block">
             <div class="header">
-                <span class="lang"><span class="dot mojo"></span> Mojo 1.0</span>
+                <span class="lang"><span class="dot mojo"></span> Mojo 1.x</span>
                 <span>List — standard prelude</span>
             </div>
             <pre><span class="keyword">struct</span> <span class="func">SimpleLinearRegression</span>:
@@ -800,7 +800,7 @@ X_b = np.c_[np.ones((X.shape[<span class="number">0</span>], <span class="number
 β = np.linalg.lstsq(X_b, y, rcond=<span class="keyword">None</span>)[<span class="number">0</span>]</pre>
             </div>
             <div class="code-block">
-                <div class="header"><span class="lang"><span class="dot mojo"></span> Mojo 1.0</span></div>
+                <div class="header"><span class="lang"><span class="dot mojo"></span> Mojo 1.x</span></div>
                 <pre><span class="keyword">from</span> std.python <span class="keyword">import</span> Python
 
 <span class="keyword">def</span> <span class="func">main</span>():
@@ -823,7 +823,7 @@ X_b = np.c_[np.ones((X.shape[<span class="number">0</span>], <span class="number
         </div>
 
         <div class="note">
-            <strong>💡 Mojo note:</strong> Mojo 1.0's standard prelude centers on <code>List</code>,
+            <strong>💡 Mojo note:</strong> Mojo 1.x's standard prelude centers on <code>List</code>,
             <code>Dict</code>, and <code>SIMD</code> — it ships no built-in tensor or matrix
             linear-algebra module. This example therefore drives NumPy through Mojo's Python
             interop (<code>Python.import_module("numpy")</code>), which is the idiomatic way to
@@ -894,7 +894,7 @@ X_b = np.c_[np.ones((X.shape[<span class="number">0</span>], <span class="number
     <span class="keyword">return</span> β</pre>
             </div>
             <div class="code-block">
-                <div class="header"><span class="lang"><span class="dot mojo"></span> Mojo 1.0</span></div>
+                <div class="header"><span class="lang"><span class="dot mojo"></span> Mojo 1.x</span></div>
                 <pre><span class="keyword">struct</span> <span class="func">GDLinearRegression</span>:
     <span class="keyword">var</span> w: Float64
     <span class="keyword">var</span> b: Float64
@@ -958,7 +958,7 @@ lasso = Lasso(alpha=<span class="number">0.1</span>).fit(X, y)
 <span class="keyword">print</span>(<span class="string">"Lasso coeff:"</span>, lasso.coef_)</pre>
             </div>
             <div class="code-block">
-                <div class="header"><span class="lang"><span class="dot mojo"></span> Mojo 1.0</span></div>
+                <div class="header"><span class="lang"><span class="dot mojo"></span> Mojo 1.x</span></div>
                 <pre><span class="keyword">from</span> std.python <span class="keyword">import</span> Python
 
 <span class="keyword">def</span> <span class="func">main</span>():
@@ -979,7 +979,7 @@ lasso = Lasso(alpha=<span class="number">0.1</span>).fit(X, y)
 
         <div class="note">
             <strong>💡 Mojo note:</strong> The Ridge closed form needs a genuine matrix inverse and
-            identity, which Mojo 1.0 has no built-in tensor API for — so, as in Chapter 3, the Mojo
+            identity, which Mojo 1.x has no built-in tensor API for — so, as in Chapter 3, the Mojo
             example delegates the linear algebra to NumPy via <code>Python.import_module("numpy")</code>.
         </div>
 
@@ -1028,7 +1028,7 @@ y_pred = np.array([<span class="number">2.2</span>, <span class="number">3.9</sp
 <span class="keyword">print</span>(metrics(y_true, y_pred))</pre>
             </div>
             <div class="code-block">
-                <div class="header"><span class="lang"><span class="dot mojo"></span> Mojo 1.0</span></div>
+                <div class="header"><span class="lang"><span class="dot mojo"></span> Mojo 1.x</span></div>
                 <pre><span class="keyword">from</span> std.math <span class="keyword">import</span> sqrt, abs
 
 <span class="keyword">def</span> <span class="func">metrics</span>(y_true: List[Float64], y_pred: List[Float64]) -&gt; Dict[String, Float64]:
@@ -1140,7 +1140,7 @@ rmse = np.sqrt(np.mean((y - y_hat) ** <span class="number">2</span>))
 <span class="keyword">print</span>(<span class="string">"SSE:"</span>, sse, <span class="string">"RMSE:"</span>, rmse)</pre>
             </div>
             <div class="code-block">
-                <div class="header"><span class="lang"><span class="dot mojo"></span> Mojo 1.0 — equivalent</span></div>
+                <div class="header"><span class="lang"><span class="dot mojo"></span> Mojo 1.x — equivalent</span></div>
                 <pre><span class="keyword">from</span> std.math <span class="keyword">import</span> sqrt
 
 <span class="keyword">def</span> <span class="func">main</span>():
@@ -1259,7 +1259,7 @@ model = LinearRegression().fit(X, y)
       model.predict(np.array([[<span class="number">150</span>, <span class="number">40</span>, <span class="number">20</span>]]))[<span class="number">0</span>])</pre>
             </div>
             <div class="code-block">
-                <div class="header"><span class="lang"><span class="dot mojo"></span> Mojo 1.0</span></div>
+                <div class="header"><span class="lang"><span class="dot mojo"></span> Mojo 1.x</span></div>
                 <pre><span class="keyword">from</span> std.python <span class="keyword">import</span> Python
 
 <span class="keyword">def</span> <span class="func">main</span>():
@@ -1295,13 +1295,13 @@ model = LinearRegression().fit(X, y)
         </div>
 
         <!-- ──── CHAPTER 11 ──── -->
-        <h2 id="ch11">11. Why Mojo 1.0? Python vs Mojo</h2>
+        <h2 id="ch11">11. Why Mojo 1.x? Python vs Mojo</h2>
         <p class="lede">Python writes the thought, and C pays the bill for it. Mojo is an attempt to have both the thought and the speed in one language.</p>
         <p>
             Python is the undisputed king of AI prototyping, but it suffers from the
             <strong>"two-world problem"</strong> — easy to write yet slow to execute, requiring
             C/C++ extensions (like NumPy) for performance. The prototype is born in one world and
-            must be rebuilt in another before it can run fast. <strong>Mojo 1.0</strong> bridges this gap.
+            must be rebuilt in another before it can run fast. <strong>Mojo 1.x</strong> bridges this gap.
         </p>
         <ul>
             <li><strong>Familiar Syntax:</strong> It reads like Python, accessible to data scientists.</li>
@@ -1328,7 +1328,7 @@ model = LinearRegression().fit(X, y)
         <h2 id="ch12">12. Quick Reference: Python ↔ Mojo</h2>
         <table>
             <thead>
-                <tr><th>Concept</th><th>Python (NumPy)</th><th>Mojo 1.0</th></tr>
+                <tr><th>Concept</th><th>Python (NumPy)</th><th>Mojo 1.x</th></tr>
             </thead>
             <tbody>
                 <tr><td>Array creation</td><td><code>np.array([1,2,3])</code></td><td><code>var a: List[Int] = [1, 2, 3]</code></td></tr>
@@ -1379,7 +1379,7 @@ model = LinearRegression().fit(X, y)
         </ol>
 
         <div style="margin-top:2.5rem; padding-top:1.5rem; border-top:2px solid var(--border); text-align:center; font-size:0.8rem; color:var(--text-secondary);">
-            📖 Linear Regression — Python &amp; Mojo 1.0 &nbsp;·&nbsp; Complete study book · Standalone HTML
+            📖 Linear Regression — Python &amp; Mojo 1.x &nbsp;·&nbsp; Complete study book · Standalone HTML
         </div>
 
     </main>

@@ -3,7 +3,7 @@
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chapter 1 — Introduction to Mojo · Mojo 1.0 Textbook</title>
+<title>Chapter 1 — Introduction to Mojo · Mojo 1.x Textbook</title>
 <link rel="preconnect" href="https://fonts.googleapis.com/">
 <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
 
@@ -206,7 +206,7 @@ pre .kw{color:#c084fc;}pre .fn{color:#60a5fa;}pre .str{color:#4ade80;}pre .num{c
 
   <section id="toolchain">
     <h2>The Toolchain in Five Minutes</h2>
-    <p>Mojo 1.0 installs through any Python or Conda package manager; the recommended routes are <code class="inline">uv</code> (<code class="inline">uv pip install mojo</code>, or <code class="inline">uv add mojo</code> in a project) and <code class="inline">pixi</code> (create a project against the Modular channel, then <code class="inline">pixi add mojo</code>). It runs on Mac, Linux, and Windows with WSL.</p>
+    <p>Mojo 1.x installs through any Python or Conda package manager; the recommended routes are <code class="inline">uv</code> (<code class="inline">uv pip install mojo</code>, or <code class="inline">uv add mojo</code> in a project) and <code class="inline">pixi</code> (create a project against the Modular channel, then <code class="inline">pixi add mojo</code>). It runs on Mac, Linux, and Windows with WSL.</p>
     <p>Every executable starts from a <code class="inline">main()</code> function, and you run a file directly:</p>
 
     <div class="code-tabs">
@@ -227,7 +227,7 @@ Temperature Analyzer</pre>
 
   <section id="def-only">
     <h2>One Function Keyword: <code class="inline">def</code></h2>
-    <p>The single most important syntax fact for a Python reader: in Mojo 1.0, <strong>every function starts with <code class="inline">def</code></strong>. The old <code class="inline">fn</code keyword is gone. What replaced the strict/relaxed split is annotations — declare types and they're checked at compile time:</p>
+    <p>The single most important syntax fact for a Python reader: in Mojo 1.x, <strong>every function starts with <code class="inline">def</code></strong>. The old <code class="inline">fn</code keyword is gone. What replaced the strict/relaxed split is annotations — declare types and they're checked at compile time:</p>
 
     <div class="code-tabs">
       <div class="tabs-header">
@@ -248,7 +248,7 @@ Temperature Analyzer</pre>
 
     <div class="info-box">
       <strong>💡 Key Insight:</strong>
-      <p>Mojo 1.0's other renames worth memorizing now: <code class="inline">comptime</code> replaces <code class="inline">alias</code> for compile-time constants, <code class="inline">mut</code> replaces <code class="inline">inout</code> for mutable arguments, and <code class="inline">let</code> is gone — <code class="inline">var</code> is the only local-declaration keyword.</p>
+      <p>Mojo 1.x's other renames worth memorizing now: <code class="inline">comptime</code> replaces <code class="inline">alias</code> for compile-time constants, <code class="inline">mut</code> replaces <code class="inline">inout</code> for mutable arguments, and <code class="inline">let</code> is gone — <code class="inline">var</code> is the only local-declaration keyword.</p>
     </div>
   </section>
 

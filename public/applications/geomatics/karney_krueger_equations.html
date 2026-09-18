@@ -339,7 +339,7 @@
         pre.ide .tok-cls { color: #6fd8c8; }
         pre.ide .tok-blt { color: #6fc9ff; }
 
-        /* side-by-side language labels: Python reference vs Mojo 1.0 port */
+        /* side-by-side language labels: Python reference vs Mojo 1.x port */
         pre.ide.py { border-left: 3px solid #a5d6ff; }
         pre.ide.mojo { border-left: 3px solid #4fc1ff; background: linear-gradient(135deg, #16202e, #1e293b); }
         pre.ide.py::before, pre.ide.mojo::before {
@@ -646,7 +646,7 @@ print(f"e'² = {ep2:.6f}")    # 0.082094
 print(f"n   = {n:.8f}")      # 0.00167922
 print(f"b   = {b:.4f} m")    # 6356752.3142 m</code></pre>
 
-            <p>The same four constants, typed and compiled in Mojo 1.0:</p>
+            <p>The same four constants, typed and compiled in Mojo 1.x:</p>
             <pre class="ide mojo"><code>from math import sqrt
 
 def main():
@@ -666,7 +666,7 @@ def main():
             </div>
 
             <div class="note">
-                <p><strong>Cross-reference:</strong> the frame chain built on this ellipsoid — geodetic ⇄ ECEF ⇄ local ENU, implemented in Python and Mojo 1.0 — is <a href="gnss_surveying.html#frames">Chapter 1 of Part 1</a>. This part continues the chain one step further: from the ellipsoid down to the projected grid.</p>
+                <p><strong>Cross-reference:</strong> the frame chain built on this ellipsoid — geodetic ⇄ ECEF ⇄ local ENU, implemented in Python and Mojo 1.x — is <a href="gnss_surveying.html#frames">Chapter 1 of Part 1</a>. This part continues the chain one step further: from the ellipsoid down to the projected grid.</p>
             </div>
 
             <h2>2.2 The Transverse Mercator / UTM System</h2>
@@ -762,7 +762,7 @@ chi = conformal_latitude(phi, n)
 print(math.degrees(chi))                              # -17.8275589...  (χ sits slightly north of φ)
 print(math.degrees(inverse_conformal_latitude(chi, n)))  # -17.829  (round-trips exactly)</code></pre>
 
-            <p>The same two functions in Mojo 1.0 — plain <code>Float64</code> arithmetic, no objects, ready to <code>parallelize</code> over a batch of stations:</p>
+            <p>The same two functions in Mojo 1.x — plain <code>Float64</code> arithmetic, no objects, ready to <code>parallelize</code> over a batch of stations:</p>
             <pre class="ide mojo"><code>from math import sin, radians, degrees
 
 def conformal_latitude(phi: Float64, n: Float64) -> Float64:
@@ -853,7 +853,7 @@ for j, a in enumerate(krueger_alpha(n), start=1):
     print(f"α{j} = {a:.10e}")
 # α1 = 8.3773182062e-04   α2 = 7.6085277736e-07   α3 = 1.1976455033e-09 ...</code></pre>
 
-            <p>And the Mojo 1.0 port — six scalars, no allocation, ideal inside a batch forward projection:</p>
+            <p>And the Mojo 1.x port — six scalars, no allocation, ideal inside a batch forward projection:</p>
             <pre class="ide mojo"><code>from math import sin, cos, sinh, cosh
 
 struct Alpha:
@@ -1065,7 +1065,7 @@ zp, iters = invert_z_newton(z, alpha)
 print(f"recovered in {iters} iterations, error = {abs(zp - zp0):.2e}")
 # 2 iterations, error ~1e-17 — quadratic convergence in action</code></pre>
 
-            <p>The Mojo 1.0 port — the complex arithmetic written as explicit real/imaginary pairs, exactly the shape a batch inverse uses when it runs over millions of points:</p>
+            <p>The Mojo 1.x port — the complex arithmetic written as explicit real/imaginary pairs, exactly the shape a batch inverse uses when it runs over millions of points:</p>
 
             <pre class="ide mojo"><code>from math import sin, cos, sqrt, sinh, cosh
 
@@ -1155,7 +1155,7 @@ c = [1.0, 0.5, 0.25, 0.125, 0.0625]
 print(clenshaw_cos(c, theta),
       sum(cj * math.cos(j * theta) for j, cj in enumerate(c)))  # identical</code></pre>
 
-            <p>The Mojo 1.0 port — two scalars and one loop; this is the innermost kernel of the whole projection, and the compiler turns it into a dependency-free chain of FMAs:</p>
+            <p>The Mojo 1.x port — two scalars and one loop; this is the innermost kernel of the whole projection, and the compiler turns it into a dependency-free chain of FMAs:</p>
 
             <pre class="ide mojo"><code>from math import cos
 
@@ -1239,9 +1239,9 @@ def main():
 
         <!-- 13. Python -->
         <section id="s13">
-            <h1>11. 🐍 Python &amp; ⚡ Mojo 1.0 Implementation</h1>
+            <h1>11. 🐍 Python &amp; ⚡ Mojo 1.x Implementation</h1>
 
-            <p style="max-width:70ch;">Every implementation below appears twice: the Python reference first, then the same computation as a Mojo 1.0 port. The geodesy itself is Float64-heavy, loop-heavy and branch-light — exactly Mojo's comfort zone — so the forward equations port natively, while GeographicLib and pandas ride across the zero-overhead interop bridge. Read the Python to check the math; read the Mojo to learn the language. The same dual-language convention — and the Mojo 1.0 syntax notes (<code>comptime</code>, <code>mut</code>, <code>@fieldwise_init</code>, <code>std.</code> imports) — runs through <a href="gnss_surveying.html">Part 1 of the course</a>.</p>
+            <p style="max-width:70ch;">Every implementation below appears twice: the Python reference first, then the same computation as a Mojo 1.x port. The geodesy itself is Float64-heavy, loop-heavy and branch-light — exactly Mojo's comfort zone — so the forward equations port natively, while GeographicLib and pandas ride across the zero-overhead interop bridge. Read the Python to check the math; read the Mojo to learn the language. The same dual-language convention — and the Mojo 1.x syntax notes (<code>comptime</code>, <code>mut</code>, <code>@fieldwise_init</code>, <code>std.</code> imports) — runs through <a href="gnss_surveying.html">Part 1 of the course</a>.</p>
 
             <h2>11.1 Basic Forward Transformation (Harare example)</h2>
 
@@ -1282,7 +1282,7 @@ lambda0 = math.radians(33)
 E, N = forward_tm(phi, lon, lambda0)
 print(f"Easting: {E:.3f} m, Northing: {N:.3f} m")</code></pre>
 
-            <p style="max-width:70ch;">The Mojo 1.0 port is line-for-line the same mathematics — typed <code>Float64</code> end to end, so the ellipsoid constants can't silently degrade to single precision and the trig pipeline compiles to straight-line SIMD code:</p>
+            <p style="max-width:70ch;">The Mojo 1.x port is line-for-line the same mathematics — typed <code>Float64</code> end to end, so the ellipsoid constants can't silently degrade to single precision and the trig pipeline compiles to straight-line SIMD code:</p>
 
             <pre class="ide mojo"><code>from math import sqrt, sin, cos, atan2, atanh, sinh, cosh, radians
 
@@ -1334,7 +1334,7 @@ res = tm.Reverse(0, x, y)
 lat_inv, lon_inv = res[1], res[2]
 print(f"E: {x:.3f} m, N: {y:.3f} m, k: {k:.6f}, conv: {conv:.4f}°")</code></pre>
 
-            <p style="max-width:70ch;">Mojo 1.0 reaches the same rigor through the interop bridge — GeographicLib's convergent series stays Python-side, while everything you wrap around the call (migration batches, grid sweeps, QC checks) compiles natively:</p>
+            <p style="max-width:70ch;">Mojo 1.x reaches the same rigor through the interop bridge — GeographicLib's convergent series stays Python-side, while everything you wrap around the call (migration batches, grid sweeps, QC checks) compiles natively:</p>
 
             <pre class="ide mojo"><code>from python import Python
 
@@ -1369,7 +1369,7 @@ def batch_transform_csv(input_csv, output_csv):
     df.to_csv(output_csv, index=False)
     print(f"Transformed {len(df)} points.")</code></pre>
 
-            <p style="max-width:70ch;">The Mojo 1.0 driver keeps pandas for the CSV plumbing but owns the point loop — and this is the honest division of labor: at survey datasets of a few thousand points pandas is fine either way; at LiDAR scale (millions of points) you drop pandas, call the native <code>forward_tm</code> from §11.1 over a <code>Tensor</code> of coordinates, <code>parallelize</code> across cores, and the whole migration finishes in milliseconds:</p>
+            <p style="max-width:70ch;">The Mojo 1.x driver keeps pandas for the CSV plumbing but owns the point loop — and this is the honest division of labor: at survey datasets of a few thousand points pandas is fine either way; at LiDAR scale (millions of points) you drop pandas, call the native <code>forward_tm</code> from §11.1 over a <code>Tensor</code> of coordinates, <code>parallelize</code> across cores, and the whole migration finishes in milliseconds:</p>
 
             <pre class="ide mojo"><code>from python import Python
 
@@ -1402,7 +1402,7 @@ def transform_to_zimbabwe_lo31(lat, lon):
 s, w, k = transform_to_zimbabwe_lo31(-17.829, 31.027)  # Harare
 print(f"Harare LO31 -> South: {s:.3f} m, West: {w:.3f} m")</code></pre>
 
-            <p style="max-width:70ch;">The same LO31 transform from Mojo 1.0 — the Clarke 1880 constants and the South/West flip are ordinary typed values, and the national benchmark table becomes a compiled loop:</p>
+            <p style="max-width:70ch;">The same LO31 transform from Mojo 1.x — the Clarke 1880 constants and the South/West flip are ordinary typed values, and the national benchmark table becomes a compiled loop:</p>
 
             <pre class="ide mojo"><code>from python import Python
 

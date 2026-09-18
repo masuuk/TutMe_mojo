@@ -214,7 +214,7 @@ pre code{margin:0;padding:0;background:none;border:none;color:inherit;}
 .tok-fn{color:#7fc8e8;}
 .tok-num{color:#e8b774;}
 
-/* ---------- Mojo 1.0 alternative blocks ---------- */
+/* ---------- Mojo 1.x alternative blocks ---------- */
 pre.mojo{
   border-left:3px solid var(--teal-1);
   background:linear-gradient(135deg,#101b1c,#0d181a);
@@ -369,7 +369,7 @@ model = Pipeline([(<span class="tok-str">"scale"</span>, StandardScaler()),
 model.fit(Xtr, ytr)                            <span class="tok-com"># model</span>
 r2 = model.score(Xte, yte)                    <span class="tok-com"># evaluate → communicate</span>
 <span class="tok-kw">print</span>(<span class="tok-str">f"test R^2 = {r2:.3f}"</span>)</code></pre>
-    <p>The same loop from <strong>Mojo 1.0</strong>: the six stages are identical, and the data plumbing (pandas + scikit-learn) rides the interop bridge — Mojo drives the pipeline instead of a Python script:</p>
+    <p>The same loop from <strong>Mojo 1.x</strong>: the six stages are identical, and the data plumbing (pandas + scikit-learn) rides the interop bridge — Mojo drives the pipeline instead of a Python script:</p>
   <pre class="mojo"><code><span class="tok-kw">from</span> python <span class="tok-kw">import</span> Python
 
 <span class="tok-kw">def</span> <span class="tok-fn">main</span>() raises:
@@ -418,7 +418,7 @@ r2 = model.score(Xte, yte)                    <span class="tok-com"># evaluate �
 
 xs = np.array([<span class="tok-num">1e-1</span>, <span class="tok-num">1e-2</span>, <span class="tok-num">1e-3</span>, <span class="tok-num">1e-4</span>, <span class="tok-num">1e-5</span>])
 <span class="tok-kw">print</span>(sinc_squeeze(xs))   <span class="tok-com"># → [0.998 0.99998 0.9999998 ...] creeping toward 1.0</span></code></pre>
-    <p>Scalar-for-scalar in <strong>Mojo 1.0</strong> — a typed <code>sinc_squeeze</code> over a static array, compiled and branch-safe at <code>x = 0</code>:</p>
+    <p>Scalar-for-scalar in <strong>Mojo 1.x</strong> — a typed <code>sinc_squeeze</code> over a static array, compiled and branch-safe at <code>x = 0</code>:</p>
   <pre class="mojo"><code><span class="tok-kw">from</span> math <span class="tok-kw">import</span> sin
 
 <span class="tok-kw">def</span> <span class="tok-fn">sinc_squeeze</span>(x: Float64) -&gt; Float64:
@@ -446,7 +446,7 @@ xs = np.array([<span class="tok-num">1e-1</span>, <span class="tok-num">1e-2</sp
 
 f = <span class="tok-kw">lambda</span> x: x ** <span class="tok-num">2</span>
 <span class="tok-kw">print</span>(num_diff(f, <span class="tok-num">3.0</span>))   <span class="tok-com"># → 6.0  (true answer: f'(3) = 2·3)</span></code></pre>
-    <p>In <strong>Mojo 1.0</strong> the central difference is a generic — the function <code>f</code> is a compile-time type parameter, so its type flows into <code>num_diff</code> with no runtime indirection:</p>
+    <p>In <strong>Mojo 1.x</strong> the central difference is a generic — the function <code>f</code> is a compile-time type parameter, so its type flows into <code>num_diff</code> with no runtime indirection:</p>
   <pre class="mojo"><code><span class="tok-kw">def</span> <span class="tok-fn">num_diff</span>[f: def(Float64) -&gt; Float64](x: Float64, h: Float64 = <span class="tok-num">1e-6</span>) -&gt; Float64:
     <span class="tok-kw">return</span> (f(x + h) - f(x - h)) / (<span class="tok-num">2.0</span> * h)
 
@@ -472,7 +472,7 @@ vals, vecs = np.linalg.eig(A)
 stationary = vecs[:, np.argmax(vals)]   <span class="tok-com"># eigenvector for λ=1</span>
 stationary = stationary / stationary.sum()
 <span class="tok-kw">print</span>(np.round(stationary, <span class="tok-num">3</span>))      <span class="tok-com"># → [0.4 0.6] steady state</span></code></pre>
-    <p>For a Markov steady state you never need the full eigendecomposition — <strong>power iteration</strong> (multiply by A, then normalize) converges to the leading (λ = 1) eigenvector, and it ports naturally to compiled <strong>Mojo 1.0</strong>:</p>
+    <p>For a Markov steady state you never need the full eigendecomposition — <strong>power iteration</strong> (multiply by A, then normalize) converges to the leading (λ = 1) eigenvector, and it ports naturally to compiled <strong>Mojo 1.x</strong>:</p>
   <pre class="mojo"><code><span class="tok-kw">from</span> tensor <span class="tok-kw">import</span> Tensor
 <span class="tok-kw">from</span> math <span class="tok-kw">import</span> sqrt
 
@@ -513,7 +513,7 @@ history = []
     y = y + dt * r * y * (<span class="tok-num">1</span> - y / K)   <span class="tok-com"># Euler step</span>
     history.append(y)
 <span class="tok-kw">print</span>(<span class="tok-str">f"plateau ≈ {history[-1]:.1f}"</span>)   <span class="tok-com"># → 100.0, the carrying capacity</span></code></pre>
-    <p>The same Euler loop is a straight, near-verbatim <strong>Mojo 1.0</strong> port — a <code>var</code> accumulator stepped in a compiled loop:</p>
+    <p>The same Euler loop is a straight, near-verbatim <strong>Mojo 1.x</strong> port — a <code>var</code> accumulator stepped in a compiled loop:</p>
   <pre class="mojo"><code><span class="tok-kw">def</span> <span class="tok-fn">main</span>():
     <span class="tok-kw">var</span> r: Float64 = <span class="tok-num">0.8</span>
     <span class="tok-kw">var</span> K: Float64 = <span class="tok-num">100.0</span>
@@ -548,7 +548,7 @@ a = np.array([[<span class="tok-num">1</span>, <span class="tok-num">2</span>, <
 <span class="tok-kw">print</span>(np.zeros((<span class="tok-num">2</span>, <span class="tok-num">2</span>)))           <span class="tok-com"># zeros, ones, eye all exist</span>
 <span class="tok-kw">print</span>(a[:, <span class="tok-num">1</span>])                      <span class="tok-com"># column 1 → [2 5]</span>
 <span class="tok-kw">print</span>(a[a <span class="tok-fn">&gt;</span> <span class="tok-num">3</span>])                     <span class="tok-com"># boolean mask → [4 5 6]</span></code></pre>
-    <p>The same ideas carry to <strong>Mojo 1.0</strong>'s <code>Tensor</code> — a typed, n-dimensional grid like the ndarray. Creation, a shape query, and element access are native; a boolean "mask" becomes an explicit filtered loop:</p>
+    <p>The same ideas carry to <strong>Mojo 1.x</strong>'s <code>Tensor</code> — a typed, n-dimensional grid like the ndarray. Creation, a shape query, and element access are native; a boolean "mask" becomes an explicit filtered loop:</p>
   <pre class="mojo"><code><span class="tok-kw">from</span> tensor <span class="tok-kw">import</span> Tensor
 
 <span class="tok-kw">def</span> <span class="tok-fn">main</span>():
@@ -585,7 +585,7 @@ x = np.linalg.solve(A, b)                        <span class="tok-com"># solve A
 <span class="tok-kw">print</span>(x)                                        <span class="tok-com"># → [2. 3.]</span>
 <span class="tok-kw">print</span>(np.linalg.eigvals(A))                     <span class="tok-com"># eigenvalues</span>
 <span class="tok-kw">print</span>(np.linalg.norm(scores))                   <span class="tok-com"># L2 norm</span></code></pre>
-    <p>The z-score (broadcast mean/std), <code>exp</code>, and a 2×2 <code>A·x = b</code> solve, done with explicit loops in <strong>Mojo 1.0</strong> — compiled, so the loop is the fast path, not the slow one:</p>
+    <p>The z-score (broadcast mean/std), <code>exp</code>, and a 2×2 <code>A·x = b</code> solve, done with explicit loops in <strong>Mojo 1.x</strong> — compiled, so the loop is the fast path, not the slow one:</p>
   <pre class="mojo"><code><span class="tok-kw">from</span> math <span class="tok-kw">import</span> exp, sqrt
 
 <span class="tok-kw">def</span> <span class="tok-fn">main</span>():
@@ -643,7 +643,7 @@ df = pd.read_csv(StringIO(csv_data))
 
 passed = df[df[<span class="tok-str">"score"</span>] &gt;= <span class="tok-num">60</span>]               <span class="tok-com"># boolean mask on rows</span>
 <span class="tok-kw">print</span>(df.loc[df[<span class="tok-str">"score"</span>].idxmax(), <span class="tok-str">"student"</span>])  <span class="tok-com"># label-based lookup</span></code></pre>
-    <p>You keep pandas for the general table — but the two queries in this example are simple enough to run on plain slices in <strong>Mojo 1.0</strong>: parse the CSV, filter rows on <code>score ≥ 60</code>, and find which student owns the max score:</p>
+    <p>You keep pandas for the general table — but the two queries in this example are simple enough to run on plain slices in <strong>Mojo 1.x</strong>: parse the CSV, filter rows on <code>score ≥ 60</code>, and find which student owns the max score:</p>
   <pre class="mojo"><code><span class="tok-kw">def</span> <span class="tok-fn">main</span>():
     <span class="tok-kw">var</span> rows: String = <span class="tok-str">"Ana,math,92,yes\nBo,math,74,yes\nCam,math,58,no\nAna,physics,81,yes\nBo,physics,88,yes\nCam,physics,65,no"</span>
     <span class="tok-kw">var</span> passed: Int = <span class="tok-num">0</span>                     <span class="tok-com"># boolean mask on rows (score ≥ 60)</span>
@@ -680,7 +680,7 @@ meta = pd.DataFrame({<span class="tok-str">"course"</span>: [<span class="tok-st
                      <span class="tok-str">"credits"</span>: [<span class="tok-num">4</span>, <span class="tok-num">3</span>]})
 joined = df.merge(meta, on=<span class="tok-str">"course"</span>)      <span class="tok-com"># SQL-style join on a key</span>
 <span class="tok-kw">print</span>(joined)</code></pre>
-    <p>The <strong>GroupBy → mean / max / count</strong> aggregation is a tight loop over rows grouped by a key — trivial to compile in <strong>Mojo 1.0</strong>. Two small <code>Dict</code>-of-accumulators give you the same per-course summary:</p>
+    <p>The <strong>GroupBy → mean / max / count</strong> aggregation is a tight loop over rows grouped by a key — trivial to compile in <strong>Mojo 1.x</strong>. Two small <code>Dict</code>-of-accumulators give you the same per-course summary:</p>
   <pre class="mojo"><code><span class="tok-kw">from</span> collections <span class="tok-kw">import</span> Dict
 
 <span class="tok-kw">def</span> <span class="tok-fn">main</span>():
@@ -729,7 +729,7 @@ treated = rng.normal(<span class="tok-num">55</span>, <span class="tok-num">10</
 <span class="tok-kw">print</span>(<span class="tok-str">"mean"</span>, round(control.mean(), <span class="tok-num">2</span>),
       <span class="tok-str">"median"</span>, round(np.median(control), <span class="tok-num">2</span>),
       <span class="tok-str">"sd"</span>, round(control.std(ddof=<span class="tok-num">1</span>), <span class="tok-num">2</span>))</code></pre>
-    <p>Mean, median, and sample (n−1) standard deviation are a dozen lines in <strong>Mojo 1.0</strong> — sort for the median, accumulate for mean and variance:</p>
+    <p>Mean, median, and sample (n−1) standard deviation are a dozen lines in <strong>Mojo 1.x</strong> — sort for the median, accumulate for mean and variance:</p>
   <pre class="mojo"><code><span class="tok-kw">from</span> math <span class="tok-kw">import</span> sqrt
 <span class="tok-kw">from</span> algorithm <span class="tok-kw">import</span> sort
 
@@ -771,7 +771,7 @@ r, p = stats.pearsonr(hours, score)     <span class="tok-com"># correlation + it
 
 t, p2 = stats.ttest_ind(control, treated)  <span class="tok-com"># two-sample t-test</span>
 <span class="tok-kw">print</span>(<span class="tok-str">f"t = {t:.2f}, p = {p2:.3f}"</span>)</code></pre>
-    <p>Pearson's <em>r</em> is a rolling sum — a natural <strong>Mojo 1.0</strong> computation. The special-function t-test / p-value, by contrast, rides the interop bridge to <code>scipy</code>:</p>
+    <p>Pearson's <em>r</em> is a rolling sum — a natural <strong>Mojo 1.x</strong> computation. The special-function t-test / p-value, by contrast, rides the interop bridge to <code>scipy</code>:</p>
   <pre class="mojo"><code><span class="tok-kw">from</span> math <span class="tok-kw">import</span> sqrt
 <span class="tok-kw">from</span> python <span class="tok-kw">import</span> Python
 
@@ -826,7 +826,7 @@ sns.boxplot(x=groups, ax=axes[<span class="tok-num">2</span>])
 axes[<span class="tok-num">2</span>].set_title(<span class="tok-str">"boxplot"</span>)
 plt.tight_layout()
 plt.show()</code></pre>
-    <p>Mojo 1.0 has no mature plotting stack — so the <em>data</em> is prepared natively (compiled loops, zero-copy into NumPy) and handed to <code>matplotlib</code> over the interop bridge for the actual drawing:</p>
+    <p>Mojo 1.x has no mature plotting stack — so the <em>data</em> is prepared natively (compiled loops, zero-copy into NumPy) and handed to <code>matplotlib</code> over the interop bridge for the actual drawing:</p>
   <pre class="mojo"><code><span class="tok-kw">from</span> python <span class="tok-kw">import</span> Python
 <span class="tok-kw">from</span> random <span class="tok-kw">import</span> Random
 
@@ -856,7 +856,7 @@ mat = pd.DataFrame(rng.normal(<span class="tok-num">0</span>, <span class="tok-n
                    columns=<span class="tok-kw">list</span>(<span class="tok-str">"abcde"</span>))
 sns.heatmap(mat.corr(), annot=<span class="tok-kw">True</span>, cmap=<span class="tok-str">"viridis"</span>, center=<span class="tok-num">0</span>)
 plt.show()</code></pre>
-    <p>A <strong>Mojo 1.0</strong> heatmap: build the 5×5 correlation matrix natively, then pass it to seaborn's <code>heatmap</code> over the bridge — the matrix math is compiled, the drawing is still Python:</p>
+    <p>A <strong>Mojo 1.x</strong> heatmap: build the 5×5 correlation matrix natively, then pass it to seaborn's <code>heatmap</code> over the bridge — the matrix math is compiled, the drawing is still Python:</p>
   <pre class="mojo"><code><span class="tok-kw">from</span> python <span class="tok-kw">import</span> Python
 
 <span class="tok-kw">def</span> <span class="tok-fn">main</span>() raises:
@@ -907,7 +907,7 @@ pipe.fit(Xtr, ytr)
 pred = pipe.predict(Xte)
 <span class="tok-kw">print</span>(<span class="tok-str">"accuracy"</span>, round(accuracy_score(yte, pred), <span class="tok-num">2</span>))
 <span class="tok-kw">print</span>(confusion_matrix(yte, pred))</code></pre>
-    <p>The whole pipeline — split, scale, fit, predict, evaluate — driven from <strong>Mojo 1.0</strong> over the bridge. The Python libraries handle ML; Mojo compiles the surrounding orchestration:</p>
+    <p>The whole pipeline — split, scale, fit, predict, evaluate — driven from <strong>Mojo 1.x</strong> over the bridge. The Python libraries handle ML; Mojo compiles the surrounding orchestration:</p>
   <pre class="mojo"><code><span class="tok-kw">from</span> python <span class="tok-kw">import</span> Python
 
 <span class="tok-kw">def</span> <span class="tok-fn">main</span>() raises:
@@ -963,7 +963,7 @@ Xc = np.array([[<span class="tok-num">1.</span>, <span class="tok-num">0.</span>
 yc = np.array([<span class="tok-num">0</span>, <span class="tok-num">0</span>, <span class="tok-num">1</span>, <span class="tok-num">1</span>])
 <span class="tok-kw">print</span>(LogisticRegression().fit(Xc, yc).predict([[<span class="tok-num">2.5</span>, <span class="tok-num">0.5</span>]]))   <span class="tok-com"># → [0]</span>
 <span class="tok-kw">print</span>(RandomForestClassifier(n_estimators=<span class="tok-num">100</span>).fit(Xc, yc).predict([[<span class="tok-num">3.5</span>, <span class="tok-num">1.0</span>]]))  <span class="tok-com"># → [1]</span></code></pre>
-    <p>Regression and classification from <strong>Mojo 1.0</strong> — the same estimator API, driven over the bridge. <code>LinearRegression</code>'s coefficients are visible; random forests hide behind more trees but the shape of the call is identical:</p>
+    <p>Regression and classification from <strong>Mojo 1.x</strong> — the same estimator API, driven over the bridge. <code>LinearRegression</code>'s coefficients are visible; random forests hide behind more trees but the shape of the call is identical:</p>
   <pre class="mojo"><code><span class="tok-kw">from</span> python <span class="tok-kw">import</span> Python
 
 <span class="tok-kw">def</span> <span class="tok-fn">main</span>() raises:
@@ -1019,7 +1019,7 @@ y = np.array([<span class="tok-num">0</span>, <span class="tok-num">1</span>, <s
 w, b = perceptron(X, y)
 <span class="tok-kw">print</span>(w, b)
 <span class="tok-kw">print</span>([<span class="tok-num">1</span> <span class="tok-kw">if</span> w @ xi + b <span class="tok-fn">&gt;</span> <span class="tok-num">0</span> <span class="tok-kw">else</span> <span class="tok-num">0</span> <span class="tok-kw">for</span> xi <span class="tok-kw">in</span> X])   <span class="tok-com"># [0, 1, 1, 1] ✓</span></code></pre>
-    <p>Written from scratch in <strong>Mojo 1.0</strong> — typed, compiled weights, no NumPy in sight:</p>
+    <p>Written from scratch in <strong>Mojo 1.x</strong> — typed, compiled weights, no NumPy in sight:</p>
   <pre class="mojo"><code><span class="tok-kw">from</span> math <span class="tok-kw">import</span> sqrt
 
 <span class="tok-kw">def</span> <span class="tok-fn">perceptron</span>(X: List[List[Float64]], y: List[Float64],
@@ -1065,7 +1065,7 @@ w, b = perceptron(X, y)
 x = np.array([-<span class="tok-num">2.</span>, -<span class="tok-num">1.</span>, <span class="tok-num">0.</span>, <span class="tok-num">1.</span>, <span class="tok-num">2.</span>])
 <span class="tok-kw">print</span>(sigmoid(x).round(<span class="tok-num">3</span>))   <span class="tok-com"># [0.119 0.269 0.5 0.731 0.881]</span>
 <span class="tok-kw">print</span>(relu(x))                 <span class="tok-com"># [0. 0. 0. 1. 2.]</span></code></pre>
-    <p>Compiled in <strong>Mojo 1.0</strong> — no library dependency, every activation is a typed loop that compiles to vectorised machine code:</p>
+    <p>Compiled in <strong>Mojo 1.x</strong> — no library dependency, every activation is a typed loop that compiles to vectorised machine code:</p>
   <pre class="mojo"><code><span class="tok-kw">from</span> math <span class="tok-kw">import</span> exp
 
 <span class="tok-kw">def</span> <span class="tok-fn">sigmoid</span>(x: Float64) -&gt; Float64:
@@ -1108,7 +1108,7 @@ y = (X[:, <span class="tok-num">0</span>] * <span class="tok-num">2</span> + X[:
     loss.backward()                <span class="tok-com"># backprop: computes all gradients</span>
     opt.step()                     <span class="tok-com"># gradient descent step</span>
 <span class="tok-kw">print</span>(round(loss.item(), <span class="tok-num">5</span>))</code></pre>
-    <p>The same four-line loop, driven from <strong>Mojo 1.0</strong>. Autograd is Python territory, so <code>torch</code> stays behind the bridge, but the outer training script — the bit you rewrite for every experiment — compiles natively:</p>
+    <p>The same four-line loop, driven from <strong>Mojo 1.x</strong>. Autograd is Python territory, so <code>torch</code> stays behind the bridge, but the outer training script — the bit you rewrite for every experiment — compiles natively:</p>
   <pre class="mojo"><code><span class="tok-kw">from</span> python <span class="tok-kw">import</span> Python
 
 <span class="tok-kw">def</span> <span class="tok-fn">main</span>() raises:
@@ -1162,7 +1162,7 @@ logits = np.array([<span class="tok-num">2.0</span>, <span class="tok-num">0.5</
 <span class="tok-com"># T=0.2 → [0.996 0.003 0.001 0.0]  nearly greedy</span>
 <span class="tok-com"># T=1.0 → [0.756 0.174 0.052 0.019]</span>
 <span class="tok-com"># T=5.0 → [0.382 0.267 0.201 0.149]  approaching uniform</span></code></pre>
-    <p>Softmax from scratch in <strong>Mojo 1.0</strong> — numerically stable (the <code>z − max</code> trick) and typed, so the compiler can vectorise the <code>exp</code> loop over the SIMD width:</p>
+    <p>Softmax from scratch in <strong>Mojo 1.x</strong> — numerically stable (the <code>z − max</code> trick) and typed, so the compiler can vectorise the <code>exp</code> loop over the SIMD width:</p>
   <pre class="mojo"><code><span class="tok-kw">from</span> math <span class="tok-kw">import</span> exp
 
 <span class="tok-kw">def</span> <span class="tok-fn">softmax</span>(z: List[Float64], temperature: Float64 = <span class="tok-num">1.0</span>) -&gt; List[Float64]:
@@ -1222,7 +1222,7 @@ clf.fit(Xtr, ytr)
 
 cv = cross_val_score(clf, Xtr, ytr, cv=<span class="tok-num">5</span>)        <span class="tok-com"># 5-fold cross-validation</span>
 <span class="tok-kw">print</span>(<span class="tok-str">"CV mean / std"</span>, round(cv.mean(), <span class="tok-num">3</span>), round(cv.std(), <span class="tok-num">3</span>))</code></pre>
-    <p>Leakage-proof training with a <strong>Mojo 1.0</strong> driver: the <code>Pipeline</code> enforces the rule (fit the scaler only on the training fold), and <code>cross_val_score</code> stays on the bridge — the same pattern, compiled where it counts:</p>
+    <p>Leakage-proof training with a <strong>Mojo 1.x</strong> driver: the <code>Pipeline</code> enforces the rule (fit the scaler only on the training fold), and <code>cross_val_score</code> stays on the bridge — the same pattern, compiled where it counts:</p>
   <pre class="mojo"><code><span class="tok-kw">from</span> python <span class="tok-kw">import</span> Python
 
 <span class="tok-kw">def</span> <span class="tok-fn">main</span>() raises:

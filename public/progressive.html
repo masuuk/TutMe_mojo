@@ -549,7 +549,7 @@ code:'def main():\n    print(3 > 2 and 4 < 5)\n    print("positive" if 10 % 2 ==
 options:['True\npositive','True\nnegative','false\npositive','True\ntrue'],
 correct:0,
 hint:'Write the boolean with the words <code>and</code>/<code>or</code>. The ternary is <code>a if cond else b</code> \u2014 which branch does <code>10 % 2 == 0</code> pick?',
-explain:'<code>3 &gt; 2 and 4 &lt; 5</code> \u2192 <code>True and True</code> \u2192 <b>True</b> (Mojo spells booleans <code>True</code>/<code>False</code> and joins them with the word <code>and</code>).<br><code>10 % 2 == 0</code> is True, so the ternary yields <b>"positive"</b>.<br>There is no <code>&amp;&amp;</code> or <code>||</code> in Mojo 1.0.'
+explain:'<code>3 &gt; 2 and 4 &lt; 5</code> \u2192 <code>True and True</code> \u2192 <b>True</b> (Mojo spells booleans <code>True</code>/<code>False</code> and joins them with the word <code>and</code>).<br><code>10 % 2 == 0</code> is True, so the ternary yields <b>"positive"</b>.<br>There is no <code>&amp;&amp;</code> or <code>||</code> in Mojo 1.x.'
 },
 {
 title:'Boss level \u2014 fix the floored average',tag:'bug hunt',type:'choice',
@@ -614,7 +614,7 @@ explain:'<code>*nums: Int</code> collects any number of positional arguments int
 },
 {
 title:'Boss level \u2014 fix the by-value swap',tag:'bug hunt',type:'choice',
-prompt:'try_swap should make x and y print as 2 1. By-value parameters are copies (and immutable in Mojo 1.0), so nothing reaches the caller. Which rewrite compiles AND prints 2 1?',
+prompt:'try_swap should make x and y print as 2 1. By-value parameters are copies (and immutable in Mojo 1.x), so nothing reaches the caller. Which rewrite compiles AND prints 2 1?',
 code:'def try_swap(a: Int, b: Int):\n    var tmp = a\n    a = b\n    b = tmp    # error: params are immutable values\n\ndef main():\n    var x = 1\n    var y = 2\n    try_swap(x, y)\n    print(x, y)   # want 2 1',
 options:[
 'def try_swap(mut a: Int, mut b: Int):\n    var tmp = a\n    a = b\n    b = tmp\n\ndef main():\n    var x = 1\n    var y = 2\n    try_swap(x, y)\n    print(x, y)',
@@ -819,6 +819,7 @@ h+='<svg width="52" height="52" viewBox="0 0 64 64" style="margin-left:4px"><cir
 h+='</div>';
 h+='<div class="cta-row">';
 h+='<a class="btn btn-primary" href="#/ch/'+(nextIdx+1)+'">'+ctaLabel+' \u2192</a>';
+h+='<a class="btn btn-ghost" href="praxis/progressive/prog_01_moves.html">Topic ladders \u2192</a>';
 h+='</div>';
 h+='</div>';
 
@@ -854,6 +855,7 @@ h+='</div>';
 
 h+='<div class="home-footer">';
 h+='<p>Progress saved locally in your browser. No server, no tracking.</p>';
+h+='<p><a href="praxis/progressive/prog_01_moves.html">Continue to the topic ladders \u2192</a> \u00b7 <a href="praxis/index.html">Back to the Praxis shelf</a></p>';
 h+='<span class="reset-link" id="resetAll">Reset all progress</span>';
 h+='</div>';
 h+='</div>';
@@ -877,6 +879,7 @@ h+='<div class="view">';
 h+='<div class="chapter-head">';
 h+='<div class="ch-head-inner">';
 h+='<a class="back-link" href="#/home">\u2190 chapters</a>';
+h+='<a class="back-link" href="praxis/progressive/prog_01_moves.html">topic ladders \u2192</a>';
 h+='<div class="ch-head-title">';
 h+='<div class="hk">Chapter '+ch.num+'</div>';
 h+='<div class="ht">'+ch.title+'</div>';
@@ -909,6 +912,7 @@ var nx=CHAPTERS[ci+1];
 h+='<a class="btn btn-primary" href="#/ch/'+(ci+2)+'">Next: Chapter '+nx.num+' \u2014 '+nx.title+' \u2192</a>';
 } else {
 h+='<a class="btn btn-primary" href="#/home">Back to all chapters</a>';
+h+='<a class="btn" href="praxis/progressive/prog_01_moves.html">Continue: the topic ladders \u2192</a>';
 }
 h+='</div>';
 }

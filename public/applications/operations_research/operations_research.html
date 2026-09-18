@@ -189,7 +189,7 @@ pre.code .com{color:var(--paper-faint);font-style:italic;}
 pre.code .fn{color:#7fc8e8;}
 pre.code .num{color:var(--gold);}
 
-/* side-by-side language labels: Python reference vs Mojo 1.0 port */
+/* side-by-side language labels: Python reference vs Mojo 1.x port */
 pre.code.py{border-left:3px solid #9fd9a0;}
 pre.code.mojo{border-left:3px solid #7fc8e8;background:rgba(127,200,232,0.04);}
 pre.code.py::before, pre.code.mojo::before{
@@ -285,7 +285,7 @@ footer{
 <div class="hero" id="top">
   <div class="eyebrow"><span class="dot"></span>The Science of Better &middot; TutMe Textbook</div>
   <h1 class="title">Operations <span class="flicker">Research.</span></h1>
-  <p class="subtitle">A concise, hands-on introduction to the mathematics of making good decisions under scarcity — linear programming, networks, queues, and simulation. Every example is shown twice: the Python reference you already know, and the same solution as a <strong>Mojo 1.0</strong> port. This book teaches Mojo through OR — read the Python to recognize the problem, read the Mojo to learn the language.</p>
+  <p class="subtitle">A concise, hands-on introduction to the mathematics of making good decisions under scarcity — linear programming, networks, queues, and simulation. Every example is shown twice: the Python reference you already know, and the same solution as a <strong>Mojo 1.x</strong> port. This book teaches Mojo through OR — read the Python to recognize the problem, read the Mojo to learn the language.</p>
   <div class="cta-row">
     <a class="btn btn-primary" href="#sec-1">Start with Section 1 →</a>
     <a class="btn btn-ghost" href="#toc">Browse the Contents</a>
@@ -296,7 +296,7 @@ footer{
   <div class="section-head">
     <div class="kicker">Contents</div>
     <h2>📖 What's inside</h2>
-    <p class="lead">Ten sections, built to be read in order but safe to jump into anywhere. Each algorithm appears first in Python, then as a Mojo 1.0 port — sometimes native compiled code (kernels, DPs, simulations), sometimes Mojo orchestrating a Python solver through the interop bridge. The Mojo versions are the point; the Python is the Rosetta stone.</p>
+    <p class="lead">Ten sections, built to be read in order but safe to jump into anywhere. Each algorithm appears first in Python, then as a Mojo 1.x port — sometimes native compiled code (kernels, DPs, simulations), sometimes Mojo orchestrating a Python solver through the interop bridge. The Mojo versions are the point; the Python is the Rosetta stone.</p>
   </div>
   <div class="toc-parts">
     <a class="chapter-row" href="#sec-1"><span class="cnum">01</span><span class="ctitle">What is Operations Research</span><span class="topic">Modeling</span></a>
@@ -387,7 +387,7 @@ res = linprog(c, A_ub=A_ub, b_ub=b_ub, bounds=[(<span class="num">0</span>, <spa
 <span class="kw">print</span>(res.x)    <span class="com"># [60. 40.]</span>
 <span class="kw">print</span>(-res.fun) <span class="com"># 3600.0</span></pre>
 
-  <p>The same solve from Mojo 1.0. Only the solver call crosses the interop bridge — everything around it (the model data, the loops, any parameter sweep you wrap it in) is compiled native code, so sweeping this LP over hundreds of scenarios pays no interpreter tax:</p>
+  <p>The same solve from Mojo 1.x. Only the solver call crosses the interop bridge — everything around it (the model data, the loops, any parameter sweep you wrap it in) is compiled native code, so sweeping this LP over hundreds of scenarios pays no interpreter tax:</p>
 
 <pre class="code mojo"><span class="kw">from</span> python <span class="kw">import</span> Python
 
@@ -503,7 +503,7 @@ prob.solve()
     <span class="kw">print</span>(name, <span class="str">"shadow ="</span>, c.pi, <span class="str">"range =("</span>,
           c.pi + c.lc, <span class="str">","</span>, c.pi + c.uc, <span class="str">")"</span>)</pre>
 
-  <p>Mojo 1.0 drives PuLP across the same bridge — the model is unchanged, but the surrounding analysis (re-solving under perturbed costs, logging shadow prices across a planning horizon) is compiled. Notice how the Python attribute access reads identically; the bridge is zero-overhead for the calls that matter:</p>
+  <p>Mojo 1.x drives PuLP across the same bridge — the model is unchanged, but the surrounding analysis (re-solving under perturbed costs, logging shadow prices across a planning horizon) is compiled. Notice how the Python attribute access reads identically; the bridge is zero-overhead for the calls that matter:</p>
 
 <pre class="code mojo"><span class="kw">from</span> python <span class="kw">import</span> Python
 
@@ -566,7 +566,7 @@ prob += pulp.lpSum(items[i][<span class="num">0</span>] * x[i] <span class="kw">
 prob.solve()
 <span class="kw">print</span>([i <span class="kw">for</span> i <span class="kw">in</span> items <span class="kw">if</span> x[i].value() &gt; <span class="num">0.5</span>])  <span class="com"># ['tent','stove','tool']</span></pre>
 
-  <p>Here is where Mojo 1.0 stops borrowing from Python and takes over completely. A pure 0/1 knapsack needs no branch-and-bound solver — the dynamic program is exact, and in Mojo it compiles to a tight nested loop over one contiguous <code>Tensor</code> table. No solver process, no interpreter, no dependencies; backtrack through the table to recover <em>which</em> items to pack:</p>
+  <p>Here is where Mojo 1.x stops borrowing from Python and takes over completely. A pure 0/1 knapsack needs no branch-and-bound solver — the dynamic program is exact, and in Mojo it compiles to a tight nested loop over one contiguous <code>Tensor</code> table. No solver process, no interpreter, no dependencies; backtrack through the table to recover <em>which</em> items to pack:</p>
 
 <pre class="code mojo"><span class="kw">from</span> collections <span class="kw">import</span> List
 <span class="kw">from</span> tensor <span class="kw">import</span> Tensor
@@ -646,7 +646,7 @@ subject to  Σⱼ xᵢⱼ = 1            for every customer i
                 heapq.heappush(heap, (nd, v))
     <span class="kw">return</span> d</pre>
 
-  <p>Mojo 1.0 ports Dijkstra natively — and this is the pattern for all of Section 6. No <code>heapq</code>, no boxed floats in tuples: typed <code>List</code>s, one allocation, and a compiled inner loop. The linear-scan minimum is O(V²); swap it for a binary heap over <code>List[Int]</code> on sparse graphs, or <code>parallelize</code> the relaxation pass on dense ones:</p>
+  <p>Mojo 1.x ports Dijkstra natively — and this is the pattern for all of Section 6. No <code>heapq</code>, no boxed floats in tuples: typed <code>List</code>s, one allocation, and a compiled inner loop. The linear-scan minimum is O(V²); swap it for a binary heap over <code>List[Int]</code> on sparse graphs, or <code>parallelize</code> the relaxation pass on dense ones:</p>
 
 <pre class="code mojo"><span class="kw">from</span> collections <span class="kw">import</span> List
 
@@ -694,7 +694,7 @@ solver.set_node_supply(<span class="num">4</span>, -<span class="num">12</span>)
 solver.solve()
 <span class="kw">print</span>(solver.optimal_cost())  <span class="com"># min cost to ship 12 units</span></pre>
 
-  <p>The Mojo 1.0 version keeps OR-Tools behind the bridge — specialized solvers are already written in C++ and there is nothing to gain from reimplementing them. What you gain is the orchestration: this compiled driver can fire thousands of min-cost-flow solves (one per scenario, per depot, per demand forecast) and post-process the results without a Python interpreter anywhere in the loop:</p>
+  <p>The Mojo 1.x version keeps OR-Tools behind the bridge — specialized solvers are already written in C++ and there is nothing to gain from reimplementing them. What you gain is the orchestration: this compiled driver can fire thousands of min-cost-flow solves (one per scenario, per depot, per demand forecast) and post-process the results without a Python interpreter anywhere in the loop:</p>
 
 <pre class="code mojo"><span class="kw">from</span> python <span class="kw">import</span> Python
 
@@ -763,7 +763,7 @@ W   = <span class="num">1</span> / (mu - lam)
 Wq  = W - <span class="num">1</span>/mu
 <span class="kw">print</span>(rho, L, Lq, W, Wq)  <span class="com"># 0.75 3.0 2.25 0.5 0.375</span></pre>
 
-  <p>Mojo 1.0 makes the formulas typed and compile-time checked — <code>lam</code> and <code>mu</code> are <code>Float64</code> by declaration, not by accident, and mixing up a rate with a time shows up as a compile error at the call site. The struct bundles the parameters with the algebra; create one per scenario and evaluate a whole staffing table natively:</p>
+  <p>Mojo 1.x makes the formulas typed and compile-time checked — <code>lam</code> and <code>mu</code> are <code>Float64</code> by declaration, not by accident, and mixing up a rate with a time shows up as a compile error at the call site. The struct bundles the parameters with the algebra; create one per scenario and evaluate a whole staffing table natively:</p>
 
 <pre class="code mojo"><span class="kw">struct</span> MM1:
     <span class="kw">var</span> lam: Float64     <span class="com"># arrivals per hour</span>
@@ -890,7 +890,7 @@ EV(wait)   = $0   →  choose expand.</pre>
 
 <span class="kw">print</span>(sim_mm1())  <span class="com"># ~0.375 h avg wait vs Wq = 0.375 from the formulas</span></pre>
 
-  <p>The Mojo 1.0 port is line-for-line the same event loop — but compiled. Discrete-event simulation is the textbook case for it: a long-running loop with cheap arithmetic per iteration is exactly what an interpreter penalizes most. Exponential draws come from the inverse CDF (<code>−ln(1−u)/rate</code>); crank <code>hours</code> from 2,000 to 2,000,000 for tighter confidence at barely any wall-clock cost:</p>
+  <p>The Mojo 1.x port is line-for-line the same event loop — but compiled. Discrete-event simulation is the textbook case for it: a long-running loop with cheap arithmetic per iteration is exactly what an interpreter penalizes most. Exponential draws come from the inverse CDF (<code>−ln(1−u)/rate</code>); crank <code>hours</code> from 2,000 to 2,000,000 for tighter confidence at barely any wall-clock cost:</p>
 
 <pre class="code mojo"><span class="kw">from</span> random <span class="kw">import</span> random_float64, seed
 <span class="kw">from</span> math <span class="kw">import</span> log
@@ -942,7 +942,7 @@ EV(wait)   = $0   →  choose expand.</pre>
     <div class="card">
       <span class="num">Phase 2 · Solve</span>
       <h4>Start small, then scale</h4>
-      <p>Solve a hand-checkable instance to confirm the model does what you think. Then relax assumptions one at a time. Choose the tool by problem type: scipy/pulp for LP and IP, OR-Tools for networks and routing, hand-rolled or commercial simulators for queues and policies. And when the glue between those tools becomes the bottleneck — parameter sweeps, scenario batteries, big kernels like the knapsack DP or Monte Carlo loops — that glue is Mojo 1.0's job: call the solvers through the interop bridge, keep the loops native and compiled.</p>
+      <p>Solve a hand-checkable instance to confirm the model does what you think. Then relax assumptions one at a time. Choose the tool by problem type: scipy/pulp for LP and IP, OR-Tools for networks and routing, hand-rolled or commercial simulators for queues and policies. And when the glue between those tools becomes the bottleneck — parameter sweeps, scenario batteries, big kernels like the knapsack DP or Monte Carlo loops — that glue is Mojo 1.x's job: call the solvers through the interop bridge, keep the loops native and compiled.</p>
     </div>
     <div class="card">
       <span class="num">Phase 3 · Validate</span>

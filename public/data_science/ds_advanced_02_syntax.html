@@ -3,7 +3,7 @@
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chapter 2 — Mojo 1.0 Syntax &amp; Semantics · Mojo 1.0</title>
+<title>Chapter 2 — Mojo 1.x Syntax &amp; Semantics · Mojo 1.x</title>
 <style>
 :root{
   --bg:#0f1115;--surface:#16181d;--surface-hover:#1e2128;
@@ -92,7 +92,7 @@ code{font-family:var(--font-mono);font-size:0.88em;background:rgba(108,92,231,0.
 <div class="progress" id="progress"></div>
 
 <header class="header">
-  <a class="brand" href="../mojo_v1/mojo_book_2.html"><span class="icon">M</span> Mojo 1.0</a>
+  <a class="brand" href="../mojo_v1/mojo_book_2.html"><span class="icon">M</span> Mojo 1.x</a>
   <span class="chnum">Chapter 02 / 15</span> <a href="../mojo_v1/mojo_book_1.html" style="font-size:.8em;opacity:.75;text-decoration:underline;margin-left:8px;">← Book 1 · Language Fundamentals</a>
 </header>
 
@@ -109,12 +109,12 @@ code{font-family:var(--font-mono);font-size:0.88em;background:rgba(108,92,231,0.
 <div class="wrap">
 <div class="container">
   <span class="kicker">Part I: Foundations</span>
-  <h1>📜 Mojo 1.0 <span class="hl">Syntax &amp; Semantics</span></h1>
+  <h1>📜 Mojo 1.x <span class="hl">Syntax &amp; Semantics</span></h1>
   <p class="dek">def — the one function keyword, structs, value types, variables, control flow, and functions — the building blocks of Mojo code.</p>
 
   <section id="fn-def">
     <h2>def: One Keyword, Two Flavors of Strictness</h2>
-    <p>Mojo 1.0 defines all functions with a single keyword: <code>def</code>. An unannotated <code>def</code> behaves like a Python function — lenient, great for scripting. A fully annotated <code>def</code> gives you what the old <code>fn</code> keyword used to provide: parameters with explicit types, enforced raise checking, and stronger compiler optimization.</p>
+    <p>Mojo 1.x defines all functions with a single keyword: <code>def</code>. An unannotated <code>def</code> behaves like a Python function — lenient, great for scripting. A fully annotated <code>def</code> gives you what the old <code>fn</code> keyword used to provide: parameters with explicit types, enforced raise checking, and stronger compiler optimization.</p>
 
     <div class="code-playground">
       <div class="tabs">
@@ -155,7 +155,7 @@ code{font-family:var(--font-mono);font-size:0.88em;background:rgba(108,92,231,0.
 
     <div class="info-box">
       <strong>What happened to fn?</strong>
-      <p>The <code>fn</code> keyword was deprecated in v26.2 and is a hard compilation error in Mojo 1.0 — the two keywords unified into <code>def</code>. Annotate your <code>def</code> for compile-time safety, explicit type contracts, and maximum performance; skip annotations for quick prototyping.</p>
+      <p>The <code>fn</code> keyword was deprecated in v26.2 and is a hard compilation error in Mojo 1.x — the two keywords unified into <code>def</code>. Annotate your <code>def</code> for compile-time safety, explicit type contracts, and maximum performance; skip annotations for quick prototyping.</p>
     </div>
   </section>
 
@@ -207,7 +207,7 @@ p = Point(<span class="num">3.0</span>, <span class="num">4.0</span>)
 
   <section id="var-let">
     <h2>var: The One Binding Keyword</h2>
-    <p>Mojo 1.0 declares every local variable with <code>var</code> — and the keyword is mandatory: a first assignment without <code>var</code> is a deprecation error. The old immutable-binding keyword <code>let</code> was removed before 1.0; a variable you never reassign is your immutable binding.</p>
+    <p>Mojo 1.x declares every local variable with <code>var</code> — and the keyword is mandatory: a first assignment without <code>var</code> is a deprecation error. The old immutable-binding keyword <code>let</code> was removed before 1.0; a variable you never reassign is your immutable binding.</p>
 
     <div class="code-playground">
       <div class="tabs">
@@ -292,7 +292,7 @@ n = <span class="num">10</span>
 
     <div class="info-box">
       <strong>@fieldwise_init decorator</strong>
-      <p>Mojo 1.0's <code>@fieldwise_init</code> decorator generates the one-argument-per-field constructor for a struct (the role the old pre-1.0 <code>@value</code> decorator played). Pair it with trait conformances — <code>struct S(Copyable, Equatable)</code> — to get synthesized copy constructors and equality; it's the equivalent of Python's <code>@dataclass</code> but for Mojo value types.</p>
+      <p>Mojo 1.x's <code>@fieldwise_init</code> decorator generates the one-argument-per-field constructor for a struct (the role the old pre-1.0 <code>@value</code> decorator played). Pair it with trait conformances — <code>struct S(Copyable, Equatable)</code> — to get synthesized copy constructors and equality; it's the equivalent of Python's <code>@dataclass</code> but for Mojo value types.</p>
     </div>
   </section>
 
@@ -332,7 +332,7 @@ n = <span class="num">10</span>
     <h2>✅ Check Your Understanding</h2>
     <div class="quiz">
       <div class="qlbl">Quick Check 1</div>
-      <div class="qtext">What happens if you write <code>fn</code> in Mojo 1.0 code?</div>
+      <div class="qtext">What happens if you write <code>fn</code> in Mojo 1.x code?</div>
       <div class="opts" id="quiz1">
         <button class="opt" data-correct="false">It still works, but the compiler warns about style</button>
         <button class="opt" data-correct="false">It's treated as an alias for <code>def</code></button>

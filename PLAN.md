@@ -1,7 +1,7 @@
 # TutMe🔥 — Reorganization Plan
 
 ## Overview
-Reorganize loose HTML files from `all html files/` into the `public/` static site structure and rename the app from "Mojo 1.0 Learning Hub" to **"TutMe🔥"**. The site is a learning hub for Mojo 1.0: a single-source syntax library (fundamentals), domain books (data science + applications), and a practice dojo (praxis).
+Reorganize loose HTML files from `all html files/` into the `public/` static site structure and rename the app from "Mojo 1.x Learning Hub" to **"TutMe🔥"**. The site is a learning hub for Mojo 1.x: a single-source syntax library (fundamentals), domain books (data science + applications), and a practice dojo (praxis).
 
 ## Folder Structure (live)
 ```
@@ -44,7 +44,7 @@ public/
 All topics are searchable from the landing page and from each section hub.
 
 ## Completed
-- **Branding** — "Mojo 1.0 Learning Hub" fully replaced with "TutMe🔥" across all pages.
+- **Branding** — "Mojo 1.x Learning Hub" fully replaced with "TutMe🔥" across all pages.
 - **Navigation** — standard pill nav (`Home | Fundamentals | Data Science | Applications | Praxis`) present on all 22 standard pages, prefix-correct per depth (`""`, `../`, `../../`).
 - **Index hubs completed — every HTML file is linked from its section hub**:
   - `index.html` → links all 121 files, grouped by the four pills, with `#fundamentals` / `#data-science` / `#applications` / `#praxis` anchor sections.
@@ -54,7 +54,7 @@ All topics are searchable from the landing page and from each section hub.
   - `geomatics/index.html` and `operations_research/index.html` → link all files in shelf + "mother folder" `../index.html`.
   - `applications/finance/index.html` → redirects to `operations_research/` shelf for the moved textbook.
 - **Praxis exercises created** — grounded in the books:
-  - Drills 01–17 map 1:1 to the Mojo 1.0 Textbook chapters (`drill-NN.html` links back to the source chapter).
+  - Drills 01–17 map 1:1 to the Mojo 1.x Textbook chapters (`drill-NN.html` links back to the source chapter).
   - Drills 18–24 map to application books (finance ×3, geomatics ×2, operations research ×2).
   - Mini-projects 01–03 (CSV summary utility, metaprogrammed shape library, capital budget analyser).
 - **Moved file** — `operations_research.html` relocated `applications/finance/ → applications/operations_research/`.

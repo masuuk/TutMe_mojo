@@ -814,10 +814,10 @@
     <div class="book-cover">
         <div class="cover-eyebrow">A Condensed Reference for Forecasting &amp; Machine Learning</div>
         <h1>⏳ Time Series Analytics</h1>
-        <p class="subtitle">A practical guide for Machine Learning practitioners — the Python ecosystem on one side, Mojo 1.0 high-performance implementation on the other.</p>
+        <p class="subtitle">A practical guide for Machine Learning practitioners — the Python ecosystem on one side, Mojo 1.x high-performance implementation on the other.</p>
         <div class="cover-badges">
             <span class="badge badge-python">🐍 Python</span>
-            <span class="badge badge-mojo">🔥 Mojo 1.0</span>
+            <span class="badge badge-mojo">🔥 Mojo 1.x</span>
             <span class="badge badge-ml">🤖 ML</span>
         </div>
         <div class="cover-stats">
@@ -854,7 +854,7 @@
             <li><a href="#ch18">Multivariate Time Series</a></li>
             <li><a href="#ch19">Anomaly Detection</a></li>
             <li><a href="#ch20">Your Mojo Time-Series Engine</a></li>
-            <li><a href="#ch21">Python vs Mojo 1.0</a></li>
+            <li><a href="#ch21">Python vs Mojo 1.x</a></li>
             <li><a href="#ch22">The Python + Mojo Architecture</a></li>
             <li><a href="#ch23">Capstone Project</a></li>
             <li><a href="#ch24">8-Week Learning Plan</a></li>
@@ -935,7 +935,7 @@
     <section id="ch2">
         <h2>2. Data Loading &amp; Preprocessing</h2>
         <p class="lede">Real data arrives with holes. Two repairs — forward-fill and interpolation — cover almost everything, and both are honest: they invent no structure the data itself did not suggest.</p>
-        <p>Before analysis, we must load data, handle missing values, and ensure proper temporal indexing. Python's <strong>pandas</strong> is the standard tool; Mojo 1.0 offers native structs plus Python interop.</p>
+        <p>Before analysis, we must load data, handle missing values, and ensure proper temporal indexing. Python's <strong>pandas</strong> is the standard tool; Mojo 1.x offers native structs plus Python interop.</p>
 
         <h3>2.1 Python: Loading with pandas</h3>
         <pre class="python"><span class="lang-label">Python</span><code>import pandas as pd
@@ -964,9 +964,9 @@ df['sales_interp'] = df['sales'].interpolate(method='linear')
 # Check missing values
 print(df.isna().sum())</code></pre>
 
-        <h3>2.3 Mojo 1.0: Native Data Loading</h3>
-        <pre class="mojo"><span class="lang-label">Mojo 1.0</span><code>
-# Mojo 1.0: every function starts with `def` (the old `fn` keyword is gone),
+        <h3>2.3 Mojo 1.x: Native Data Loading</h3>
+        <pre class="mojo"><span class="lang-label">Mojo 1.x</span><code>
+# Mojo 1.x: every function starts with `def` (the old `fn` keyword is gone),
 # and `List` comes from the prelude so no import is needed.
 def load_sales_data() -&gt; List[Float64]:
     # build the sample series as a typed Mojo List (list display syntax)
@@ -993,10 +993,10 @@ def main():
           cleaned[3], cleaned[4], cleaned[5])
 </code></pre>
 
-        <h3>2.4 Mojo 1.0: Python Interop for pandas</h3>
-        <pre class="mojo"><span class="lang-label">Mojo 1.0</span><code>
+        <h3>2.4 Mojo 1.x: Python Interop for pandas</h3>
+        <pre class="mojo"><span class="lang-label">Mojo 1.x</span><code>
 # Calling pandas from Mojo via Python interop.
-# Mojo 1.0 stdlib paths start with std., so the Python bridge lives here.
+# Mojo 1.x stdlib paths start with std., so the Python bridge lives here.
 from std.python import Python
 from std.python.numpy import copy_to_numpy_array
 
@@ -1067,7 +1067,7 @@ df['SMA_12'] = df['sales'].rolling(window=12).mean()
 
 print(df[['sales', 'SMA_3', 'SMA_6', 'SMA_12']].head(15))</code></pre>
 
-        <pre class="mojo"><span class="lang-label">Mojo 1.0</span><code>
+        <pre class="mojo"><span class="lang-label">Mojo 1.x</span><code>
 # Simple moving average implemented over List[Float64]
 def sma(data: List[Float64], window: Int) -&gt; List[Float64]:
     var n = len(data)
@@ -1138,7 +1138,7 @@ alpha = 0.3
 df['SES'] = df['sales'].ewm(alpha=alpha, adjust=False).mean()
 print(df[['sales', 'SES']].head(8))</code></pre>
 
-        <pre class="mojo"><span class="lang-label">Mojo 1.0</span><code>
+        <pre class="mojo"><span class="lang-label">Mojo 1.x</span><code>
 # Simple exponential smoothing:
 #   s[t] = alpha * x[t] + (1 - alpha) * s[t-1]
 def exponential_smoothing(data: List[Float64], alpha: Float64) -&gt; List[Float64]:
@@ -1188,8 +1188,8 @@ print("Trend (first 6):", trend[:6].values)
 print("Seasonal (first 6):", seasonal[:6].values)
 print("Residual (first 6):", residual[:6].values)</code></pre>
 
-        <h3>4.2 Mojo 1.0: Manual Decomposition via Moving Averages</h3>
-        <pre class="mojo"><span class="lang-label">Mojo 1.0</span><code>
+        <h3>4.2 Mojo 1.x: Manual Decomposition via Moving Averages</h3>
+        <pre class="mojo"><span class="lang-label">Mojo 1.x</span><code>
 # Manual additive decomposition:
 #   trend    = centered moving average (of length `period`)
 #   seasonal = average detrended value for each position inside the period
@@ -1321,7 +1321,7 @@ df['diff_2'] = df['sales'].diff().diff()
 
 print(df[['sales', 'diff_1', 'diff_2']].head(10))</code></pre>
 
-        <pre class="mojo"><span class="lang-label">Mojo 1.0</span><code>
+        <pre class="mojo"><span class="lang-label">Mojo 1.x</span><code>
 # Nth-order differencing: each pass replaces the series with its first difference
 def difference(data: List[Float64], order: Int) -&gt; List[Float64]:
     var result = data
@@ -1398,8 +1398,8 @@ print(f"Best order: {auto_model.order}")
 print(f"Best seasonal order: {auto_model.seasonal_order}")
 </code></pre>
 
-        <h3>6.4 Mojo 1.0: Manual AR(1) Implementation</h3>
-        <pre class="mojo"><span class="lang-label">Mojo 1.0</span><code>
+        <h3>6.4 Mojo 1.x: Manual AR(1) Implementation</h3>
+        <pre class="mojo"><span class="lang-label">Mojo 1.x</span><code>
 # AR(1) model: Y(t) = c + phi * Y(t-1) + eps(t), fitted by least squares
 def fit_ar1(data: List[Float64]) -&gt; Tuple[Float64, Float64]:
     var n = len(data)
@@ -1489,7 +1489,7 @@ print(f"α (level): {hw_model.params['smoothing_level']:.4f}")
 print(f"β (trend): {hw_model.params['smoothing_trend']:.4f}")
 print(f"γ (seasonal): {hw_model.params['smoothing_seasonal']:.4f}")</code></pre>
 
-        <pre class="mojo"><span class="lang-label">Mojo 1.0</span><code>
+        <pre class="mojo"><span class="lang-label">Mojo 1.x</span><code>
 # Holt-Winters additive triple exponential smoothing, written from scratch
 def holt_winters_additive(data: List[Float64], period: Int,
                           alpha: Float64, beta: Float64, gamma: Float64
@@ -1598,8 +1598,8 @@ df['month_cos'] = np.cos(2 * np.pi * df['month'] / 12)
 
 print(df[['month', 'month_sin', 'month_cos']].head(12))</code></pre>
 
-        <h3>8.4 Mojo 1.0: Feature Engineering</h3>
-        <pre class="mojo"><span class="lang-label">Mojo 1.0</span><code>
+        <h3>8.4 Mojo 1.x: Feature Engineering</h3>
+        <pre class="mojo"><span class="lang-label">Mojo 1.x</span><code>
 # Feature engineering in pure Mojo.
 # The lag matrix is stored flat (row-major): element [i, j] of the matrix
 # lives at flat index i * max_lag + j.
@@ -1707,8 +1707,8 @@ print(f"GBM MAE: {mean_absolute_error(y_test, gb_pred):.2f}")
 print(f"GBM RMSE: {np.sqrt(mean_squared_error(y_test, gb_pred)):.2f}")
 </code></pre>
 
-        <h3>9.5 Mojo 1.0: Linear Regression via Python Interop</h3>
-        <pre class="mojo"><span class="lang-label">Mojo 1.0</span><code>
+        <h3>9.5 Mojo 1.x: Linear Regression via Python Interop</h3>
+        <pre class="mojo"><span class="lang-label">Mojo 1.x</span><code>
 # Fit scikit-learn from Mojo: compute the features natively, hand them to
 # NumPy with the interop helper, then call sklearn through Python.
 from std.python import Python
@@ -1806,10 +1806,10 @@ print(f"LSTM Test MAE: {test_mae:.4f}")
 print(f"LSTM Test MSE: {test_loss:.4f}")
 </code></pre>
 
-        <h3>10.3 Mojo 1.0: LSTM via Python Interop (TensorFlow)</h3>
-        <pre class="mojo"><span class="lang-label">Mojo 1.0</span><code>
+        <h3>10.3 Mojo 1.x: LSTM via Python Interop (TensorFlow)</h3>
+        <pre class="mojo"><span class="lang-label">Mojo 1.x</span><code>
 # TensorFlow/Keras from Mojo: import the Python packages and build the model.
-# Every binding uses `var` - Mojo 1.0 has no `let` keyword.
+# Every binding uses `var` - Mojo 1.x has no `let` keyword.
 from std.python import Python
 
 def build_lstm_model():
@@ -2005,7 +2005,7 @@ df['log_return'] = np.log(
 
 print(df[['sales', 'return', 'log_return']].head(8))</code></pre>
 
-        <pre class="mojo"><span class="lang-label">Mojo 1.0</span><code>
+        <pre class="mojo"><span class="lang-label">Mojo 1.x</span><code>
 # Percentage change between two consecutive values
 def pct_change(current: Float64,
                previous: Float64) -&gt; Float64:
@@ -2040,7 +2040,7 @@ acf_values = acf(values, nlags=6)
 print(acf_values)
 </code></pre>
 
-        <pre class="mojo"><span class="lang-label">Mojo 1.0</span><code>
+        <pre class="mojo"><span class="lang-label">Mojo 1.x</span><code>
 # Population variance implemented directly
 def variance(data: List[Float64]) -&gt; Float64:
     var total = 0.0
@@ -2085,7 +2085,7 @@ X_scaled = scaler.fit_transform(X_train)
 print(scaler.mean_, scaler.scale_)
 </code></pre>
 
-        <pre class="mojo"><span class="lang-label">Mojo 1.0</span><code>
+        <pre class="mojo"><span class="lang-label">Mojo 1.x</span><code>
 # Z-score normalization: (x - mean) / std
 def standardize(x: Float64,
                 mean: Float64,
@@ -2144,7 +2144,7 @@ forecast = df['sales'].iloc[-1]
 print(forecast)
 </code></pre>
 
-        <pre class="mojo"><span class="lang-label">Mojo 1.0</span><code>
+        <pre class="mojo"><span class="lang-label">Mojo 1.x</span><code>
 # Naive forecast: predict the last observed value
 def naive_forecast(last_value: Float64) -&gt; Float64:
     return last_value
@@ -2215,7 +2215,7 @@ anomalies = df[df['z'].abs() &gt; 3]
 print(anomalies)
 </code></pre>
 
-        <pre class="mojo"><span class="lang-label">Mojo 1.0</span><code>
+        <pre class="mojo"><span class="lang-label">Mojo 1.x</span><code>
 # Z-score: standard deviations away from the mean (used for anomalies)
 def zscore(x: Float64,
            mean: Float64,
@@ -2254,9 +2254,9 @@ def zscore(x: Float64,
     <!-- ==================== CHAPTER 21 ==================== -->
     <div class="chapter-divider"><span>Chapter 21</span></div>
     <section id="ch21">
-        <h2>21. Python vs Mojo 1.0 for Time-Series Analytics</h2>
+        <h2>21. Python vs Mojo 1.x for Time-Series Analytics</h2>
         <table>
-            <tbody><tr><th>Task</th><th>Python</th><th>Mojo 1.0</th></tr>
+            <tbody><tr><th>Task</th><th>Python</th><th>Mojo 1.x</th></tr>
             <tr><td>Data ingestion</td><td>★★★★★</td><td>★★</td></tr>
             <tr><td>Data cleaning</td><td>★★★★★</td><td>★★</td></tr>
             <tr><td>Pandas workflows</td><td>★★★★★</td><td>★</td></tr>
@@ -2402,7 +2402,7 @@ Report</code></pre>
             <tr><td><code>pmdarima</code></td><td>Auto ARIMA</td><td><code>auto_arima()</code></td></tr>
         </tbody></table>
 
-        <h3>A.2 Mojo 1.0 Key Features for Time Series</h3>
+        <h3>A.2 Mojo 1.x Key Features for Time Series</h3>
         <table>
             <tbody><tr><th>Feature</th><th>Mojo Syntax</th><th>Performance Benefit</th></tr>
             <tr><td>Typed functions</td><td><code>def name(x: Float64) -&gt; Float64:</code></td><td>Compile-time type checking</td></tr>
@@ -2439,8 +2439,8 @@ mae = mean_absolute_error(test, forecast)
 print(f"Test MAE: {mae:.2f}")
 print(f"Forecast: {forecast.values}")</code></pre>
 
-        <h3>A.4 Complete Mojo 1.0 Equivalent</h3>
-        <pre class="mojo"><span class="lang-label">Mojo 1.0 — Full Pipeline</span><code>
+        <h3>A.4 Complete Mojo 1.x Equivalent</h3>
+        <pre class="mojo"><span class="lang-label">Mojo 1.x — Full Pipeline</span><code>
 # Full Mojo pipeline: load and split data natively, fit Holt-Winters via
 # Python interop (pandas + statsmodels), then evaluate MAE in Mojo.
 from std.python import Python
@@ -2495,9 +2495,9 @@ def main():
 
     <!-- ==================== FOOTER ==================== -->
     <footer>
-        <p>⏳ <strong>Time Series Analytics with Python &amp; Mojo 1.0</strong> — Condensed Edition</p>
+        <p>⏳ <strong>Time Series Analytics with Python &amp; Mojo 1.x</strong> — Condensed Edition</p>
         <p>All calculations performed on the 24-month sample sales dataset • For educational purposes</p>
-        <p style="margin-top:0.5rem;">Python 🐍 • Mojo 1.0 🔥 • Machine Learning 🤖</p>
+        <p style="margin-top:0.5rem;">Python 🐍 • Mojo 1.x 🔥 • Machine Learning 🤖</p>
     </footer>
 
 <button class="to-top" id="to-top" aria-label="Back to top">↑</button>
@@ -2521,7 +2521,7 @@ def main():
   d.querySelectorAll('pre').forEach(function (pre) {
     var label = pre.querySelector('.lang-label');
     var lang = label ? label.textContent.trim() :
-      (pre.classList.contains('mojo') ? 'Mojo 1.0' :
+      (pre.classList.contains('mojo') ? 'Mojo 1.x' :
        pre.classList.contains('python') ? 'Python' : 'Code');
     var color = (lang.indexOf('Mojo') !== -1) ? '#ff8c5a' :
                 (lang.indexOf('Python') !== -1) ? '#5b8cf7' : '#c7a9e8';

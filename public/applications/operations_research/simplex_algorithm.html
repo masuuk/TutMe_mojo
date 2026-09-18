@@ -548,7 +548,7 @@ main section.reveal.in{ opacity:1; transform:none; }
       <li><a href="#sec-6">Big-M &amp; Two-Phase</a></li>
       <li><a href="#sec-7">Python implementations</a></li>
       <li><a href="#sec-8">Try it yourself</a></li>
-      <li><a href="#sec-9">Mojo 1.0 implementation</a></li>
+      <li><a href="#sec-9">Mojo 1.x implementation</a></li>
       <li><a href="#sec-10">Duality &amp; shadow prices</a></li>
       <li><a href="#sec-11">Degeneracy &amp; limits</a></li>
       <li><a href="#sec-12">Which solver when</a></li>
@@ -561,7 +561,7 @@ main section.reveal.in{ opacity:1; transform:none; }
     <header class="masthead">
       <p class="kicker">operations research / the simplex method · professor's guide merged in</p>
       <h1 class="title">The <span class="grad">Simplex</span> Method, End to End</h1>
-      <p class="subtitle">One document that weaves the Professor's Guide's philosophy and hand-worked walkthrough together: geometric examples, Big-M and Two-Phase, Bland's rule, the revised simplex, and the verified Python and Mojo 1.0 implementations.</p>
+      <p class="subtitle">One document that weaves the Professor's Guide's philosophy and hand-worked walkthrough together: geometric examples, Big-M and Two-Phase, Bland's rule, the revised simplex, and the verified Python and Mojo 1.x implementations.</p>
       <div class="byline">
         <span><b>Petros</b></span>
         <span class="dot"></span>
@@ -573,7 +573,7 @@ main section.reveal.in{ opacity:1; transform:none; }
 
     <div class="orn" aria-hidden="true"><span></span><i></i><span></span></div>
 
-    <p style="margin-top:36px; font-size:0.92rem; color:var(--paper-dim);">Every Python output on this page was produced by actually running the code shown (Python 3.14, NumPy 2.4, SciPy 1.18); the Mojo listing is the variant compiled and run against Modular 26.5 (Mojo 1.0).</p>
+    <p style="margin-top:36px; font-size:0.92rem; color:var(--paper-dim);">Every Python output on this page was produced by actually running the code shown (Python 3.14, NumPy 2.4, SciPy 1.18); the Mojo listing is the variant compiled and run against Modular 26.5 (Mojo 1.x).</p>
 
     <!-- ============================================================ -->
     <section id="sec-0">
@@ -582,7 +582,7 @@ main section.reveal.in{ opacity:1; transform:none; }
 
       <p class="dropcap">The simplex method — devised by George Dantzig in 1947 — is the crown jewel of linear programming, and its philosophy fits in one paragraph. Imagine you are blindfolded on the surface of a multi-dimensional diamond (a polytope), searching for its highest point. The method tells you to feel for an edge that slopes upward, walk along it to the next vertex, and then repeat. Because the feasible region is convex, the moment no edge still leads uphill you are guaranteed to be at the absolute peak — not a local high, the peak.</p>
 
-      <p>Everything on this page is scaffolding around that single idea: how the region is drawn on paper (standard form), how the feet find the edges (the tableau and the pivot rules), how the walking plays out slowly (the worked examples), what the machines actually run (Python and Mojo 1.0), and what the view from the peak reveals about the value of every resource (duality).</p>
+      <p>Everything on this page is scaffolding around that single idea: how the region is drawn on paper (standard form), how the feet find the edges (the tableau and the pivot rules), how the walking plays out slowly (the worked examples), what the machines actually run (Python and Mojo 1.x), and what the view from the peak reveals about the value of every resource (duality).</p>
 
       <div class="professor-note">
         The magic of simplex is not just that it works, but that it only evaluates the <em>vertices</em> — the corner points — of the feasible region, completely ignoring the infinitely many points inside it. That is what makes it computationally efficient: a problem with thousands of constraints still visits a very small number of corners on the way to the answer.
@@ -1399,10 +1399,10 @@ min C = 8.00  at  x1 = 4.00, x2 = 0.00</pre>
 
     <!-- ============================================================ -->
     <section id="sec-9">
-      <h2><span class="num">09</span> The same solver in Mojo 1.0</h2>
+      <h2><span class="num">09</span> The same solver in Mojo 1.x</h2>
       <p class="lede">Same algorithm, different guarantees — mostly about who owns what memory.</p>
 
-      <p>Mojo 1.0 (shipped with Modular's 26.5 release) offers Python-shaped syntax with compile-time typing and ownership — attractive for the simplex inner loop, which is dense linear algebra on a mutable 2-D structure. Four language notes, all visible in the listing:</p>
+      <p>Mojo 1.x (shipped with Modular's 26.5 release) offers Python-shaped syntax with compile-time typing and ownership — attractive for the simplex inner loop, which is dense linear algebra on a mutable 2-D structure. Four language notes, all visible in the listing:</p>
 
       <ul>
         <li><b><code>def</code> is the one function keyword.</b> The old <code>fn</code>/<code>def</code> split is gone — <code>fn</code> is deprecated as of v26.2. A <code>def</code> is fully compiled when annotated; <code>raises</code> marks code that can raise.</li>
@@ -1417,7 +1417,7 @@ min C = 8.00  at  x1 = 4.00, x2 = 0.00</pre>
         <div class="code-tabs"><span class="tab-label"><span class="dot" style="background:var(--mojo)"></span>mojo 1.0 — simplex.mojo</span></div>
         <div class="code-panels"><pre><code class="lang-mojo"># simplex.mojo -- tableau-form primal simplex for standard-form LPs:
 #   maximize c^T x  subject to  A x &lt;= b,  x &gt;= 0,  b &gt;= 0
-# Mojo 1.0 (Modular 26.5) -- def functions, `var` bindings, List[Float64].
+# Mojo 1.x (Modular 26.5) -- def functions, `var` bindings, List[Float64].
 
 def solve(c: List[Float64], A: List[List[Float64]], b: List[Float64]) raises -&gt; Tuple[List[Float64], Float64, Int]:
     var m = len(A)                       # constraint rows
@@ -1779,7 +1779,7 @@ print(f"dual solved directly: y = {res.x},  W* = {res.fun:.2f}")
         <li><span class="yr">2021</span> Frederick S. Hillier &amp; Gerald J. Lieberman, <i>Introduction to Operations Research</i>, 11th ed. — source of the Wyndor Glass problem used in section 4.</li>
         <li><span class="yr">1972</span> Victor Klee &amp; George J. Minty, "How Good is the Simplex Algorithm?" — the paper constructing the exponential-time worst case discussed in section 11.</li>
         <li><span class="yr">1955</span> E. M. L. Beale, "Cycling in the Dual Simplex Method" — the first published example of cycling.</li>
-        <li><span class="yr">2026</span> Modular Inc., <i>Mojo 1.0 Documentation</i> (Modular 26.5) — <i>Variables</i>, <i>Functions</i>, <i>Types</i>, and <i>Mojo tips for Python devs</i>, for the ownership rules used in section 9.</li>
+        <li><span class="yr">2026</span> Modular Inc., <i>Mojo 1.x Documentation</i> (Modular 26.5) — <i>Variables</i>, <i>Functions</i>, <i>Types</i>, and <i>Mojo tips for Python devs</i>, for the ownership rules used in section 9.</li>
       </ul>
     </section>
 

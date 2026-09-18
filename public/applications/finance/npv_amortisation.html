@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NPV &amp; Amortisation — Time Value of Money in Python &amp; Mojo 1.0</title>
+<title>NPV &amp; Amortisation — Time Value of Money in Python &amp; Mojo 1.x</title>
 <style>
   :root{
     --bg:#0d1114; --bg2:#151b21; --bg3:#1b242b; --panel:#0e1418;
@@ -131,7 +131,7 @@
       <span class="logo">💰</span>
       <h1>NPV &amp; Amortisation</h1>
     </div>
-    <div class="kicker"><span>Time Value of Money</span><span>NPV &amp; IRR</span><span>Amortisation</span><span>Python · Mojo 1.0</span></div>
+    <div class="kicker"><span>Time Value of Money</span><span>NPV &amp; IRR</span><span>Amortisation</span><span>Python · Mojo 1.x</span></div>
   </div>
 </header>
 
@@ -186,7 +186,7 @@
 <!-- ===================== INTRO ===================== -->
 <section id="intro">
   <h2>1. Orientation &amp; Learning Objectives</h2>
-  <p>Two ideas underpin almost every corporate-finance decision: <strong>net present value</strong> — whether a stream of future cash flows is worth more than it costs to obtain — and <strong>amortisation</strong> — how a fixed-payment loan is actually paid down, and what that ends up costing you. This book teaches both from first principles, with a running <em>Python &harr; Mojo 1.0</em> dialogue so you see the identical mathematics in each language.</p>
+  <p>Two ideas underpin almost every corporate-finance decision: <strong>net present value</strong> — whether a stream of future cash flows is worth more than it costs to obtain — and <strong>amortisation</strong> — how a fixed-payment loan is actually paid down, and what that ends up costing you. This book teaches both from first principles, with a running <em>Python &harr; Mojo 1.x</em> dialogue so you see the identical mathematics in each language.</p>
 
   <div class="card">
     <h4>By the end of this book you will be able to:</h4>
@@ -197,7 +197,7 @@
       <li>Derive the <strong>level-payment formula</strong> for a loan and generate an amortisation schedule month by month.</li>
       <li>Quantify the interest a mortgage really costs, and model <strong>prepayment</strong> (extra principal) so you can judge how much it saves.</li>
       <li>Combine the two: evaluate a <strong>loan-funded project</strong> end to end (payment &rarr; net inflow &rarr; NPV).</li>
-      <li>Port every one of these calculations to <strong>compiled Mojo 1.0</strong> &mdash; typed, native-speed financial code.</li>
+      <li>Port every one of these calculations to <strong>compiled Mojo 1.x</strong> &mdash; typed, native-speed financial code.</li>
     </ul>
   </div>
 
@@ -214,7 +214,7 @@
     <h4>This book consolidates and enhances these sources:</h4>
     <ul>
       <li><span class="pill bl">Tutorial</span> <strong>NPV &amp; Amortization Tutorial &ndash; Python &amp; Mojo</strong> (community quick tutorial) &mdash; formulas, Python + Mojo implementations, and the loan-funded-project idea.</li>
-      <li><span class="pill bl">Tutorial</span> <strong>Financial Math: NPV &amp; Amortisation (Python &amp; Mojo 1.0)</strong> (community tutorial) &mdash; the "should you invest?" scenario, the mortgage example, and a Python-vs-Mojo comparison.</li>
+      <li><span class="pill bl">Tutorial</span> <strong>Financial Math: NPV &amp; Amortisation (Python &amp; Mojo 1.x)</strong> (community tutorial) &mdash; the "should you invest?" scenario, the mortgage example, and a Python-vs-Mojo comparison.</li>
       <li><span class="pill grn">Track</span> The Applications-track lessons <strong>Net Present Value (NPV) in Python &amp; Mojo</strong> and <strong>Amortisation Schedules in Python &amp; Mojo</strong> &mdash; the authoritative short forms this book builds out.</li>
       <li><span class="pill ylw">Errata</span> Both community tutorials&rsquo; printed outputs contained arithmetic slips (NPVs of <span class="money">382.07</span> and <span class="money">&minus;38.17</span> are in fact <span class="money">388.77</span> and <span class="money">&minus;210.37</span>). Every number in this book was recomputed and cross-checked against both languages.</li>
     </ul>
@@ -289,7 +289,7 @@
 cf = [-1000.0, 300.0, 400.0, 500.0, 600.0]
 <span class="tok-n">print</span>(<span class="tok-s">f"NPV = {npv(0.10, cf):.2f}"</span>)   <span class="tok-c"># NPV = 388.77 → NPV &gt; 0 : invest</span></code></pre>
 
-  <p><strong>Mojo 1.0</strong> &mdash; the same loop, typed, compiled. Mojo&rsquo;s <code>**</code> powers take a <code>Float64</code> exponent, so cast <code>t</code> (an <code>Int</code>) before raising:</p>
+  <p><strong>Mojo 1.x</strong> &mdash; the same loop, typed, compiled. Mojo&rsquo;s <code>**</code> powers take a <code>Float64</code> exponent, so cast <code>t</code> (an <code>Int</code>) before raising:</p>
 <pre><code><span class="tok-k">from</span> math <span class="tok-k">import</span> pow
 <span class="tok-k">from</span> collections <span class="tok-k">import</span> List
 
@@ -395,7 +395,7 @@ payment, schedule = amortization_schedule(100000, 0.06, 30)
 
   <p>Month-1 interest is <span class="money">500.00</span> because the monthly rate on <span class="money">100,000</span> is exactly <span class="money">0.01</span> &mdash; the loan&rsquo;s single biggest interest bill. Only <span class="money">99.55</span> of the first payment touches the principal; on the final payment <span class="money">596.57</span> does. The loan&rsquo;s true cost: <strong>$115,838.19 in interest on $100,000 borrowed</strong> &mdash; more than the loan itself.</p>
 
-  <p><strong>Mojo 1.0</strong> &mdash; carrying each row in a <code>struct</code> is exactly what a compiled scheduler would emit (the Applications-track lesson *Amortisation Schedules* does the same):</p>
+  <p><strong>Mojo 1.x</strong> &mdash; carrying each row in a <code>struct</code> is exactly what a compiled scheduler would emit (the Applications-track lesson *Amortisation Schedules* does the same):</p>
 <pre><code><span class="tok-k">from</span> math <span class="tok-k">import</span> pow
 <span class="tok-k">from</span> collections <span class="tok-k">import</span> List
 
@@ -432,15 +432,15 @@ pmt, interest = calculate_amortisation(250000, 0.045, 30)
 <span class="tok-n">print</span>(<span class="tok-s">f"Total Interest:  ${interest:,.2f}"</span>)      <span class="tok-c"># $206,016.78</span></code></pre>
 
   <div class="card">
-    <h4>Python vs Mojo 1.0 &mdash; what changes, what doesn&rsquo;t</h4>
+    <h4>Python vs Mojo 1.x &mdash; what changes, what doesn&rsquo;t</h4>
     <table>
-      <tr><th>Feature</th><th>Python</th><th>Mojo 1.0</th></tr>
+      <tr><th>Feature</th><th>Python</th><th>Mojo 1.x</th></tr>
       <tr><td><strong>Functions</strong></td><td><code>def</code>, duck-typed</td><td><code>def</code> with <code>var</code> and explicit <code>Float64</code>/<code>Int</code> types</td></tr>
       <tr><td><strong>Powers</strong></td><td><code>x ** t</code> accepts ints</td><td>exponent must be a <code>Float64</code> &mdash; cast <code>Float64(t)</code> or use <code>pow</code></td></tr>
       <tr><td><strong>Performance</strong></td><td>interpreted; fine for a 360-row schedule</td><td>compiled to native code; shines for Monte-Carlo sweeps over thousands of mortgages/projects</td></tr>
       <tr><td><strong>Use case</strong></td><td>rapid prototyping, ad-hoc analysis</td><td>production pricing engines, large-scale risk simulation &mdash; without leaving the Python ecosystem</td></tr>
     </table>
-    <p><em>Note: Python is excellent for quick financial scripting; Mojo 1.0 earns its keep when you need to run millions of NPV/amortisation simulations in real time.</em></p>
+    <p><em>Note: Python is excellent for quick financial scripting; Mojo 1.x earns its keep when you need to run millions of NPV/amortisation simulations in real time.</em></p>
   </div>
 
   <h3 id="amort-anatomy">5.3 Anatomy of the schedule</h3>
@@ -593,7 +593,7 @@ def main():
     <h4>Sources consolidated here</h4>
     <ul>
       <li><span class="pill bl">Tutorial</span> <strong>NPV &amp; Amortization Tutorial &ndash; Python &amp; Mojo</strong> &mdash; formulas, both-language implementations, the loan-funded-project idea.</li>
-      <li><span class="pill bl">Tutorial</span> <strong>Financial Math: NPV &amp; Amortisation (Python &amp; Mojo 1.0)</strong> &mdash; the invest/reject scenario, the mortgage example, the Python-vs-Mojo table.</li>
+      <li><span class="pill bl">Tutorial</span> <strong>Financial Math: NPV &amp; Amortisation (Python &amp; Mojo 1.x)</strong> &mdash; the invest/reject scenario, the mortgage example, the Python-vs-Mojo table.</li>
       <li><span class="pill ylw">Errata</span> Numerical outputs were recomputed and corrected (see Section 3.3); the pedagogies of both sources are kept.</li>
     </ul>
   </div>

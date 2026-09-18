@@ -116,10 +116,10 @@ td:first-child, th:first-child{color:var(--paper);font-family:'JetBrains Mono',m
 
   <section id="fn-def">
     <h2>def — one function keyword</h2>
-    <p>Mojo 1.0 has a single function keyword: <code class="inline">def</code>, working almost exactly like Python's <code class="inline">def</code>. Add explicit type annotations and you get the strict, fully-checked, optimizable behavior that the old <code class="inline">fn</code> keyword used to provide — annotations are enforced at compile time and ownership rules apply.</p>
+    <p>Mojo 1.x has a single function keyword: <code class="inline">def</code>, working almost exactly like Python's <code class="inline">def</code>. Add explicit type annotations and you get the strict, fully-checked, optimizable behavior that the old <code class="inline">fn</code> keyword used to provide — annotations are enforced at compile time and ownership rules apply.</p>
 
     <div class="callout">
-      <span class="lbl">As of Mojo 1.0</span>
+      <span class="lbl">As of Mojo 1.x</span>
       <p>The <code class="inline">fn</code> keyword has been removed entirely — it was deprecated in v26.2 and became a hard compilation error by 1.0.0 final, completing the <code class="inline">def</code>/<code class="inline">fn</code> unification. A fully-annotated <code class="inline">def</code> is treated identically to the old <code class="inline">fn</code>, and this behavior is part of the 1.0 source-stability guarantee. Older tutorials showing <code class="inline">fn</code> are pre-1.0.</p>
     </div>
 
@@ -180,7 +180,7 @@ td:first-child, th:first-child{color:var(--paper);font-family:'JetBrains Mono',m
 
   <section id="vars">
     <h2>Variables: var only</h2>
-    <p>Mojo 1.0 has a single variable declaration keyword: <code class="inline">var</code>. The declaration is mandatory — a first assignment without <code class="inline">var</code> is a deprecation error in 1.0. The old immutable-binding keyword <code class="inline">let</code> was removed during the pre-1.0 cleanups; if you don't reassign a variable, just don't reassign it. A type annotation is required when the type cannot be inferred.</p>
+    <p>Mojo 1.x has a single variable declaration keyword: <code class="inline">var</code>. The declaration is mandatory — a first assignment without <code class="inline">var</code> is a deprecation error in 1.0. The old immutable-binding keyword <code class="inline">let</code> was removed during the pre-1.0 cleanups; if you don't reassign a variable, just don't reassign it. A type annotation is required when the type cannot be inferred.</p>
 
     <div class="demo">
       <div class="tabbar">
