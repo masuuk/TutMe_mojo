@@ -1,0 +1,56 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mojo 1.x · Drill 27 · Chat Loop, Streaming &amp; Memory</title><link rel="stylesheet" href="../styles.css"><link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><defs><linearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22><stop offset=%220%22 stop-color=%22%235bd4ff%22/><stop offset=%221%22 stop-color=%22%232f8fe0%22/></linearGradient></defs><rect width=%2240%22 height=%2240%22 rx=%2210%22 fill=%22url(%23g)%22/><g fill=%22none%22 stroke=%22%2306101c%22 stroke-width=%222.4%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 transform=%22translate(8 8)%22><path d=%22M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z%22/><path d=%22M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z%22/></g></svg>"></head><body>
+<nav><div class="wrap navin"><a class="brand" href="../index.html"><span class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/></svg></span><span>TutMe🔥 <span style="color:#5bd4ff">Learning Hub</span></span></a>
+<div class="navlinks"><a class="pill" href="../index.html">Home</a><a class="pill" href="../mojo_v1/index.html">Fundamentals</a><a class="pill" href="../data_science/index.html">Data Science</a><a class="pill" href="../applications/index.html">Applications</a><a class="pill" href="index.html">Praxis</a></div></div></nav>
+<main><section><div class="wrap hero"><span class="eyebrow">PRAXIS · DATA SCIENCE · AI AGENTS</span><h1>Drill 27 · Chat Loop, Streaming &amp; Memory</h1><p class="lead">Build a stateful chat agent that streams tokens and trims history — keep cost flat as the conversation grows.</p><div class="card big"><h3>Your task</h3><p>Every turn re-sends the whole <code>messages</code> history, so cost grows linearly with length (guide Sections 02 &amp; 06). Build a Mojo chat loop that streams output token-by-token with <code>stream=True</code> (Section 04) and applies a sliding window with a budget of six turns: keep the system prompt, then <code>pop(0)</code> the oldest turns once <code>len(messages) > 6</code>. Read lines with <code>input()</code>, break on <code>"exit"</code>/<code>"quit"</code>, rebuild the reply from the streamed deltas, append it back as the <code>assistant</code> turn, and trim again after both appends. Confirm every API call carries at most the budget of messages.</p><div class="notice">Based on <a href="../data_science/ai_agents_python_vs_mojo.html" style="color:#5bd4ff">Building AI Agents · Python vs Mojo</a> (Sections 02, 04 &amp; 06). Ground your code with <a href="../mojo_v1/mojo_11_interop.html" style="color:#5bd4ff">Python &amp; C Interop</a> and <a href="../mojo_v1/mojo_05_operators.html" style="color:#5bd4ff">Operators &amp; Control Flow</a>. Do the problem before looking for a solution or answering the checkpoint. If you forget syntax, use the <a href="../mojo_v1/index.html" style="color:#5bd4ff">Mojo Library</a>.</div></div>
+<div class="card big quiz" data-quiz><h3>Checkpoint · multiple choice</h3><p class="q">A sliding-window memory strategy caps cost by doing what?</p>
+<label class="opt"><input type="radio" name="d27q1" value="a">Keeping only the newest user message and dropping everything else.</label>
+<label class="opt" data-correct="true"><input type="radio" name="d27q1" value="b">Keeping the system prompt and dropping the oldest turns once the history exceeds the budget.</label>
+<label class="opt"><input type="radio" name="d27q1" value="c">Replacing the system prompt with a summary of everything said so far.</label>
+<label class="opt"><input type="radio" name="d27q1" value="d">Sending each turn through a separate model call with no history.</label>
+<div class="actions qactions"><button type="button" class="btn check">Check answer</button><button type="button" class="btn reset">Try again</button></div><p class="feedback"></p>
+<div class="explain" hidden><strong>Why:</strong> A sliding window fixes the system prompt and forgets the oldest turns once the budget is exceeded — summarization (option c) is a different, costlier strategy the guide covers separately.</div></div>
+<details class="solution"><summary>Solution</summary><p>Reference Mojo for a streaming chat loop with a sliding-window trim.</p><pre class="code">from std.python import Python
+
+# Sliding window: keep the system prompt, drop the oldest turns
+def trim(history: PythonObject, max_history: Int):
+    while len(history) &gt; max_history:
+        history.pop(0)
+
+def main() raises:
+    var openai = Python.import_module("openai")
+    var client = openai.OpenAI()
+    var max_history: Int = 6
+
+    var messages = Python.list(
+        Python.dict(role="system", content="You are a concise coding mentor.")
+    )
+
+    while True:
+        var user_input = input("You: ")
+        var cleaned = user_input.strip().lower()
+        if cleaned == "exit" or cleaned == "quit":
+            break
+
+        messages.append(Python.dict(role="user", content=user_input))
+        trim(messages, max_history)
+
+        # Stream tokens as they are generated instead of waiting for the end
+        var stream = client.chat.completions.create(
+            model="gpt-5-mini",
+            messages=messages,
+            stream=True,
+        )
+
+        var reply = ""
+        for var chunk in stream:
+            var delta = chunk.choices[0].delta.content
+            if delta:
+                print(String(py=delta), end="")
+                reply += String(py=delta)
+        print()
+
+        messages.append(Python.dict(role="assistant", content=reply))
+        trim(messages, max_history)</pre></details>
+<div class="actions"><a class="btn" href="index.html">← Praxis</a><a class="btn primary" href="../data_science/ai_agents_python_vs_mojo.html">Review guide →</a></div></div></section></main><footer><div class="wrap">TutMe🔥 · A structured path from syntax → fundamentals → applications → practice.</div></footer>
+<script defer src="praxis.js"></script></body></html>
