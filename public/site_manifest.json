@@ -11,6 +11,7 @@
     "applications/operations_research/index.html",
     "applications/operations_research/operations_research.html",
     "applications/operations_research/simplex_algorithm.html",
+    "data_science/ai_agents_python_vs_mojo.html",
     "data_science/data_science.html",
     "data_science/decision_aware_ml.html",
     "data_science/ds_advanced_00_cover.html",
@@ -131,5 +132,5 @@
     "progressive.html",
     "styles.css"
   ],
-  "count": 130
+  "count": 131
 }
