@@ -294,7 +294,7 @@ lambda_hat = <span class="num">1.0</span> / np.mean(exp_data)
 
 data = np.random.normal(<span class="num">52.0</span>, <span class="num">10.0</span>, size=<span class="num">100</span>)
 
-<span class="com">// One-sample t-test</span>
+<span class="com"># One-sample t-test</span>
 result = stats.ttest_1samp(data, popmean=<span class="num">50.0</span>)
 <span class="kw">print</span>(<span class="str">f"t = </span>{result.statistic}<span class="str">"</span>)
 <span class="kw">print</span>(<span class="str">f"p = </span>{result.pvalue}<span class="str">"</span>)

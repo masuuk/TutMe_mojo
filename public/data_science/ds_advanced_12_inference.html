@@ -146,11 +146,11 @@ code{font-family:var(--font-mono);font-size:0.88em;background:rgba(108,92,231,0.
 print(output.shape)  <span class="com">// [1, 512, 1024]</span></code></pre>
         <pre class="code-block" id="python"><code><span class="kw">import</span> torch
 
-<span class="com">// TorchScript compilation</span>
+<span class="com"># TorchScript compilation</span>
 scripted = torch.jit.trace(model, example_input)
 scripted.save(<span class="str">"model.pt"</span>)
 
-<span class="com">// Or use torch.compile for PyTorch 2.0+</span>
+<span class="com"># Or use torch.compile for PyTorch 2.0+</span>
 compiled = torch.compile(model, backend=<span class="str">"inductor"</span>)
 output = compiled(input_tensor)</code></pre>
       </div>
@@ -225,13 +225,13 @@ quantized.set_precision(<span class="str">"attention.qkv"</span>, Float16)
 quantized.set_precision(<span class="str">"output_head"</span>, Float32)</code></pre>
         <pre class="code-block" id="python"><code><span class="kw">import</span> onnxruntime <span class="kw">as</span> ort
 
-<span class="com">// Static quantization with calibration</span>
+<span class="com"># Static quantization with calibration</span>
 quantized_model = ort.quantization.quantize_dynamic(
     model_path=<span class="str">"model.onnx"</span>,
     weight_type=ort.quantization.QuantType.QInt8
 )
 
-<span class="com">// Or use ONNX Runtime's QAT support</span>
+<span class="com"># Or use ONNX Runtime's QAT support</span>
 session = ort.InferenceSession(<span class="str">"model_quant.onnx"</span>)</code></pre>
       </div>
     </div>
@@ -339,7 +339,7 @@ export_model(
 )</code></pre>
         <pre class="code-block" id="python"><code><span class="kw">import</span> torch.onnx
 
-<span class="com">// Export to ONNX</span>
+<span class="com"># Export to ONNX</span>
 torch.onnx.export(
     model,
     example_input,
@@ -349,7 +349,7 @@ torch.onnx.export(
     output_names=[<span class="str">"output"</span>]
 )
 
-<span class="com">// SafeTensors for weights</span>
+<span class="com"># SafeTensors for weights</span>
 <span class="kw">from</span> safetensors.torch <span class="kw">import</span> save_file
 save_file(model.state_dict(), <span class="str">"weights.safetensors"</span>)</code></pre>
       </div>

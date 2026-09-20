@@ -504,7 +504,8 @@ expected_cost = np.mean(C[y_true, decide(p_pred)])  <span class="tok-c"># the me
     <span class="tok-k">return</span> np.quantile(samples, c_u/(c_u+c_o))
 
 rng = np.random.default_rng(<span class="tok-num">0</span>)
-true_opt = []  in_sample = []
+true_opt = []
+in_sample = []
 <span class="tok-k">for</span> _ <span class="tok-k">in</span> range(<span class="tok-num">500</span>):
     train = rng.lognormal(<span class="tok-num">3.0</span>, <span class="tok-num">0.6</span>, <span class="tok-num">30</span>)   <span class="tok-c"># n = 30 only</span>
     q = saa_order(train, <span class="tok-num">8.0</span>, <span class="tok-num">1.0</span>)

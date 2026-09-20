@@ -152,15 +152,15 @@ code{font-family:var(--font-mono);font-size:0.88em;background:rgba(108,92,231,0.
 x = torch.tensor(<span class="num">2.0</span>, requires_grad=<span class="kw">True</span>)
 y = torch.tensor(<span class="num">1.0</span>, requires_grad=<span class="kw">True</span>)
 
-<span class="com">// Forward pass</span>
+<span class="com"># Forward pass</span>
 f = (<span class="num">1</span>-x)**<span class="num">2</span> + <span class="num">100</span>*(y-x**<span class="num">2</span>)**<span class="num">2</span>
 
-<span class="com">// Backward pass</span>
+<span class="com"># Backward pass</span>
 f.backward()
 
-<span class="kw">print</span>(x.grad, y.grad)  <span class="com">// tensor(0.) tensor(0.)</span>
+<span class="kw">print</span>(x.grad, y.grad)  <span class="com"># tensor(0.) tensor(0.)</span>
 
-<span class="com">// Or using torch.autograd.functional</span>
+<span class="com"># Or using torch.autograd.functional</span>
 <span class="kw">from</span> torch.autograd <span class="kw">import</span> functional <span class="kw">as</span> F
 
 <span class="kw">def</span> <span class="fn">quad</span>(x):

@@ -144,12 +144,12 @@ profiler.report()
         <pre class="code-block" id="python"><code><span class="kw">import</span> cProfile
 <span class="kw">import</span> pstats
 
-<span class="com">// Profile with cProfile</span>
+<span class="com"># Profile with cProfile</span>
 cProfile.run(<span class="str">'train_model(model, data, epochs=10)'</span>, <span class="str">'train.prof'</span>)
 
-<span class="com">// Convert to flame graph externally</span>
-<span class="com">// pip install snakeviz</span>
-<span class="com">// snakeviz train.prof</span></code></pre>
+<span class="com"># Convert to flame graph externally</span>
+<span class="com"># pip install snakeviz</span>
+<span class="com"># snakeviz train.prof</span></code></pre>
       </div>
     </div>
 
@@ -208,7 +208,7 @@ tracemalloc.start()
 
 result = model.forward(batch)
 
-<span class="com">// Snapshot and compare</span>
+<span class="com"># Snapshot and compare</span>
 snapshot = tracemalloc.take_snapshot()
 top = snapshot.statistics(<span class="str">'lineno'</span>)
 

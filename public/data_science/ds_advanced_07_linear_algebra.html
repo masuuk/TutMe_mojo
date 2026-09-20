@@ -149,8 +149,8 @@ cblas_dgemm(
 A = np.random.rand(<span class="num">64</span>, <span class="num">64</span>)
 B = np.random.rand(<span class="num">64</span>, <span class="num">64</span>)
 
-<span class="com">// Under the hood this calls scipy.linalg.get_lapack_funcs()</span>
-<span class="com">// which resolves to a LAPACKE wrapper around Fortran BLAS</span>
+<span class="com"># Under the hood this calls scipy.linalg.get_lapack_funcs()</span>
+<span class="com"># which resolves to a LAPACKE wrapper around Fortran BLAS</span>
 C = linalg.blas.dgemm(<span class="num">1.0</span>, A, B)</code></pre>
       </div>
     </div>
