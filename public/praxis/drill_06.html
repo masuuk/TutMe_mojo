@@ -13,7 +13,7 @@
 <details class="solution"><summary>Solution</summary><p>Reference code: return-style, `out`, `mut`, and variadic `*args`.</p><pre class="code">def incr(a: Int) -&gt; Int:
     return a + 1
 
-def incr(a: Int, out b: Int):
+def incr_into(a: Int, mut b: Int):
     b = a + 1
 
 def push_mut(mut xs: List[Int], v: Int):
@@ -27,8 +27,8 @@ def sum_all(*args: Int) -&gt; Int:
 
 def main():
     var x = incr(41)          # x == 42
-    var y: Int
-    incr(10, out y)           # y == 11
+    var y = 0
+    incr_into(10, y)          # y == 11 written through the mut param
     print(x, y)
 
     var nums = List[Int]()

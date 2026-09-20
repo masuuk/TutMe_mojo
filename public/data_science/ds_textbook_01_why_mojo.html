@@ -228,14 +228,14 @@ td:first-child, th:first-child{color:var(--paper);font-family:'JetBrains Mono',m
 
     <div class="code-block">
       <div class="head">a quick preview — borrowing in Mojo looks like this</div>
-      <pre><span class="tok-kw">def</span> <span class="tok-fn">print_length</span>(values: List[Float64]):
-    <span class="tok-com"># default convention: read-only borrow, no copy</span>
-    print(<span class="tok-str">"length ="</span>, len(values))
+      <pre><code>def print_length(values: List[Float64]):
+    # default convention: read-only borrow, no copy
+    print(&quot;length =&quot;, len(values))
 
-<span class="tok-kw">def</span> <span class="tok-fn">main</span>():
-    <span class="tok-kw">var</span> data = List[Float64](<span class="tok-num">1.0</span>, <span class="tok-num">2.0</span>, <span class="tok-num">3.0</span>)
-    print_length(data)       <span class="tok-com"># read-only, still usable below</span>
-    print(len(data))         <span class="tok-com"># fine — ownership never left `main`</span></pre>
+def main():
+    var data: List[Float64] = [1.0, 2.0, 3.0]
+    print_length(data)       # read-only, still usable below
+    print(len(data))         # fine — ownership never left `main`</code></pre>
     </div>
     <p>We'll go much deeper on this in Chapter 4. For now, the key idea is that you can hand a value to another function for reading without giving up ownership of it — and the compiler checks all of that for you.</p>
 

@@ -136,17 +136,17 @@ table.cheat code{font-family:var(--font-mono);font-size:0.82em;color:#c084fc;}
         <button class="tab-btn" data-tab="ch9-quad-py">Python</button>
       </div>
       <div class="tab-content active" id="ch9-quad-mojo">
-        <pre><span class="kw">def</span> <span class="fn">solve_quadratic</span>(a: Float64, b: Float64, c: Float64) <span class="kw">raises</span> -> (Float64, Float64):
-    <span class="kw">var</span> discriminant = b * b - <span class="num">4.0</span> * a * c
-    <span class="kw">if</span> discriminant < <span class="num">0.0</span>:
-        <span class="kw">raise</span> <span class="str">"No real roots"</span>
-    <span class="kw">var</span> root1 = (<span class="op">-</span>b + discriminant ** <span class="num">0.5</span>) / (<span class="num">2.0</span> * a)
-    <span class="kw">var</span> root2 = (<span class="op">-</span>b - discriminant ** <span class="num">0.5</span>) / (<span class="num">2.0</span> * a)
-    <span class="kw">return</span> (root1, root2)
+        <pre><code>def solve_quadratic(a: Float64, b: Float64, c: Float64) raises -&gt; Tuple[Float64, Float64]:
+    var discriminant = b * b - 4.0 * a * c
+    if discriminant &lt; 0.0:
+        raise &quot;No real roots&quot;
+    var root1 = (-b + discriminant ** 0.5) / (2.0 * a)
+    var root2 = (-b - discriminant ** 0.5) / (2.0 * a)
+    return (root1, root2)
 
-<span class="kw">def</span> <span class="fn">main</span>():
-    <span class="kw">var</span> r1, r2 = <span class="fn">solve_quadratic</span>(<span class="num">1.0</span>, <span class="op">-</span><span class="num">5.0</span>, <span class="num">6.0</span>)
-    <span class="fn">print</span>(<span class="str">"x1 ="</span>, r1, <span class="str">"x2 ="</span>, r2)</pre>
+def main() raises:
+    var r1, r2 = solve_quadratic(1.0, -5.0, 6.0)
+    print(&quot;x1 =&quot;, r1, &quot;x2 =&quot;, r2)</code></pre>
       </div>
       <div class="tab-content" id="ch9-quad-py">
         <pre><span class="kw">import</span> math
@@ -382,22 +382,22 @@ x, y = sys.<span class="fn">solve</span>()
         <button class="tab-btn" data-tab="ch9-fib-py">Python</button>
       </div>
       <div class="tab-content active" id="ch9-fib-mojo">
-        <pre><span class="kw">def</span> <span class="fn">fibonacci</span>(n: <span class="type">Int</span>) -> <span class="type">List</span>[<span class="type">Int</span>]:
-    <span class="kw">if</span> n <= <span class="num">0</span>:
-        <span class="kw">return</span> <span class="type">List</span>[<span class="type">Int</span>]()
-    <span class="kw">var</span> seq = <span class="type">List</span>[<span class="type">Int</span>]()
-    seq.<span class="fn">append</span>(<span class="num">0</span>)
-    <span class="kw">if</span> n > <span class="num">1</span>:
-        seq.<span class="fn">append</span>(<span class="num">1</span>)
-    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">2</span>, n):
-        <span class="kw">var</span> next_val = seq[i - <span class="num">1</span>] + seq[i - <span class="num">2</span>]
-        seq.<span class="fn">append</span>(next_val)
-    <span class="kw">return</span> seq
+        <pre><code>def fibonacci(n: Int) -&gt; List[Int]:
+    if n &lt;= 0:
+        return List[Int]()
+    var seq = List[Int]()
+    seq.append(0)
+    if n &gt; 1:
+        seq.append(1)
+    for i in range(2, n):
+        var next_val = seq[i - 1] + seq[i - 2]
+        seq.append(next_val)
+    return seq^
 
-<span class="kw">def</span> <span class="fn">main</span>():
-    <span class="kw">var</span> fib = <span class="fn">fibonacci</span>(<span class="num">15</span>)
-    <span class="kw">for</span> val <span class="kw">in</span> fib:
-        <span class="fn">print</span>(val)</pre>
+def main():
+    var fib = fibonacci(15)
+    for val in fib:
+        print(val)</code></pre>
       </div>
       <div class="tab-content" id="ch9-fib-py">
         <pre><span class="kw">def</span> <span class="fn">fibonacci</span>(n: int) -> list[int]:
@@ -486,7 +486,7 @@ fib = <span class="fn">fibonacci</span>(<span class="num">15</span>)
         </tr>
         <tr>
           <td>Argument conventions</td>
-          <td>Explicit: read-only (default), <code>mut</code>, <code>var</code>, <code>out</code></td>
+          <td>Explicit: read-only (default), <code>mut</code>, owned, <code>out</code></td>
           <td>None — implicit pass-by-object</td>
         </tr>
         <tr>
@@ -526,7 +526,6 @@ fib = <span class="fn">fibonacci</span>(<span class="num">15</span>)
   <div class="chapnav">
     <a class="navbtn" href="mojo_08_metaprogramming.html">← Ch 08 · Metaprogramming</a>
     <a href="mojo_10_errors.html" class="navbtn">Ch 10 · Errors &amp; Context Managers →</a>
-    <a href="../data_science/ai_agents_python_vs_mojo.html" class="navbtn">🤝 See the mapping applied: AI Agents · Python vs Mojo</a>
   </div>
 </div>
 </div>

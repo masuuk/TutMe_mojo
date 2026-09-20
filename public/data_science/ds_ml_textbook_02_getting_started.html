@@ -327,21 +327,21 @@ point = (<span class="num">1</span>, <span class="num">2</span>)  <span class="c
         n -= <span class="num">1</span></pre>
       </div>
       <div class="tab-content" id="ch2-control-py">
-        <pre><span class="cmt"># Python — virtually identical syntax</span>
-score = <span class="num">85</span>
-<span class="kw">if</span> score &gt;= <span class="num">90</span>:
-    <span class="fn">print</span>(<span class="str">"Excellent"</span>)
-<span class="kw">elif</span> score &gt;= <span class="num">70</span>:
-    <span class="fn">print</span>(<span class="str">"Good"</span>)
-<span class="kw">else</span>:
-    <span class="fn">print</span>(<span class="str">"Needs improvement"</span>)
-
-<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">5</span>):
-    <span class="fn">print</span>(i)
-
-fruits = [<span class="str">"apple"</span>, <span class="str">"banana"</span>, <span class="str">"cherry"</span>]
-<span class="kw">for</span> fruit <span class="kw">in</span> fruits:
-    <span class="fn">print</span>(fruit)</pre>
+        <pre><code>def main():
+    # Python — virtually identical syntax
+    score = 85
+    if score &gt;= 90:
+        print(&quot;Excellent&quot;)
+    elif score &gt;= 70:
+        print(&quot;Good&quot;)
+    else:
+        print(&quot;Needs improvement&quot;)
+    for i in range(5):
+        print(i)
+    fruits = [&quot;apple&quot;, &quot;banana&quot;, &quot;cherry&quot;]
+    for fruit in fruits:
+        print(fruit)
+</code></pre>
       </div>
     <p>Like Python, Mojo uses indentation — not curly braces — to delimit blocks. Where Python opens a block with a colon and indents, Mojo does exactly the same: there are no <code class="inline">{ }</code> in sight.</p>
 

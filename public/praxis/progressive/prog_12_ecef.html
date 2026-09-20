@@ -259,11 +259,11 @@ footer a:hover{text-decoration:underline}
 <h2><span class="lvl-check">2</span>Level 2 — Latitude in Radians</h2>
 <div class="meta"><span class="tag">Beginner+</span><span class="tag">Trig</span></div>
 <p><strong>Challenge:</strong> What is printed?</p>
-<pre><code><span class="kw">from</span> math <span class="kw">import</span> <span class="fn">radians</span>, <span class="fn">sin</span>
+<pre><code>from std.math import pi, sin
 
-<span class="kw">def</span> <span class="fn">main</span>():
-    <span class="kw">var</span> lat = <span class="fn">radians</span>(45.0)
-    <span class="fn">print</span>(<span class="fn">sin</span>(lat))</code></pre>
+def main():
+    var lat = 45.0 * pi / 180.0
+    print(sin(lat))</code></pre>
 <textarea id="a2" placeholder="Write the output or answer here..." onkeydown="onKey(event,2,'0.70710678')"></textarea>
 <div class="btnrow">
 <button class="primary" onclick="check(2,'0.70710678')">Check Answer</button>
@@ -271,11 +271,11 @@ footer a:hover{text-decoration:underline}
 <button class="ghost" id="hintbtn2" onclick="showHint(2)" style="display:none">💡 Hint</button>
 <span class="attempts" id="att2"></span>
 </div>
-<div id="h2" class="hint">Trig functions want radians, and <code>radians()</code> converts the degree value first. Now ask what sin of a 45° angle equals, to full precision.</div>
+<div id="h2" class="hint">Trig functions want radians, and this line converts the degree value first (<code>π/180</code>). Now ask what sin of a 45° angle equals, to full precision.</div>
 <div id="f2" class="feedback"></div>
 <div id="s2" class="solution">
 <strong>Solution</strong>
-<pre><code>0.7071067811865476</code></pre>
+<pre><code>0.7071067811865475</code></pre>
 <p>Trig functions take radians: sin(45°) = √2/2 ≈ 0.7071. Surveying code converts degrees to radians at the boundary once, then works in radians.</p>
 </div>
 </section>
@@ -284,14 +284,14 @@ footer a:hover{text-decoration:underline}
 <h2><span class="lvl-check">3</span>Level 3 — The Prime-Vertical Radius</h2>
 <div class="meta"><span class="tag">Intermediate</span><span class="tag">N</span></div>
 <p><strong>Challenge:</strong> What is N at latitude 45° on WGS84 (rounded to 2 decimals)?</p>
-<pre><code><span class="kw">from</span> math <span class="kw">import</span> <span class="fn">sqrt</span>, <span class="fn">radians</span>, <span class="fn">sin</span>
+<pre><code>from std.math import pi, sin, sqrt
 
-<span class="kw">def</span> <span class="fn">main</span>():
-    <span class="kw">var</span> a = 6378137.0
-    <span class="kw">var</span> e2 = 0.0066943799901413165
-    <span class="kw">var</span> lat = <span class="fn">radians</span>(45.0)
-    <span class="kw">var</span> N = a / <span class="fn">sqrt</span>(1.0 - e2 * <span class="fn">sin</span>(lat) * <span class="fn">sin</span>(lat))
-    <span class="fn">print</span>(N)</code></pre>
+def main():
+    var a = 6378137.0
+    var e2 = 0.0066943799901413165
+    var lat = 45.0 * pi / 180.0
+    var N = a / sqrt(1.0 - e2 * sin(lat) * sin(lat))
+    print(N)</code></pre>
 <textarea id="a3" placeholder="Write the output or answer here..." onkeydown="onKey(event,3,'6388838.29')"></textarea>
 <div class="btnrow">
 <button class="primary" onclick="check(3,'6388838.29')">Check Answer</button>
@@ -312,17 +312,17 @@ footer a:hover{text-decoration:underline}
 <h2><span class="lvl-check">4</span>Level 4 — Sanity Check at the Equator</h2>
 <div class="meta"><span class="tag">Intermediate+</span><span class="tag">ECEF</span></div>
 <p><strong>Challenge:</strong> What is X for a point at (0°, 0°, h = 0)?</p>
-<pre><code><span class="kw">from</span> math <span class="kw">import</span> <span class="fn">cos</span>, <span class="fn">radians</span>, <span class="fn">sin</span>, <span class="fn">sqrt</span>
+<pre><code>from std.math import cos, pi, sin, sqrt
 
-<span class="kw">def</span> <span class="fn">main</span>():
-    <span class="kw">var</span> a = 6378137.0
-    <span class="kw">var</span> e2 = 0.0066943799901413165
-    <span class="kw">var</span> lat = <span class="fn">radians</span>(0.0)
-    <span class="kw">var</span> lon = <span class="fn">radians</span>(0.0)
-    <span class="kw">var</span> h = 0.0
-    <span class="kw">var</span> N = a / <span class="fn">sqrt</span>(1.0 - e2 * <span class="fn">sin</span>(lat) * <span class="fn">sin</span>(lat))
-    <span class="kw">var</span> x = (N + h) * <span class="fn">cos</span>(lat) * <span class="fn">cos</span>(lon)
-    <span class="fn">print</span>(x)</code></pre>
+def main():
+    var a = 6378137.0
+    var e2 = 0.0066943799901413165
+    var lat = 0.0 * pi / 180.0
+    var lon = 0.0 * pi / 180.0
+    var h = 0.0
+    var N = a / sqrt(1.0 - e2 * sin(lat) * sin(lat))
+    var x = (N + h) * cos(lat) * cos(lon)
+    print(x)</code></pre>
 <textarea id="a4" placeholder="Write the output or answer here..." onkeydown="onKey(event,4,'6378137')"></textarea>
 <div class="btnrow">
 <button class="primary" onclick="check(4,'6378137')">Check Answer</button>
@@ -343,18 +343,18 @@ footer a:hover{text-decoration:underline}
 <h2><span class="lvl-check">5</span>Level 5 — Full Forward Conversion</h2>
 <div class="meta"><span class="tag">Advanced</span><span class="tag">ECEF</span></div>
 <p><strong>Challenge:</strong> Convert (45°, 8°, 500 m) to ECEF. Predict the three printed lines, one per coordinate.</p>
-<pre><code><span class="kw">from</span> math <span class="kw">import</span> <span class="fn">cos</span>, <span class="fn">radians</span>, <span class="fn">sin</span>, <span class="fn">sqrt</span>
+<pre><code>from std.math import cos, pi, sin, sqrt
 
-<span class="kw">def</span> <span class="fn">main</span>():
-    <span class="kw">var</span> a = 6378137.0
-    <span class="kw">var</span> e2 = 0.0066943799901413165
-    <span class="kw">var</span> lat = <span class="fn">radians</span>(45.0)
-    <span class="kw">var</span> lon = <span class="fn">radians</span>(8.0)
-    <span class="kw">var</span> h = 500.0
-    <span class="kw">var</span> N = a / <span class="fn">sqrt</span>(1.0 - e2 * <span class="fn">sin</span>(lat) * <span class="fn">sin</span>(lat))
-    <span class="fn">print</span>((N + h) * <span class="fn">cos</span>(lat) * <span class="fn">cos</span>(lon))
-    <span class="fn">print</span>((N + h) * <span class="fn">cos</span>(lat) * <span class="fn">sin</span>(lon))
-    <span class="fn">print</span>((N * (1.0 - e2) + h) * <span class="fn">sin</span>(lat))</code></pre>
+def main():
+    var a = 6378137.0
+    var e2 = 0.0066943799901413165
+    var lat = 45.0 * pi / 180.0
+    var lon = 8.0 * pi / 180.0
+    var h = 500.0
+    var N = a / sqrt(1.0 - e2 * sin(lat) * sin(lat))
+    print((N + h) * cos(lat) * cos(lon))
+    print((N + h) * cos(lat) * sin(lon))
+    print((N * (1.0 - e2) + h) * sin(lat))</code></pre>
 <textarea id="a5" placeholder="Write the output or answer here..." onkeydown="onKey(event,5,'4473976.1076\n628776.3366\n4487701.9623')"></textarea>
 <div class="btnrow">
 <button class="primary" onclick="check(5,'4473976.1076\n628776.3366\n4487701.9623')">Check Answer</button>
@@ -368,7 +368,7 @@ footer a:hover{text-decoration:underline}
 <strong>Solution</strong>
 <pre><code>4473976.107595565
 628776.336600037
-4487701.962256514</code></pre>
+4487701.962256513</code></pre>
 <p>X ≈ 4,473,976.11, Y ≈ 628,776.34, Z ≈ 4,487,701.96 (metres). Y is tiny because the point is only 8° of longitude east of the X-axis; Z is huge because it is 45° of latitude north.</p>
 </div>
 </section>
@@ -377,13 +377,13 @@ footer a:hover{text-decoration:underline}
 <h2><span class="lvl-check">6</span>Level 6 — Expert Challenge</h2>
 <div class="meta"><span class="tag">Advanced</span><span class="tag">Code Reasoning Modification</span></div>
 <p><strong>Challenge:</strong> Complete the inverse step: recover the longitude from the Level-5 X and Y by assigning lon. The needed identity is λ = atan2(Y, X). What is printed (converted to degrees)?</p>
-<pre><code><span class="kw">from</span> math <span class="kw">import</span> <span class="fn">atan2</span>
+<pre><code>from std.math import atan2
 
-<span class="kw">def</span> <span class="fn">main</span>():
-    <span class="kw">var</span> x = 4473976.107595565
-    <span class="kw">var</span> y = 628776.336600037
-    <span class="kw">var</span> lon = 0.0                <span class="cm"># your line</span>
-    <span class="fn">print</span>(lon * (180.0 / 3.141592653589793))</code></pre>
+def main():
+    var x = 4473976.107595565
+    var y = 628776.336600037
+    var lon = 0.0                # your line
+    print(lon * (180.0 / 3.141592653589793))</code></pre>
 <textarea id="a6" placeholder="Write the output or answer here..." onkeydown="onKey(event,6,'8')"></textarea>
 <div class="btnrow">
 <button class="primary" onclick="check(6,'8')">Check Answer</button>

@@ -10,10 +10,10 @@
 <label class="opt"><input type="radio" name="d11q1" value="d">Only inside structs.</label>
 <div class="actions qactions"><button type="button" class="btn check">Check answer</button><button type="button" class="btn reset">Try again</button></div><p class="feedback"></p>
 <div class="explain" hidden><strong>Why:</strong> To compile 1.0 code, function parameters require explicit types, and every local is declared with `var` (initialized before first use).</div></div>
-<details class="solution"><summary>Solution</summary><p>Reference ports of the quadratic solver, a dataclass, and a summing loop.</p><pre class="code">def quad(a: Float64, b: Float64, c: Float64) raises -&gt; (Float64, Float64):
+<details class="solution"><summary>Solution</summary><p>Reference ports of the quadratic solver, a dataclass, and a summing loop.</p><pre class="code">def quad(a: Float64, b: Float64, c: Float64) raises -&gt; Tuple[Float64, Float64]:
     var disc = b * b - 4.0 * a * c
     if disc &lt; 0:
-        raise Error("negative discriminant")
+        raise Error(&quot;negative discriminant&quot;)
     var r = disc ** 0.5
     return (-b + r) / (2.0 * a), (-b - r) / (2.0 * a)
 
@@ -22,14 +22,14 @@ struct User:
     var id: Int
     var name: String
 
-def main():
+def main() raises:
     try:
         var (x1, x2) = quad(1.0, -3.0, 2.0)   # x1==2.0, x2==1.0
         print(x1, x2)
     except e:
-        print("no real roots:", e)
+        print(&quot;no real roots:&quot;, e)
 
-    var u = User(7, "ada")
+    var u = User(7, &quot;ada&quot;)
     print(u.id, u.name)
 
     var total = 0

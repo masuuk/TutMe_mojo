@@ -367,17 +367,19 @@ table.cheat code{font-family:var(--font-mono);font-size:0.82em;color:#c084fc;}
         <button class="tab-btn" data-tab="ch6-static-out">output</button>
       </div>
       <div class="tab-content active" id="ch6-static-mojo">
-        <pre><span class="kw">struct</span> <span class="type">Logger</span>:
-    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">out</span> self):
-        <span class="kw">pass</span>
+        <pre><code>struct Logger:
+    def __init__(out self):
+        pass
 
-    <span class="op">@staticmethod</span>
-    <span class="kw">def</span> <span class="fn">log_info</span>(message: <span class="type">String</span>):
-        <span class="fn">print</span>(<span class="str">"Info:"</span>, message)
+    @staticmethod
+    def log_info(message: String):
+        print(&quot;Info:&quot;, message)
 
-<span class="type">Logger</span>.<span class="fn">log_info</span>(<span class="str">"Called on type"</span>)
-<span class="kw">var</span> l = <span class="type">Logger</span>()
-l.<span class="fn">log_info</span>(<span class="str">"Called on instance"</span>)</pre>
+def main():
+    Logger.log_info(&quot;Called on type&quot;)
+    var l = Logger()
+    l.log_info(&quot;Called on instance&quot;)
+</code></pre>
       </div>
       <div class="tab-content" id="ch6-static-out">
         <pre>Info: Called on type
@@ -709,7 +711,7 @@ me.name = <span class="str">"John"</span>   <span class="cmt"># reinitialize the
     <span class="fn">print</span>(sensor.<span class="fn">fetch_reading</span>())
     sensor.<span class="fn">log</span>(<span class="str">"Polling sensor"</span>)
 
-<span class="cmt"># Reuse a combination via comptime:</span>
+<span class="cmt"># Reuse a combination via an alias:</span>
 <span class="kw">comptime</span> SensorLike = <span class="type">DeflectionSensing</span> &amp; <span class="type">Loggable</span></pre>
       </div>
     </div>

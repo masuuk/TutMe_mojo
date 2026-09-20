@@ -7,21 +7,21 @@
 <label class="opt"><input type="radio" name="d3q1" value="a">mojo run hello.mojo</label>
 <label class="opt" data-correct="true"><input type="radio" name="d3q1" value="b">mojo build hello.mojo -o hello</label>
 <label class="opt"><input type="radio" name="d3q1" value="c">mojo hello.mojo</label>
-<label class="opt"><input type="radio" name="d3q1" value="d">mojo compile -O3 hello.mojo</label>
+<label class="opt"><input type="radio" name="d3q1" value="d">mojo build -O3 hello.mojo -o hello</label>
 <div class="actions qactions"><button type="button" class="btn check">Check answer</button><button type="button" class="btn reset">Try again</button></div><p class="feedback"></p>
 <div class="explain" hidden><strong>Why:</strong> `mojo build` compiles to a standalone binary; `-o hello` names the output. The plain / `run` invocations execute via the interpreter instead.</div></div>
 <details class="solution"><summary>Solution</summary><p>Reference commands and a short explanation. Starred lines show the key idea.</p><pre class="code"># hello.mojo
 def main():
-    print("Hello, Mojo!")
+    print(&quot;Hello, Mojo!&quot;)
 
 # Run as a script (interpreted):
-mojo hello.mojo
+# mojo hello.mojo
 
 # Compile to a native binary:
-mojo build hello.mojo -o hello
+# mojo build hello.mojo -o hello
 
 # Run the compiled binary:
-./hello
+# ./hello
 
 # Explanation:
 # mojo run/plain  -&gt; runs through the interpreter

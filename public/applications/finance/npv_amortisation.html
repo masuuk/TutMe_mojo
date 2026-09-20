@@ -521,23 +521,23 @@ project_npv = npv(stream, DISCOUNT)
 <span class="tok-n">print</span>(<span class="tok-s">f"Project NPV @ {DISCOUNT:.0%} = ${project_npv:,.2f}"</span>)  <span class="tok-c"># +$13,939.71 → accept</span></code></pre>
 
   <p>The same in Mojo &mdash; payment via <code>pow</code>, then the discounted loop you know from Section 3:</p>
-<pre><code><span class="tok-k">from</span> math <span class="tok-k">import</span> pow
+<pre><code>from std.math import pow
 
 def monthly_payment(principal: Float64, annual_rate: Float64, years: Int) -&gt; Float64:
-    <span class="tok-k">var</span> r = annual_rate / 12.0
-    <span class="tok-k">var</span> n = Float64(years * 12)
-    <span class="tok-k">return</span> principal * (r * pow(1.0 + r, n)) / (pow(1.0 + r, n) - 1.0)
+    var r = annual_rate / 12.0
+    var n = Float64(years * 12)
+    return principal * (r * pow(1.0 + r, n)) / (pow(1.0 + r, n) - 1.0)
 
 def combined_npv(loan: Float64, apy: Float64, years: Int, inflow: Float64, discount: Float64) -&gt; Float64:
-    <span class="tok-k">var</span> m = monthly_payment(loan, apy, years)
-    <span class="tok-k">var</span> net = inflow - 12.0 * m
+    var m = monthly_payment(loan, apy, years)
+    var net = inflow - 12.0 * m
     var npv = 0.0
-    <span class="tok-k">for</span> t <span class="tok-k">in</span> range(1, years + 1):
-        npv += net / pow(1.0 + discount, Float64(t))          <span class="tok-c"># skip t=0: nothing invested today</span>
-    <span class="tok-k">return</span> npv
+    for t in range(1, years + 1):
+        npv += net / pow(1.0 + discount, Float64(t))          # skip t=0: nothing invested today
+    return npv
 
 def main():
-    print(<span class="tok-s">"Project NPV = "</span>, combined_npv(50000.0, 0.05, 5, 15000.0, 0.10))  <span class="tok-c"># 13,939.71</span></code></pre>
+    print(&quot;Project NPV = &quot;, combined_npv(50000.0, 0.05, 5, 15000.0, 0.10))  # 13,939.71</code></pre>
 
   <div class="note"><strong>The qualification this model blurs.</strong> Real valuations would model the loan drawdown as a Year-0 inflow, separate equity from debt, and treat the 15,000 as the project&rsquo;s operating surplus rather than raw revenue. Here the pedagogy is the point: the <strong>payment</strong> from Section 5 and the <strong>discounting</strong> from Section 3 fit together &mdash; finance is one machinery, used twice.</div>
 </section>

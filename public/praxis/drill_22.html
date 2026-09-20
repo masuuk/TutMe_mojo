@@ -10,7 +10,7 @@
 <label class="opt"><input type="radio" name="d22q1" value="d">The point closest to the centroid.</label>
 <div class="actions qactions"><button type="button" class="btn check">Check answer</button><button type="button" class="btn reset">Try again</button></div><p class="feedback"></p>
 <div class="explain" hidden><strong>Why:</strong> The bbox is the smallest axis-aligned rectangle containing the set: (minX, minY) to (maxX, maxY).</div></div>
-<details class="solution"><summary>Solution</summary><p>Reference Mojo for a Point struct, distance, bbox, and nearest-neighbour printing.</p><pre class="code">struct Point:
+<details class="solution"><summary>Solution</summary><p>Reference Mojo for a Point struct, distance, bbox, and nearest-neighbour printing.</p><pre class="code">struct Point(Copyable):
     var x: Float64
     var y: Float64
     def __init__(out self, x: Float64, y: Float64):
@@ -34,16 +34,16 @@ def bounding_box(pts: List[Point]) -&gt; BBox:
         b.min_y = p.y if p.y &lt; b.min_y else b.min_y
         b.max_x = p.x if p.x &gt; b.max_x else b.max_x
         b.max_y = p.y if p.y &gt; b.max_y else b.max_y
-    return b
+    return b^
 
 def main():
-    var pts = List[Point](Point(0, 0), Point(3, 4), Point(-1, 2))
+    var pts: List[Point] = [Point(0, 0), Point(3, 4), Point(-1, 2)]
     var bb = bounding_box(pts)
     print(bb.min_x, bb.min_y, bb.max_x, bb.max_y)   # -1 0 3 4
 
     var origin = Point(0, 0)
     for p in pts:
-        print("dist to (0,0):", distance(p, origin))
+        print(&quot;dist to (0,0):&quot;, distance(p, origin))
 
     # Attributes: wrap Point inside a Feature struct and add an id field.</pre></details>
 <div class="actions"><a class="btn" href="index.html">← Praxis</a><a class="btn primary" href="../applications/geomatics/index.html">Geomatics shelf →</a></div></div></section></main><footer><div class="wrap">TutMe🔥 · A structured path from syntax → fundamentals → applications → practice.</div></footer>

@@ -904,17 +904,17 @@ result = future_value(pv, rate, years)
                     <div class="code-section">
                         <h4><span class="python-icon">⚡</span> Mojo Code</h4>
                         <div class="code-block">
-                            <pre><code><span class="keyword">from</span> math <span class="keyword">import</span> pow
+                            <pre><code>from std.math import pow
 
-<span class="keyword">def</span> <span class="function">future_value</span>(pv: Float64, rate: Float64, years: Int) -&gt; Float64:
-    <span class="string">"""Calculate future value with compound interest."""</span>
-    <span class="keyword">var</span> r = rate / <span class="number">100.0</span>
-    <span class="keyword">return</span> pv * pow(<span class="number">1.0</span> + r, Float64(years))
+def future_value(pv: Float64, rate: Float64, years: Int) -&gt; Float64:
+    &quot;&quot;&quot;Calculate future value with compound interest.&quot;&quot;&quot;
+    var r = rate / 100.0
+    return pv * pow(1.0 + r, Float64(years))
 
-<span class="comment"># Example usage</span>
-<span class="keyword">def</span> <span class="function">main</span>():
-    <span class="keyword">var</span> result = future_value(<span class="number">10000.0</span>, <span class="number">7.0</span>, <span class="number">10</span>)
-    <span class="function">print</span>(<span class="string">"FV = $"</span>, result)   <span class="comment"># 19671.51…</span></code></pre>
+# Example usage
+def main():
+    var result = future_value(10000.0, 7.0, 10)
+    print(&quot;FV = $&quot;, result)   # 19671.51…</code></pre>
                         </div>
                     </div>
                 </div>
@@ -969,19 +969,15 @@ factor = fvif(<span class="number">7</span>, <span class="number">10</span>)
     <span class="keyword">var</span> r = rate / <span class="number">100.0</span>
     <span class="keyword">return</span> pow(<span class="number">1.0</span> + r, Float64(n))
 
-<span class="keyword">def</span> <span class="function">main</span>():
-    <span class="function">print</span>(<span class="string">"FVIF ="</span>, fvif(<span class="number">7.0</span>, <span class="number">10</span>))   <span class="comment"># 1.96715…</span></code></pre>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="info-box">
-                <h4>💡 Key Insight</h4>
-                <p>At 7% interest, money doubles roughly every 10 years (FVIF ≈ 2). This is the <strong>Rule of 72</strong> in action: 72 ÷ 7 ≈ 10.3 years.</p>
-            </div>
-            <div class="section-nav">
-                <a href="#future-value" class="prev">
-                    <span class="nav-label">← Previous</span>
+<span class="keyword">def</span> <span class="function">main</spa<pre><code>from std.math import pow
+
+def fvif(rate: Float64, n: Int) -&gt; Float64:
+    &quot;&quot;&quot;Future Value Interest Factor.&quot;&quot;&quot;
+    var r = rate / 100.0
+    return pow(1.0 + r, Float64(n))
+
+def main():
+    print(&quot;FVIF =&quot;, fvif(7.0, 10))   # 1.96715…</code></pre>/span>
                     <span class="nav-title">Future Value</span>
                 </a>
                 <a href="#annuities" class="next">
@@ -1039,23 +1035,15 @@ result = fv_annuity(<span class="number">500</span>, <span class="number">6</spa
                 </div>
             </div>
             <div class="info-box tip">
-                <h4>💡 Real-World Example</h4>
-                <p>Investing $500 per month at 6% for 20 years yields approximately <strong>$18,390</strong> — that's the power of disciplined, regular investing combined with compound interest!</p>
-            </div>
-            <div class="section-nav">
-                <a href="#fvif" class="prev">
-                    <span class="nav-label">← Previous</span>
-                    <span class="nav-title">FVIF</span>
-                </a>
-                <a href="#annuity-due" class="next">
-                    <span class="nav-label">Next →</span>
-                    <span class="nav-title">Annuity Due</span>
-                </a>
-            </div>
-        </section>
+<pre><code>from std.math import pow
 
-        <!-- ===== ANNUITY DUE ===== -->
-        <section class="section" id="annuity-due">
+def fv_annuity(pmt: Float64, rate: Float64, n: Int) -&gt; Float64:
+    &quot;&quot;&quot;Future Value of Ordinary Annuity.&quot;&quot;&quot;
+    var r = rate / 100.0
+    return pmt * (pow(1.0 + r, Float64(n)) - 1.0) / r
+
+def main():
+    print(&quot;FV = $&quot;, fv_annuity(500.0, 6.0, 20))</code></pre>ion class="section" id="annuity-due">
             <div class="section-header">
                 <div class="section-icon">⏰</div>
                 <h2>Future Value of Annuity Due</h2>
@@ -1106,26 +1094,16 @@ result = fv_annuity_due(<span class="number">500</span>, <span class="number">6<
                 <h4>🔍 Difference vs. Ordinary Annuity</h4>
                 <p>An Annuity Due is always worth <strong>more</strong> than an ordinary annuity with the same terms — by exactly a factor of <strong>(1 + r)</strong>. That's one extra period of growth for every payment.</p>
             </div>
-            <div class="section-nav">
-                <a href="#annuities" class="prev">
-                    <span class="nav-label">← Previous</span>
-                    <span class="nav-title">Annuities</span>
-                </a>
-                <a href="#present-value" class="next">
-                    <span class="nav-label">Next →</span>
-                    <span class="nav-title">Present Value</span>
-                </a>
-            </div>
-        </section>
+            <div class="sec<pre><code>from std.math import pow
 
-        <!-- ===== PRESENT VALUE ===== -->
-        <section class="section" id="present-value">
-            <div class="section-header">
-                <div class="section-icon">💡</div>
-                <h2>Present Value (PV)</h2>
-                <p>Present Value is the current worth of a future sum of money — the reverse of Future Value. It tells you how much you need today to reach a future goal.</p>
-            </div>
-            <div class="card-grid">
+def fv_annuity_due(pmt: Float64, rate: Float64, n: Int) -&gt; Float64:
+    &quot;&quot;&quot;FV of Annuity Due (payments at period start).&quot;&quot;&quot;
+    var r = rate / 100.0
+    var ordinary = pmt * (pow(1.0 + r, Float64(n)) - 1.0) / r
+    return ordinary * (1.0 + r)
+
+def main():
+    print(&quot;FV Due = $&quot;, fv_annuity_due(500.0, 6.0, 20))</code></pre>ard-grid">
                 
                 <div class="card">
                     <h3>🐍 Python Implementation</h3>
@@ -1186,19 +1164,15 @@ result = present_value(<span class="number">50000</span>, <span class="number">7
             </div>
             <div class="card-grid">
 
-                <div class="card">
-                    <h3>🐍 Python Implementation</h3>
-                    <p>The expected return given a beta — one multiplication and one addition:</p>
-                    <div class="code-section">
-                        <h4><span class="python-icon">🐍</span> Python Code</h4>
-                        <div class="code-block">
-                            <pre><code><span class="keyword">def</span> <span class="function">capm_return</span>(rf, beta, market_return):
-    <span class="comment">"""Expected return: risk-free rate + beta × market risk premium."""</span>
-    premium = market_return - rf
-    <span class="keyword">return</span> rf + beta * premium
+                <div class="ca<pre><code>from std.math import pow
 
-<span class="comment"># Risk-free 3%, market 10%, a stock with beta 1.2</span>
-expected = capm_return(<span class="number">0.03</span>, <span class="number">1.2</span>, <span class="number">0.10</span>)
+def present_value(fv: Float64, rate: Float64, years: Int) -&gt; Float64:
+    &quot;&quot;&quot;Present value (discounting).&quot;&quot;&quot;
+    var r = rate / 100.0
+    return fv / pow(1.0 + r, Float64(years))
+
+def main():
+    print(&quot;PV = $&quot;, present_value(50000.0, 7.0, 10))</code></pre>expected = capm_return(<span class="number">0.03</span>, <span class="number">1.2</span>, <span class="number">0.10</span>)
 <span class="function">print</span>(<span class="string">f"E(R) = {expected:.2%}"</span>)   <span class="comment"># 11.40%</span></code></pre>
                         </div>
                     </div>

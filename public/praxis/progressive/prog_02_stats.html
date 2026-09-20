@@ -234,14 +234,14 @@ footer a:hover{text-decoration:underline}
 <h2><span class="lvl-check">1</span>Level 1 — The Mean</h2>
 <div class="meta"><span class="tag">Beginner</span><span class="tag">Arithmetic</span></div>
 <p><strong>Challenge:</strong> What is printed?</p>
-<pre><code><span class="kw">from</span> std.collections <span class="kw">import</span> <span class="tp">List</span>
+<pre><code>from std.collections import List
 
-<span class="kw">def</span> <span class="fn">main</span>():
-    <span class="kw">var</span> xs = <span class="tp">List</span>[<span class="tp">Float64</span>](2.0, 4.0, 6.0)
-    <span class="kw">var</span> total = 0.0
-    <span class="kw">for</span> x <span class="kw">in</span> xs:
+def main():
+    var xs: List[Float64] = [2.0, 4.0, 6.0]
+    var total = 0.0
+    for x in xs:
         total += x
-    <span class="fn">print</span>(total / <span class="tp">Float64</span>(<span class="fn">len</span>(xs)))</code></pre>
+    print(total / Float64(len(xs)))</code></pre>
 <textarea id="a1" placeholder="Write the output or answer here..." onkeydown="onKey(event,1,'4')"></textarea>
 <div class="btnrow">
 <button class="primary" onclick="check(1,'4')">Check Answer</button>
@@ -262,15 +262,16 @@ footer a:hover{text-decoration:underline}
 <h2><span class="lvl-check">2</span>Level 2 — Squared Deviations</h2>
 <div class="meta"><span class="tag">Beginner+</span><span class="tag">Variance Build-up</span></div>
 <p><strong>Challenge:</strong> What is the sum of squared deviations from the mean for 2, 4, 6?</p>
-<pre><code><span class="kw">from</span> std.collections <span class="kw">import</span> <span class="tp">List</span>
+<pre><code>from std.collections import List
 
-<span class="kw">def</span> <span class="fn">main</span>():
-    <span class="kw">var</span> mean = 4.0
-    <span class="kw">var</span> ss = 0.0
-    <span class="kw">for</span> x <span class="kw">in</span> <span class="tp">List</span>[<span class="tp">Float64</span>](2.0, 4.0, 6.0):
-        <span class="kw">var</span> d = x - mean
+def main():
+    var mean = 4.0
+    var ss = 0.0
+    var xs: List[Float64] = [2.0, 4.0, 6.0]
+    for x in xs:
+        var d = x - mean
         ss += d * d
-    <span class="fn">print</span>(ss)</code></pre>
+    print(ss)</code></pre>
 <textarea id="a2" placeholder="Write the output or answer here..." onkeydown="onKey(event,2,'8')"></textarea>
 <div class="btnrow">
 <button class="primary" onclick="check(2,'8')">Check Answer</button>
@@ -339,11 +340,11 @@ footer a:hover{text-decoration:underline}
 <h2><span class="lvl-check">5</span>Level 5 — Standard Deviation</h2>
 <div class="meta"><span class="tag">Advanced</span><span class="tag">Square Root</span></div>
 <p><strong>Challenge:</strong> Using the sample variance of 4.0, what is printed?</p>
-<pre><code><span class="kw">from</span> math <span class="kw">import</span> <span class="fn">sqrt</span>
+<pre><code>from std.math import sqrt
 
-<span class="kw">def</span> <span class="fn">main</span>():
-    <span class="kw">var</span> variance = 4.0
-    <span class="fn">print</span>(<span class="fn">sqrt</span>(variance))</code></pre>
+def main():
+    var variance = 4.0
+    print(sqrt(variance))</code></pre>
 <textarea id="a5" placeholder="Write the output or answer here..." onkeydown="onKey(event,5,'2')"></textarea>
 <div class="btnrow">
 <button class="primary" onclick="check(5,'2')">Check Answer</button>
@@ -364,16 +365,16 @@ footer a:hover{text-decoration:underline}
 <h2><span class="lvl-check">6</span>Level 6 — Expert Challenge</h2>
 <div class="meta"><span class="tag">Advanced</span><span class="tag">Code Reasoning Modification</span></div>
 <p><strong>Challenge:</strong> Complete the z-score loop so the program prints the z-scores of 2, 4 and 6 (mean 4, sample standard deviation 2). What will the three printed values be?</p>
-<pre><code><span class="kw">from</span> math <span class="kw">import</span> <span class="fn">sqrt</span>
-<span class="kw">from</span> std.collections <span class="kw">import</span> <span class="tp">List</span>
+<pre><code>from std.math import sqrt
+from std.collections import List
 
-<span class="kw">def</span> <span class="fn">main</span>():
-    <span class="kw">var</span> xs = <span class="tp">List</span>[<span class="tp">Float64</span>](2.0, 4.0, 6.0)
-    <span class="kw">var</span> mean = 4.0
-    <span class="kw">var</span> sd = <span class="fn">sqrt</span>(4.0)
-    <span class="kw">for</span> x <span class="kw">in</span> xs:
-        <span class="kw">var</span> z = (x - mean) / sd   <span class="cm"># your line</span>
-        <span class="fn">print</span>(z)</code></pre>
+def main():
+    var xs: List[Float64] = [2.0, 4.0, 6.0]
+    var mean = 4.0
+    var sd = sqrt(4.0)
+    for x in xs:
+        var z = (x - mean) / sd   # your line
+        print(z)</code></pre>
 <textarea id="a6" placeholder="Write the output or answer here..." onkeydown="onKey(event,6,'-1\n0\n1')"></textarea>
 <div class="btnrow">
 <button class="primary" onclick="check(6,'-1\n0\n1')">Check Answer</button>

@@ -137,11 +137,13 @@ table.cheat code{font-family:var(--font-mono);font-size:0.82em;color:#c084fc;}
         <button class="tab-btn" data-tab="ch7-vs-out">output</button>
       </div>
       <div class="tab-content active" id="ch7-vs-mojo">
-        <pre><span class="kw">var</span> x = <span class="num">1</span>
-<span class="kw">var</span> y = x        <span class="cmt"># y gets a copy of x's value</span>
-y += <span class="num">1</span>
-<span class="fn">print</span>(<span class="str">"x:"</span>, x)   <span class="cmt"># 1 — untouched</span>
-<span class="fn">print</span>(<span class="str">"y:"</span>, y)   <span class="cmt"># 2</span></pre>
+        <pre><code>def main():
+    var x = 1
+    var y = x        # y gets a copy of x's value
+    y += 1
+    print(&quot;x:&quot;, x)   # 1 — untouched
+    print(&quot;y:&quot;, y)   # 2
+</code></pre>
       </div>
       <div class="tab-content" id="ch7-vs-out">
         <pre>x: 1
@@ -250,13 +252,13 @@ x: 1</pre>
         <button class="tab-btn" data-tab="ch7-mut-out">output</button>
       </div>
       <div class="tab-content active" id="ch7-mut-mojo">
-        <pre><span class="kw">def</span> <span class="fn">mutate</span>(<span class="kw">mut</span> l: <span class="type">List</span>[<span class="type">Int</span>]):
-    l.<span class="fn">append</span>(<span class="num">5</span>)   <span class="cmt"># no copy made</span>
+        <pre><code>def mutate(mut l: List[Int]):
+    l.append(5)   # no copy made
 
-<span class="kw">def</span> <span class="fn">main</span>():
-    <span class="kw">var</span> values = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>]
-    <span class="fn">mutate</span>(values)
-    <span class="fn">print</span>(values.__str__())   <span class="cmt"># [1, 2, 3, 4, 5]</span></pre>
+def main():
+    var values: List[Int] = [1, 2, 3, 4]
+    mutate(values)
+    print(values)   # [1, 2, 3, 4, 5]</code></pre>
       </div>
       <div class="tab-content" id="ch7-mut-out">
         <pre>[1, 2, 3, 4, 5]</pre>
@@ -266,7 +268,9 @@ x: 1</pre>
     <p>Caveats:</p>
     <ul>
       <li>The passed value must already be mutable — Mojo can't form a mutable reference from an immutable one.</li>
-      <li>No default values allowed on <code class="inline">mut</code> arguments.</li>
+      <<pre><code>def main():
+    [1, 2, 3, 4, 5]
+</code></pre>ed on <code class="inline">mut</code> arguments.</li>
     </ul>
 
     <h3>Argument exclusivity</h3>
@@ -525,30 +529,25 @@ Dana?</pre>
       </div>
       <div class="tab-content active" id="ch7-ptr-mojo">
         <pre><span class="kw">var</span> count = <span class="num">0</span>
-<span class="kw">var</span> ptr = <span class="type">Pointer</span>(to=count)   <span class="cmt"># point at an owned value</span>
-
-ptr[] += <span class="num">100</span>                 <span class="cmt"># dereference-write</span>
-<span class="fn">print</span>(ptr[])                  <span class="cmt"># dereference-read → 100</span></pre>
-      </div>
-      <div class="tab-content" id="ch7-ptr-out">
-        <pre>100</pre>
-      </div>
-    </div>
-
-    <p>Everything else — especially dynamic allocation — is unsafe: <em>your code</em> owns allocating, tracking initialization state, and calling deinitializers. Unsafe APIs are prefixed <code class="inline">unsafe_</code>:</p>
+<span class="kw">var</span> ptr = <span class="type">Pointer</span>(to=count)   <span class="cmt"># point a<pre><code>def main():
+    var count = 0
+    var ptr = Pointer(to=count)   # point at an owned value
+    ptr[] += 100                 # dereference-write
+    print(ptr[])                  # dereference-read → 100
+</code></pre>fe: <em>your code</em> owns allocating, tracking initialization state, and calling deinitializers. Unsafe APIs are prefixed <code class="inline">unsafe_</code>:</p>
 
     <div class="code-tabs">
       <div class="tabs-header">
         <button class="tab-btn active" data-tab="ch7-alloc-mojo">Mojo</button>
       </div>
       <div class="tab-content active" id="ch7-alloc-mojo">
-        <pre><span class="kw">from</span> std.memory.alloc <span class="kw">import</span> alloc, dealloc
+        <pre><code>from std.memory.alloc import alloc
 
-<span class="kw">var</span> allocation = <span class="fn">alloc</span>[<span class="type">Int</span>](<span class="num">1</span>)   <span class="cmt"># space for one Int (untracked origin)</span>
-<span class="kw">var</span> ptr = allocation.<span class="fn">unsafe_ptr</span>()
-ptr.<span class="fn">unsafe_write</span>(<span class="num">42</span>)              <span class="cmt"># initialize the memory</span>
-<span class="fn">print</span>(ptr[])                      <span class="cmt"># 42</span>
-<span class="fn">dealloc</span>(allocation^)              <span class="cmt"># free it — ptr now dangles!</span></pre>
+def main():
+    var ptr = alloc[Int](1)   # space for one Int (untracked origin)
+    ptr.unsafe_write(42)              # initialize the memory
+    print(ptr.unsafe_load())          # 42
+    ptr.free()                        # free it — ptr now dangles!</code></pre>
       </div>
     </div>
 

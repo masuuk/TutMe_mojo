@@ -10,47 +10,47 @@
 <label class="opt"><input type="radio" name="d27q1" value="d">Sending each turn through a separate model call with no history.</label>
 <div class="actions qactions"><button type="button" class="btn check">Check answer</button><button type="button" class="btn reset">Try again</button></div><p class="feedback"></p>
 <div class="explain" hidden><strong>Why:</strong> A sliding window fixes the system prompt and forgets the oldest turns once the budget is exceeded — summarization (option c) is a different, costlier strategy the guide covers separately.</div></div>
-<details class="solution"><summary>Solution</summary><p>Reference Mojo for a streaming chat loop with a sliding-window trim.</p><pre class="code">from std.python import Python
+<details class="solution"><summary>Solution</summary><p>Reference Mojo for a streaming chat loop with a sliding-window trim.</p><pre class="code">from std.python import Python, PythonObject
 
 # Sliding window: keep the system prompt, drop the oldest turns
-def trim(history: PythonObject, max_history: Int):
+def trim(history: PythonObject, max_history: Int) raises:
     while len(history) &gt; max_history:
         history.pop(0)
 
 def main() raises:
-    var openai = Python.import_module("openai")
+    var openai = Python.import_module(&quot;openai&quot;)
     var client = openai.OpenAI()
     var max_history: Int = 6
 
     var messages = Python.list(
-        Python.dict(role="system", content="You are a concise coding mentor.")
+        Python.dict(role=&quot;system&quot;, content=&quot;You are a concise coding mentor.&quot;)
     )
 
     while True:
-        var user_input = input("You: ")
+        var user_input = input(&quot;You: &quot;)
         var cleaned = user_input.strip().lower()
-        if cleaned == "exit" or cleaned == "quit":
+        if cleaned == &quot;exit&quot; or cleaned == &quot;quit&quot;:
             break
 
-        messages.append(Python.dict(role="user", content=user_input))
+        messages.append(Python.dict(role=&quot;user&quot;, content=user_input))
         trim(messages, max_history)
 
         # Stream tokens as they are generated instead of waiting for the end
         var stream = client.chat.completions.create(
-            model="gpt-5-mini",
+            model=&quot;gpt-5-mini&quot;,
             messages=messages,
             stream=True,
         )
 
-        var reply = ""
-        for var chunk in stream:
+        var reply = &quot;&quot;
+        for chunk in stream:
             var delta = chunk.choices[0].delta.content
             if delta:
-                print(String(py=delta), end="")
+                print(String(py=delta), end=&quot;&quot;)
                 reply += String(py=delta)
         print()
 
-        messages.append(Python.dict(role="assistant", content=reply))
+        messages.append(Python.dict(role=&quot;assistant&quot;, content=reply))
         trim(messages, max_history)</pre></details>
 <div class="actions"><a class="btn" href="index.html">← Praxis</a><a class="btn primary" href="../data_science/ai_agents_python_vs_mojo.html">Review guide →</a></div></div></section></main><footer><div class="wrap">TutMe🔥 · A structured path from syntax → fundamentals → applications → practice.</div></footer>
 <script defer src="praxis.js"></script></body></html>

@@ -801,24 +801,21 @@ X_b = np.c_[np.ones((X.shape[<span class="number">0</span>], <span class="number
             </div>
             <div class="code-block">
                 <div class="header"><span class="lang"><span class="dot mojo"></span> Mojo 1.x</span></div>
-                <pre><span class="keyword">from</span> std.python <span class="keyword">import</span> Python
+                <pre><code>from std.python import Python
 
-<span class="keyword">def</span> <span class="func">main</span>():
-    <span class="keyword">var</span> np = Python.import_module(<span class="string">"numpy"</span>)
+def main() raises:
+    var np = Python.import_module(&quot;numpy&quot;)
 
-    <span class="keyword">var</span> X = np.array([[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">2</span>, <span class="number">3</span>], [<span class="number">3</span>, <span class="number">4</span>], [<span class="number">4</span>, <span class="number">5</span>]])
-    <span class="keyword">var</span> y = np.array([<span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>])
+    var X = np.array([[1, 2], [2, 3], [3, 4], [4, 5]])
+    var y = np.array([3, 5, 7, 9])
 
-    <span class="comment"># add ones column</span>
-    <span class="keyword">var</span> X_b = np.column_stack([np.ones(X.shape[<span class="number">0</span>]), X])
+    # add ones column
+    var X_b = np.column_stack([np.ones(X.shape[0]), X])
 
-    <span class="comment"># closed form: β = (XᵀX)⁻¹ Xᵀ y</span>
-    <span class="keyword">var</span> beta = np.linalg.inv(X_b.T @ X_b) @ X_b.T @ y
+    # closed form: β = (XᵀX)⁻¹ Xᵀ y
+    var beta = np.linalg.inv(X_b.T.matmul(X_b)).matmul(X_b.T).matmul(y)
 
-    <span class="keyword">print</span>(<span class="string">"β ="</span>, beta)  <span class="comment"># [1. 0. 2.] → y = 1 + 0·x₁ + 2·x₂</span>
-
-    <span class="comment"># numerically stable alternative</span>
-    <span class="keyword">var</span> beta2 = np.linalg.lstsq(X_b, y, rcond=None)[<span class="number">0</span>]</pre>
+    print(&quot;β =&quot;, beta)  # [1. 0. 2.] → y = 1 + 0·x₁ + 2·x₂</code></pre>
             </div>
         </div>
 
@@ -959,21 +956,21 @@ lasso = Lasso(alpha=<span class="number">0.1</span>).fit(X, y)
             </div>
             <div class="code-block">
                 <div class="header"><span class="lang"><span class="dot mojo"></span> Mojo 1.x</span></div>
-                <pre><span class="keyword">from</span> std.python <span class="keyword">import</span> Python
+                <pre><code>from std.python import Python
 
-<span class="keyword">def</span> <span class="func">main</span>():
-    <span class="keyword">var</span> np = Python.import_module(<span class="string">"numpy"</span>)
+def main() raises:
+    var np = Python.import_module(&quot;numpy&quot;)
 
-    <span class="comment"># synthetic 50×5 data</span>
-    <span class="keyword">var</span> X = np.random.randn(<span class="number">50</span>, <span class="number">5</span>)
-    <span class="keyword">var</span> y = <span class="number">2.0</span> * X[:, <span class="number">0</span>] - <span class="number">1.5</span> * X[:, <span class="number">1</span>] + <span class="number">0.5</span> * np.random.randn(<span class="number">50</span>)
+    # synthetic 50×5 data
+    var X = np.random.randn(50, 5)
+    var y = 2.0 * X.T[0] - 1.5 * X.T[1] + 0.5 * np.random.randn(50)
 
-    <span class="comment"># Ridge closed form: β = (XᵀX + αI)⁻¹ Xᵀ y</span>
-    <span class="keyword">var</span> alpha = <span class="number">1.0</span>
-    <span class="keyword">var</span> XtX = X.T @ X
-    <span class="keyword">var</span> XtX_reg = XtX + alpha * np.eye(X.shape[<span class="number">1</span>])
-    <span class="keyword">var</span> beta = np.linalg.inv(XtX_reg) @ X.T @ y
-    <span class="keyword">print</span>(<span class="string">"Ridge coeff:"</span>, beta)</pre>
+    # Ridge closed form: β = (XᵀX + αI)⁻¹ Xᵀ y
+    var alpha = 1.0
+    var XtX = X.T.matmul(X)
+    var XtX_reg = XtX + alpha * np.eye(X.shape[1])
+    var beta = np.linalg.inv(XtX_reg).matmul(X.T).matmul(y)
+    print(&quot;Ridge coeff:&quot;, beta)</code></pre>
             </div>
         </div>
 
@@ -1260,28 +1257,28 @@ model = LinearRegression().fit(X, y)
             </div>
             <div class="code-block">
                 <div class="header"><span class="lang"><span class="dot mojo"></span> Mojo 1.x</span></div>
-                <pre><span class="keyword">from</span> std.python <span class="keyword">import</span> Python
+                <pre><code>from std.python import Python
 
-<span class="keyword">def</span> <span class="func">main</span>():
-    <span class="keyword">var</span> np = Python.import_module(<span class="string">"numpy"</span>)
-    np.random.seed(<span class="number">42</span>)
-    <span class="keyword">var</span> n = <span class="number">200</span>
+def main() raises:
+    var np = Python.import_module(&quot;numpy&quot;)
+    np.random.seed(42)
+    var n = 200
 
-    <span class="keyword">var</span> TV = np.random.uniform(<span class="number">0</span>, <span class="number">300</span>, n)
-    <span class="keyword">var</span> radio = np.random.uniform(<span class="number">0</span>, <span class="number">80</span>, n)
-    <span class="keyword">var</span> newspaper = np.random.uniform(<span class="number">0</span>, <span class="number">60</span>, n)
-    <span class="keyword">var</span> sales = <span class="number">5.0</span> + <span class="number">0.045</span> * TV + <span class="number">0.18</span> * radio + <span class="number">0.01</span> * newspaper + <span class="number">2.0</span> * np.random.randn(n)
+    var TV = np.random.uniform(0, 300, n)
+    var radio = np.random.uniform(0, 80, n)
+    var newspaper = np.random.uniform(0, 60, n)
+    var sales = 5.0 + 0.045 * TV + 0.18 * radio + 0.01 * newspaper + 2.0 * np.random.randn(n)
 
-    <span class="keyword">var</span> X = np.column_stack([TV, radio, newspaper])
-    <span class="keyword">var</span> y = sales
+    var X = np.column_stack([TV, radio, newspaper])
+    var y = sales
 
-    <span class="comment"># closed form: β = (XᵀX)⁻¹ Xᵀ y</span>
-    <span class="keyword">var</span> beta = np.linalg.inv(X.T @ X) @ X.T @ y
-    <span class="keyword">var</span> y_pred = X @ beta
-    <span class="keyword">var</span> mae = np.mean(np.abs(y - y_pred))
+    # closed form: β = (XᵀX)⁻¹ Xᵀ y
+    var beta = np.linalg.inv(X.T.matmul(X)).matmul(X.T).matmul(y)
+    var y_pred = X.matmul(beta)
+    var mae = np.mean(np.abs(y - y_pred))
 
-    <span class="keyword">print</span>(<span class="string">"Coeffs:"</span>, beta)
-    <span class="keyword">print</span>(<span class="string">"MAE:"</span>, mae)</pre>
+    print(&quot;Coeffs:&quot;, beta)
+    print(&quot;MAE:&quot;, mae)</code></pre>
             </div>
         </div>
         <div class="note">

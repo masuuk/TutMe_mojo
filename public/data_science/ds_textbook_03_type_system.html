@@ -248,24 +248,25 @@ result = np.dot(a, b)  <span class="tok-com"># 120.0</span>
 
     <div class="code-block">
       <div class="head">DType for generic numeric code</div>
-      <pre><span class="tok-com"># Write ONCE, works with any numeric type</span>
-<span class="tok-kw">def</span> <span class="tok-fn">relu</span>[<span class="tok-ty">dtype</span>: <span class="tok-ty">DType</span>](x: <span class="tok-ty">SIMD</span>[<span class="tok-ty">dtype</span>, <span class="tok-num">1</span>]) -&gt; <span class="tok-ty">SIMD</span>[<span class="tok-ty">dtype</span>, <span class="tok-num">1</span>]:
-    <span class="tok-kw">return</span> max(x, <span class="tok-num">0</span>)
+      <pre><code>def relu[dtype: DType](x: SIMD[dtype, 1]) -&gt; SIMD[dtype, 1]:
+    return max(x, 0)
 
-<span class="tok-com"># Instantiate for different precisions</span>
-<span class="tok-kw">var</span> r1 = <span class="tok-fn">relu</span>[<span class="tok-ty">DType</span>.<span class="tok-ty">float32</span>](<span class="tok-num">-1.5</span>)
-<span class="tok-kw">var</span> r2 = <span class="tok-fn">relu</span>[<span class="tok-ty">DType</span>.<span class="tok-ty">float64</span>](<span class="tok-num">-1.5</span>)
-<span class="tok-kw">var</span> r3 = <span class="tok-fn">relu</span>[<span class="tok-ty">DType</span>.<span class="tok-ty">bfloat16</span>](<span class="tok-num">-1.5</span>)
+def relu_vec[dtype: DType, width: Int](x: SIMD[dtype, width]) -&gt; SIMD[dtype, width]:
+    return max(x, 0)
 
-<span class="tok-com"># SIMD-aware version — processes 8 values at once</span>
-<span class="tok-kw">def</span> <span class="tok-fn">relu_vec</span>[<span class="tok-ty">dtype</span>: <span class="tok-ty">DType</span>, <span class="tok-ty">width</span>: Int](x: <span class="tok-ty">SIMD</span>[<span class="tok-ty">dtype</span>, <span class="tok-ty">width</span>]) -&gt; <span class="tok-ty">SIMD</span>[<span class="tok-ty">dtype</span>, <span class="tok-ty">width</span>]:
-    <span class="tok-kw">return</span> max(x, <span class="tok-num">0</span>)
-
-<span class="tok-kw">var</span> batch = <span class="tok-ty">SIMD</span>[<span class="tok-ty">DType</span>.<span class="tok-ty">float32</span>, <span class="tok-num">8</span>](
-    <span class="tok-num">-1.0</span>, <span class="tok-num">2.0</span>, <span class="tok-num">-3.0</span>, <span class="tok-num">4.0</span>, <span class="tok-num">-5.0</span>, <span class="tok-num">6.0</span>, <span class="tok-num">-7.0</span>, <span class="tok-num">8.0</span>
-)
-print(<span class="tok-fn">relu_vec</span>[<span class="tok-ty">DType</span>.<span class="tok-ty">float32</span>, <span class="tok-num">8</span>](batch))
-<span class="tok-com"># [0, 2, 0, 4, 0, 6, 0, 8]</span></pre>
+def main():
+    # Write ONCE, works with any numeric type
+    # Instantiate for different precisions
+    var r1 = relu[DType.float32](-1.5)
+    var r2 = relu[DType.float64](-1.5)
+    var r3 = relu[DType.bfloat16](-1.5)
+    # SIMD-aware version — processes 8 values at once
+    var batch = SIMD[DType.float32, 8](
+        -1.0, 2.0, -3.0, 4.0, -5.0, 6.0, -7.0, 8.0
+    )
+    print(relu_vec[DType.float32, 8](batch))
+    # [0, 2, 0, 4, 0, 6, 0, 8]
+</code></pre>
     </div>
 
     <div class="callout">

@@ -16,8 +16,8 @@ struct ValidationError(Copyable, Writable):
     var reason: String
 
 def validate_username(username: String) raises ValidationError -&gt; String:
-    if len(username) == 0:
-        raise ValidationError("username", "cannot be empty")
+    if username.byte_length() == 0:
+        raise ValidationError(&quot;username&quot;, &quot;cannot be empty&quot;)
     return username
 
 @fieldwise_init
@@ -25,25 +25,25 @@ struct CM(ImplicitlyCopyable):
     var name: String
 
     def __enter__(self) -&gt; Self:
-        print("enter", self.name)
+        print(&quot;enter&quot;, self.name)
         return self
 
     def write(self, text: String):
-        print("write", text)      # --body--
+        print(&quot;write&quot;, text)      # --body--
 
     def __exit__(self):
-        print("exit", self.name)
+        print(&quot;exit&quot;, self.name)
 
-def main():
+def main() raises:
     try:
-        validate_username("")
+        validate_username(&quot;&quot;)
     except e:
         print(e.field)     # username
         print(e.reason)    # cannot be empty
 
     # A minimal context manager: CM tracks enter/exit
-    with CM("temp.bin") as f:
-        f.write("hello")   # --body--
+    with CM(&quot;temp.bin&quot;) as f:
+        f.write(&quot;hello&quot;)   # --body--
     # after the with block: exit already ran</pre></details>
 <div class="actions"><a class="btn" href="index.html">← Praxis</a><a class="btn primary" href="../mojo_v1/mojo_10_errors.html">Review chapter →</a></div></div></section></main><footer><div class="wrap">TutMe🔥 · A structured path from syntax → fundamentals → applications → practice.</div></footer>
 <script defer src="praxis.js"></script></body></html>

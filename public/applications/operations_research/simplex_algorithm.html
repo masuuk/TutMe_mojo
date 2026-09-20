@@ -1415,7 +1415,7 @@ min C = 8.00  at  x1 = 4.00, x2 = 0.00</pre>
 
       <div class="code-block">
         <div class="code-tabs"><span class="tab-label"><span class="dot" style="background:var(--mojo)"></span>mojo 1.0 — simplex.mojo</span></div>
-        <div class="code-panels"><pre><code class="lang-mojo"># simplex.mojo -- tableau-form primal simplex for standard-form LPs:
+        <div class="code-panels"><pre><code># simplex.mojo -- tableau-form primal simplex for standard-form LPs:
 #   maximize c^T x  subject to  A x &lt;= b,  x &gt;= 0,  b &gt;= 0
 # Mojo 1.x (Modular 26.5) -- def functions, `var` bindings, List[Float64].
 
@@ -1465,7 +1465,7 @@ def solve(c: List[Float64], A: List[List[Float64]], b: List[Float64]) raises -&g
                     best_ratio = ratio   # strict improvement, or a tie won
                     row = i              # ... by the smaller basis index (Bland)
         if row == -1:
-            raise Error("Problem is unbounded")
+            raise Error(&quot;Problem is unbounded&quot;)
 
         var pivot = T[row][col]          # normalize the pivot row...
         for k in range(ncols):
@@ -1493,16 +1493,21 @@ def main() raises:
     var c1: List[Float64] = [3.0, 5.0]
     var A1: List[List[Float64]] = [[1.0, 0.0], [0.0, 2.0], [3.0, 2.0]]
     var b1: List[Float64] = [4.0, 12.0, 18.0]
-    var (x1, z1, k1) = solve(c1, A1, b1)
-    print("Example A: x =", x1[0], x1[1], " Z =", z1, " pivots =", k1)
+    var t1 = solve(c1, A1, b1)
+    var x1 = t1[0].copy()
+    var z1 = t1[1]
+    var k1 = t1[2]
+    print(&quot;Example A: x =&quot;, x1[0], x1[1], &quot; Z =&quot;, z1, &quot; pivots =&quot;, k1)
 
     # Example B -- three-variable production problem (section 4)
     var c2: List[Float64] = [5.0, 4.0, 3.0]
     var A2: List[List[Float64]] = [[2.0, 3.0, 1.0], [4.0, 1.0, 2.0], [3.0, 4.0, 2.0]]
     var b2: List[Float64] = [5.0, 11.0, 8.0]
-    var (x2, z2, k2) = solve(c2, A2, b2)
-    print("Example B: x =", x2[0], x2[1], x2[2], " Z =", z2, " pivots =", k2)
-</code></pre>
+    var t2 = solve(c2, A2, b2)
+    var x2 = t2[0].copy()
+    var z2 = t2[1]
+    var k2 = t2[2]
+    print(&quot;Example B: x =&quot;, x2[0], x2[1], x2[2], &quot; Z =&quot;, z2, &quot; pivots =&quot;, k2)</code></pre>
           <div class="output-panel">
             <p class="out-head">$ mojo run simplex.mojo</p>
             <pre>Example A: x = 2.0 6.0  Z = 36.0  pivots = 2

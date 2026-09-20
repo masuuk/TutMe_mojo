@@ -343,14 +343,14 @@ footer a:hover{text-decoration:underline}
 <h2><span class="lvl-check">5</span>Level 5 — Move with ^</h2>
 <div class="meta"><span class="tag">Advanced</span><span class="tag">Ownership Trace</span></div>
 <p><strong>Challenge:</strong> Predict the three lines printed.</p>
-<pre><code><span class="kw">def</span> <span class="fn">consume</span>(<span class="kw">var</span> s: <span class="tp">String</span>):
-    <span class="fn">print</span>(<span class="st">"got:"</span>, s)
+<pre><code>def consume(var s: String):
+    print(&quot;got:&quot;, s)
 
-<span class="kw">def</span> <span class="fn">main</span>():
-    <span class="kw">var</span> s = <span class="tp">String</span>(<span class="st">"hello"</span>)
-    <span class="fn">print</span>(<span class="fn">len</span>(s))
-    <span class="fn">consume</span>(s^)
-    <span class="fn">print</span>(<span class="st">"done"</span>)</code></pre>
+def main():
+    var s = String(&quot;hello&quot;)
+    print(s.byte_length())
+    consume(s^)
+    print(&quot;done&quot;)</code></pre>
 <textarea id="a5" placeholder="Write the output or answer here..." onkeydown="onKey(event,5,'5\ngot: hello\ndone')"></textarea>
 <div class="btnrow">
 <button class="primary" onclick="check(5,'5\ngot: hello\ndone')">Check Answer</button>

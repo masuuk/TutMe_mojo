@@ -232,16 +232,16 @@ amount = <span class="fn">compound_interest</span>(<span class="num">10000.0</sp
         <button class="tab-btn" data-tab="ch9-npv-py">Python</button>
       </div>
       <div class="tab-content active" id="ch9-npv-mojo">
-        <pre><span class="kw">def</span> <span class="fn">npv</span>(rate: Float64, cash_flows: List[Float64]) -&gt; Float64:
-    <span class="kw">var</span> total: Float64 = <span class="num">0.0</span>
-    <span class="kw">for</span> t <span class="kw">in</span> <span class="fn">range</span>(len(cash_flows)):
-        total += cash_flows[t] / (<span class="num">1.0</span> + rate) ** Float64(t)
-    <span class="kw">return</span> total
+        <pre><code>def npv(rate: Float64, cash_flows: List[Float64]) -&gt; Float64:
+    var total: Float64 = 0.0
+    for t in range(len(cash_flows)):
+        total += cash_flows[t] / (1.0 + rate) ** Float64(t)
+    return total
 
-<span class="kw">def</span> <span class="fn">main</span>():
-    <span class="kw">var</span> flows = List[Float64](<span class="op">-</span><span class="num">1000.0</span>, <span class="num">300.0</span>, <span class="num">420.0</span>, <span class="num">680.0</span>)
-    <span class="kw">var</span> result = npv(<span class="num">0.08</span>, flows)
-    <span class="fn">print</span>(<span class="str">"NPV ="</span>, result)</pre>
+def main():
+    var flows: List[Float64] = [-1000.0, 300.0, 420.0, 680.0]
+    var result = npv(0.08, flows)
+    print(&quot;NPV =&quot;, result)</code></pre>
       </div>
       <div class="tab-content" id="ch9-npv-py">
         <pre><span class="kw">def</span> <span class="fn">npv</span>(rate: float, cash_flows: list[float]) -&gt; float:
@@ -346,21 +346,21 @@ x, y = sys.<span class="fn">solve</span>()
         <button class="tab-btn" data-tab="ch9-fact-py">Python</button>
       </div>
       <div class="tab-content active" id="ch9-fact-mojo">
-        <pre><span class="kw">def</span> <span class="fn">factorial_iter</span>(n: Int64) -&gt; Int64:
-    <span class="kw">var</span> result: Int64 = <span class="num">1</span>
-    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">2</span>, n + <span class="num">1</span>):
-        result *= i
-    <span class="kw">return</span> result
+        <pre><code>def factorial_iter(n: Int64) -&gt; Int64:
+    var result: Int64 = 1
+    for i in range(2, Int(n) + 1):
+        result *= Int64(i)
+    return result
 
-<span class="kw">def</span> <span class="fn">factorial_rec</span>(n: Int64) -&gt; Int64:
-    <span class="kw">if</span> n &lt;= <span class="num">1</span>:
-        <span class="kw">return</span> <span class="num">1</span>
-    <span class="kw">return</span> n * <span class="fn">factorial_rec</span>(n - <span class="num">1</span>)
+def factorial_rec(n: Int64) -&gt; Int64:
+    if n &lt;= 1:
+        return 1
+    return n * factorial_rec(n - 1)
 
-<span class="kw">def</span> <span class="fn">main</span>():
-    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">11</span>):
-        <span class="fn">print</span>(i, <span class="str">"! ="</span>, <span class="fn">factorial_iter</span>(i),
-              <span class="str">"|"</span>, <span class="fn">factorial_rec</span>(i))</pre>
+def main():
+    for i in range(11):
+        print(i, &quot;! =&quot;, factorial_iter(Int64(i)),
+              &quot;|&quot;, factorial_rec(Int64(i)))</code></pre>
       </div>
       <div class="tab-content" id="ch9-fact-py">
         <pre><span class="kw">def</span> <span class="fn">factorial_iter</span>(n: int) -&gt; int:
@@ -395,23 +395,23 @@ x, y = sys.<span class="fn">solve</span>()
         <button class="tab-btn" data-tab="ch9-fib-py">Python</button>
       </div>
       <div class="tab-content active" id="ch9-fib-mojo">
-        <pre><span class="kw">def</span> <span class="fn">fibonacci</span>(n: Int64) -&gt; List[Int64]:
-    <span class="kw">if</span> n &lt;= <span class="num">0</span>:
-        <span class="kw">return</span> List[Int64]()
-    <span class="kw">var</span> seq = List[Int64]()
-    seq.append(<span class="num">0</span>)
-    <span class="kw">if</span> n &gt; <span class="num">1</span>:
-        seq.append(<span class="num">1</span>)
-    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">2</span>, n):
-        <span class="kw">var</span> next_val = seq[i <span class="op">-</span> <span class="num">1</span>] + seq[i <span class="op">-</span> <span class="num">2</span>]
+        <pre><code>def fibonacci(n: Int64) -&gt; List[Int64]:
+    if n &lt;= 0:
+        return List[Int64]()
+    var seq = List[Int64]()
+    seq.append(0)
+    if n &gt; 1:
+        seq.append(1)
+    for i in range(2, Int(n)):
+        var next_val = seq[i - 1] + seq[i - 2]
         seq.append(next_val)
-    <span class="kw">return</span> seq
+    return seq^
 
-<span class="kw">def</span> <span class="fn">main</span>():
-    <span class="kw">var</span> fib = fibonacci(<span class="num">15</span>)
-    <span class="kw">for</span> val <span class="kw">in</span> fib:
-        <span class="fn">print</span>(val, end=<span class="str">" "</span>)
-    <span class="fn">print</span>()</pre>
+def main():
+    var fib = fibonacci(15)
+    for val in fib:
+        print(val, end=&quot; &quot;)
+    print()</code></pre>
       </div>
       <div class="tab-content" id="ch9-fib-py">
         <pre><span class="kw">def</span> <span class="fn">fibonacci</span>(n: int) -&gt; list[int]:

@@ -431,12 +431,3 @@ Other fixes
 Counter.most_common(n) now returns all elements when n exceeds the number of unique elements, matching Python, instead of aborting.
 
 #6833 - PythonObject no longer leaks a CPython reference per positional argument when calling a Python object, nor when setting an item, attribute, or set literal element.
-
-Special thanks
-Special thanks to our community contributors:
-
-Amr Hesham (@AmrDeveloper), BlueDestination (@BlueDestination), Christoph Grüninger (@gruenich), Christoph Schlumpf (@christoph-schlumpf), Danilo Salve (@odanilosalve), David Dada (@obadafidii), Giorgos Smyridis (@gsmyridis), iMostfa (@iMostfa), Jay Hemnani (@jayhemnani9910), Kavindu Sachinthe (@kavix), Mahendra Rathore (@mahendrarathore1742), Manuel Saelices (@msaelices), Nithesh (@Nithesh8678), Nitin Krishna Mucheli (@NewtonChutney), Ratul (@ratulb), Sherlock Xu (@Sherlock113), Vihaan Agarwal (@VihaanAgarwal), Vladimir Babin (@chiliec), void (@robinber)
-
-Newer release
-Mojo nightly
-Older r

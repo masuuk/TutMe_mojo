@@ -367,14 +367,14 @@ footer a:hover{text-decoration:underline}
 <h2><span class="lvl-check">6</span>Level 6 — Expert Challenge</h2>
 <div class="meta"><span class="tag">Advanced</span><span class="tag">Code Reasoning Modification</span></div>
 <p><strong>Challenge:</strong> The initial tableau's objective row holds the negated costs [−4, −3] for x₁, x₂. Complete the loop that applies Dantzig's rule — enter the column with the MOST negative reduced cost. What column (1-based) enters?</p>
-<pre><code><span class="kw">from</span> std.collections <span class="kw">import</span> <span class="tp">List</span>
+<pre><code>from std.collections import List
 
-<span class="kw">def</span> <span class="fn">main</span>():
-    <span class="kw">var</span> reduced = <span class="tp">List</span>[<span class="tp">Float64</span>](-4.0, -3.0)
-    <span class="kw">var</span> enter = 0
-    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(1, <span class="fn">len</span>(reduced)):
-        pass                     <span class="cm"># your line</span>
-    <span class="fn">print</span>(enter + 1)</code></pre>
+def main():
+    var reduced: List[Float64] = [-4.0, -3.0]
+    var enter = 0
+    for i in range(1, len(reduced)):
+        pass                     # your line
+    print(enter + 1)</code></pre>
 <textarea id="a6" placeholder="Write the output or answer here..." onkeydown="onKey(event,6,'1')"></textarea>
 <div class="btnrow">
 <button class="primary" onclick="check(6,'1')">Check Answer</button>

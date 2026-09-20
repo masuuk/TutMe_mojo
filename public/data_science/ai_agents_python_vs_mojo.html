@@ -500,33 +500,34 @@ print(response.choices[0].message.content)</code></pre>
         </div>
         <div class="lang-panel" data-lang="mojo" data-group="basic">
           <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-          <pre><code><span class="cm"># Import the Python interop standard library</span>
-<span class="kw">from</span> std.python <span class="kw">import</span> Python
+          <pre><code>def main():
+    # Import the Python interop standard library
+    from std.python import Python
 
-<span class="cm"># Mojo requires an explicit main function with a 'raises' trait for error handling</span>
-<span class="kw">def</span> <span class="fn">main</span>() raises:
-    <span class="cm"># Import the Python OpenAI package</span>
-    <span class="kw">var</span> openai = Python.import_module(<span class="str">"openai"</span>)
+    # Mojo requires an explicit main function with a 'raises' trait for error handling
+    def main() raises:
+        # Import the Python OpenAI package
+        var openai = Python.import_module(&quot;openai&quot;)
 
-    <span class="cm"># Create the OpenAI client</span>
-    <span class="kw">var</span> client = openai.OpenAI()
+        # Create the OpenAI client
+        var client = openai.OpenAI()
 
-    <span class="cm"># Build the request using Python's list and dict constructors via interop</span>
-    <span class="kw">var</span> messages = Python.list(
-        Python.dict(
-            role=<span class="str">"user"</span>,
-            content=<span class="str">"Explain what an AI agent is in one sentence."</span>
+        # Build the request using Python's list and dict constructors via interop
+        var messages = Python.list(
+            Python.dict(
+                role=&quot;user&quot;,
+                content=&quot;Explain what an AI agent is in one sentence.&quot;
+            )
         )
-    )
 
-    <span class="cm"># Send the request (calls the Python API directly)</span>
-    <span class="kw">var</span> response = client.chat.completions.create(
-        model=<span class="str">"gpt-5-mini"</span>,
-        messages=messages
-    )
+        # Send the request (calls the Python API directly)
+        var response = client.chat.completions.create(
+            model=&quot;gpt-5-mini&quot;,
+            messages=messages
+        )
 
-    <span class="cm"># Print the answer</span>
-    print(response.choices[0].message.content)</code></pre>
+        # Print the answer
+        print(response.choices[0].message.content)</code></pre>
         </div>
       </div>
     </section>
@@ -593,60 +594,58 @@ messages = []
     <span class="cm"># Import the Python OpenAI package</span>
     <span class="kw">var</span> openai = Python.import_module(<span class="str">"openai"</span>)
 
-    <span class="cm"># Create the OpenAI client with explicit API key</span>
-    <span class="kw">var</span> client = openai.OpenAI(
-        api_key=<span class="str">"YOUR_API_KEY"</span>
-    )
+  <pre><code>from std.python import Python
 
-    <span class="cm"># Initialize an empty Python list for conversation history</span>
-    <span class="kw">var</span> messages = Python.list()
 
-    <span class="kw">while</span> <span class="kw">True</span>:
-        <span class="cm"># Read a line from stdin using Mojo's builtin input()</span>
-        <span class="kw">var</span> user_input = input(<span class="str">"You: "</span>)
+def main():
+    def main() raises:
+        # Import the Python OpenAI package
+        var openai = Python.import_module(&quot;openai&quot;)
 
-        <span class="cm"># Check for exit commands</span>
-        <span class="kw">var</span> cleaned = user_input.strip().lower()
-        <span class="kw">if</span> cleaned == <span class="str">"exit"</span> <span class="kw">or</span> cleaned == <span class="str">"quit"</span>:
-            <span class="kw">break</span>
+        # Create the OpenAI client with explicit API key
+        var client = openai.OpenAI(
+            api_key=&quot;YOUR_API_KEY&quot;
+        )
 
-        <span class="cm"># Add user message using Python.dict()</span>
-        messages.append(
-            Python.dict(
-                role=<span class="str">"user"</span>,
-                content=user_input
+        # Initialize an empty Python list for conversation history
+        var messages = Python.list()
+
+        while True:
+            # Read a line from stdin using Mojo's builtin input()
+            var user_input = input(&quot;You: &quot;)
+
+            # Check for exit commands
+            var cleaned = user_input.strip().lower()
+            if cleaned == &quot;exit&quot; or cleaned == &quot;quit&quot;:
+                break
+
+            # Add user message using Python.dict()
+            messages.append(
+                Python.dict(
+                    role=&quot;user&quot;,
+                    content=user_input
+                )
             )
-        )
 
-        <span class="cm"># Send conversation to OpenAI</span>
-        <span class="kw">var</span> response = client.chat.completions.create(
-            model=<span class="str">"gpt-5-mini"</span>,
-            messages=messages
-        )
-
-        <span class="cm"># Extract assistant response</span>
-        <span class="kw">var</span> reply = response.choices[0].message.content
-
-        <span class="cm"># Add assistant response to conversation history</span>
-        messages.append(
-            Python.dict(
-                role=<span class="str">"assistant"</span>,
-                content=reply
+            # Send conversation to OpenAI
+            var response = client.chat.completions.create(
+                model=&quot;gpt-5-mini&quot;,
+                messages=messages
             )
-        )
 
-        <span class="cm"># Display response</span>
-        print(<span class="str">"Bot:"</span>, reply)</code></pre>
-        </div>
-      </div>
-    </section>
+            # Extract assistant response
+            var reply = response.choices[0].message.content
 
-    <section id="system-params">
-      <h2><span class="num">03</span> System Prompts &amp; Generation Parameters</h2>
-      <div class="badge-row">
-        <span class="badge">difficulty · easy</span>
-        <span class="badge">role-aware</span>
-        <span class="badge">fine-tune output</span>
+            # Add assistant response to conversation history
+            messages.append(
+                Python.dict(
+                    role=&quot;assistant&quot;,
+                    content=reply
+                )
+            )
+
+            # Display response
+            print(&quot;Bot:&quot;, reply)</code></pre>>fine-tune output</span>
       </div>
       <p>
         A <strong>system message</strong> steers the model's behaviour for the entire conversation — personality,
@@ -716,38 +715,33 @@ print(response.choices[0].message.content)</code></pre>
         Python.dict(role=<span class="str">"user"</span>, content=<span class="str">"What is a closure?"</span>),
     )
 
-    <span class="cm"># same generation parameters, passed straight through the interop layer</span>
-    <span class="kw">var</span> response = client.chat.completions.create(
-        model=<span class="str">"gpt-5-mini"</span>,
-        messages=messages,
-        temperature=0.7,
-        max_tokens=250,
-        top_p=0.9,
-    )
+    <span class="cm"># same generation parameters, passed straight through the interop layer<pre><code>from std.python import Python
 
-    print(response.choices[0].message.content)</code></pre>
-        </div>
-      </div>
-    </section>
 
-    <section id="streaming">
-      <h2><span class="num">04</span> Streaming Responses</h2>
-      <div class="badge-row">
-        <span class="badge">difficulty · moderate</span>
-        <span class="badge">low latency</span>
-        <span class="badge">SSE</span>
-      </div>
-      <p>
-        Long answers feel slow if the client waits for the <em>entire</em> completion before printing anything.
-        Setting <code>stream=True</code> returns a Server-Sent Events (SSE) iterator that yields text
-        <strong>tokens as they are generated</strong> — output appears progressively, like in ChatGPT.
-      </p>
-      <p>
-        In the parameters you learn to inspect here: each chunk carries a <code>delta</code> rather than a full
-        <code>message</code>, so you rebuild the answer by printing deltas as they arrive.
-      </p>
+def main():
+    def main() raises:
+        var openai = Python.import_module(&quot;openai&quot;)
+        var client = openai.OpenAI()
 
-      <div class="context-box">
+        # The system message shapes behaviour for the whole conversation
+        var messages = Python.list(
+            Python.dict(
+                role=&quot;system&quot;,
+                content=&quot;You are a coding mentor. Be brief, use short examples, and never assume the reader has prior knowledge.&quot;,
+            ),
+            Python.dict(role=&quot;user&quot;, content=&quot;What is a closure?&quot;),
+        )
+
+        # same generation parameters, passed straight through the interop layer
+        var response = client.chat.completions.create(
+            model=&quot;gpt-5-mini&quot;,
+            messages=messages,
+            temperature=0.7,
+            max_tokens=250,
+            top_p=0.9,
+        )
+
+        print(response.choices[0].message.content)</code></pre>t-box">
         <h4>⏱️ When to stream</h4>
         <p>
           Stream for anything user-facing. The perceived latency of a 2,000-token answer drops from several
@@ -808,32 +802,31 @@ print()</code></pre>
     <span class="kw">for</span> <span class="kw">var</span> chunk <span class="kw">in</span> stream:
         <span class="kw">var</span> delta = chunk.choices[0].delta.content
         <span class="kw">if</span> delta:
-            print(delta, end=<span class="str">""</span>)   <span class="cm"># accumulate on one line, token by token</span>
-    print()</code></pre>
-        </div>
-      </div>
-    </section>
+            print(<pre><code>from std.python import Python
 
-    <section id="tool-calling">
-      <h2><span class="num">05</span> Tool Calling: From Chatbot to Agent</h2>
-      <div class="badge-row">
-        <span class="badge">difficulty · advanced</span>
-        <span class="badge">action-oriented</span>
-        <span class="badge">the agent primitive</span>
-      </div>
-      <p>
-        A chatbot only talks. An <strong>agent acts</strong> — and the standard mechanism is <em>tool calling</em>
-        (function calling). You describe a function to the model; when the model decides the answer requires that
-        function, it returns a <em>request</em> instead of text. Your code executes the function locally and feeds
-        the result back as a special <code>role: "tool"</code> message, then the model composes its final answer
-        using that real data.
-      </p>
 
-      <div class="context-box mojo">
-        <h4>💡 Why this is the key step</h4>
-        <p>
-          This loop — <code>model requests → you execute → tool result feeds back → model answers</code> —
-          is the core of every serious agent framework (OpenAI Assistants, LangChain, AutoGen). From here you
+def main():
+    def main() raises:
+        var openai = Python.import_module(&quot;openai&quot;)
+        var client = openai.OpenAI()
+
+        var messages = Python.list(
+            Python.dict(role=&quot;user&quot;, content=&quot;Explain why 'cloud' is a misnomer, in exactly 5 sentences.&quot;),
+        )
+
+        # stream=True returns an SSE iterator instead of a single whole response
+        var stream = client.chat.completions.create(
+            model=&quot;gpt-5-mini&quot;,
+            messages=messages,
+            stream=True,
+        )
+
+        # Iterate the Python iterator from Mojo and print deltas as they arrive
+        for var chunk in stream:
+            var delta = chunk.choices[0].delta.content
+            if delta:
+                print(delta, end=&quot;&quot;)   # accumulate on one line, token by token
+        print()</code></pre>LangChain, AutoGen). From here you
           can chain multiple tools: weather lookup, database queries, file operations, web search. The same
           pattern works identically in Python and through Mojo's interop layer.
         </p>
@@ -937,89 +930,81 @@ message = response.choices[0].message
                     properties=Python.dict(
                         city=Python.dict(
                             type=<span class="str">"string"</span>,
-                            description=<span class="str">"City name"</span>,
-                        )
+                            descr<pre><code>from std.python import Python
+
+
+def main():
+    # A tool: a plain Mojo function. Swap the body for a real weather API in production.
+    def get_weather(city: String) -&gt; String:
+        return &quot;Current conditions in &quot; + city + &quot;: 21°C, partly cloudy, 10% chance of rain.&quot;
+
+    def main() raises:
+        var openai = Python.import_module(&quot;openai&quot;)
+        var json = Python.import_module(&quot;json&quot;)
+        var client = openai.OpenAI()
+
+        # 1) Describe the tool so the model knows it exists and how to call it
+        var tools = Python.list(
+            Python.dict(
+                type=&quot;function&quot;,
+                function=Python.dict(
+                    name=&quot;get_weather&quot;,
+                    description=&quot;Get the current weather for a city&quot;,
+                    parameters=Python.dict(
+                        type=&quot;object&quot;,
+                        properties=Python.dict(
+                            city=Python.dict(
+                                type=&quot;string&quot;,
+                                description=&quot;City name&quot;,
+                            )
+                        ),
+                        required=Python.list(&quot;city&quot;),
                     ),
-                    required=Python.list(<span class="str">"city"</span>),
                 ),
-            ),
-        )
-    )
-
-    <span class="kw">var</span> messages = Python.list(
-        Python.dict(
-            role=<span class="str">"user"</span>,
-            content=<span class="str">"Should I bring an umbrella in Berlin tomorrow?"</span>,
-        )
-    )
-
-    <span class="cm"># 2) Ask, letting the model decide when to use the tool ("auto")</span>
-    <span class="kw">var</span> response = client.chat.completions.create(
-        model=<span class="str">"gpt-5-mini"</span>,
-        messages=messages,
-        tools=tools,
-        tool_choice=<span class="str">"auto"</span>,
-    )
-
-    <span class="kw">var</span> message = response.choices[0].message
-
-    <span class="kw">if</span> message.tool_calls:
-        <span class="cm"># 3) The model requested a call — execute it locally...</span>
-        <span class="kw">for</span> <span class="kw">var</span> call <span class="kw">in</span> message.tool_calls:
-            <span class="kw">var</span> args = json.loads(call.function.arguments)
-            <span class="kw">var</span> result = get_weather(String(py=args[<span class="str">"city"</span>]))
-
-            <span class="cm"># 4) ...and feed the result back as a "tool" message</span>
-            messages.append(
-                Python.dict(
-                    role=<span class="str">"tool"</span>,
-                    tool_call_id=call.id,
-                    content=result,
-                )
             )
+        )
 
-        <span class="cm"># 5) Ask again with the tool result in context for the final answer</span>
-        <span class="kw">var</span> final = client.chat.completions.create(
-            model=<span class="str">"gpt-5-mini"</span>,
+        var messages = Python.list(
+            Python.dict(
+                role=&quot;user&quot;,
+                content=&quot;Should I bring an umbrella in Berlin tomorrow?&quot;,
+            )
+        )
+
+        # 2) Ask, letting the model decide when to use the tool (&quot;auto&quot;)
+        var response = client.chat.completions.create(
+            model=&quot;gpt-5-mini&quot;,
             messages=messages,
             tools=tools,
+            tool_choice=&quot;auto&quot;,
         )
-        print(final.choices[0].message.content)
-    <span class="kw">else</span>:
-        print(message.content)</code></pre>
-        </div>
-      </div>
 
-      <div class="context-box">
-        <h4>🔁 Generalize the pattern</h4>
-        <p>
-          The weather function is interchangeable: replace it with a <code>search_docs()</code>,
-          <code>query_db()</code>, <code>send_email()</code>, or any other function. Register multiple tools in
-          the <code>tools</code> list and the model picks. Production agents usually wrap steps 3–5 in a
-          <code>while</code> loop so the model can chain several tool calls before answering.
-        </p>
-      </div>
-    </section>
+        var message = response.choices[0].message
 
-    <section id="memory">
-      <h2><span class="num">06</span> Memory Management &amp; Context Limits</h2>
-      <div class="badge-row">
-        <span class="badge">difficulty · advanced</span>
-        <span class="badge">cost control</span>
-        <span class="badge">scaling state</span>
-      </div>
-      <p>
-        Every turn resends the entire <code>messages</code> history — so token usage (and cost) grows linearly
-        with conversation length, and eventually you bump into the model's context window. Robust agents manage
-        memory explicitly. The simplest strategy is a <strong>sliding window</strong>: keep the system prompt,
-        forget the oldest turns once history exceeds a budget.
-      </p>
+        if message.tool_calls:
+            # 3) The model requested a call — execute it locally...
+            for var call in message.tool_calls:
+                var args = json.loads(call.function.arguments)
+                var result = get_weather(String(py=args[&quot;city&quot;]))
 
-      <div class="context-box">
-        <h4>🧠 Beyond the sliding window</h4>
-        <p>
-          <strong>Summarization:</strong> when the window fills, ask the model to condense everything so far into
-          a short <em>memory</em>, then replace the old turns with that summary. <strong>Selective recall:</strong>
+                # 4) ...and feed the result back as a &quot;tool&quot; message
+                messages.append(
+                    Python.dict(
+                        role=&quot;tool&quot;,
+                        tool_call_id=call.id,
+                        content=result,
+                    )
+                )
+
+            # 5) Ask again with the tool result in context for the final answer
+            var final = client.chat.completions.create(
+                model=&quot;gpt-5-mini&quot;,
+                messages=messages,
+                tools=tools,
+            )
+            print(final.choices[0].message.content)
+        else:
+            print(message.content)</code></pre>ry</em>, then replace the old turns with that summary. <strong>Selective recall:</strong>
           keep factual answers (preferences, facts learned) and drop chit-chat. <strong>External memory:</strong>
           store long-term facts in a vector database and inject relevant snippets on each turn.
         </p>
@@ -1196,36 +1181,29 @@ data = json.loads(response.choices[0].message.content)
       <p>
         Networks fail, and LLM providers throttle bursts. A production agent treats API errors as a fact of life:
         <strong>rate limits</strong> deserve exponential backoff so you don't hammer the endpoint; transient
-        <strong>connection errors</strong> deserve plain retries; hard failures (auth, malformed request) should
-        propagate immediately.
-      </p>
+        <strong>connection errors</strong> deserve plain retri<pre><code>from std.python import Python
 
-      <div class="context-box mojo">
-        <h4>💡 Mojo error interop</h4>
-        <p>
-          Mojo's <code>def main() raises</code> propagates any Python exception surfaced from the interop call as
-          a Mojo error. Because Mojo cannot easily distinguish specific Python exception types through interop,
-          the Mojo example catches broadly with a bare <code>except:</code> — keep the Python side for
-          exception-type-specific handling when you need that granularity.
-        </p>
-      </div>
 
-      <div class="lang-block">
-        <div class="lang-tabs">
-          <button class="lang-tab active" data-lang="python" onclick="switchLang(this,'errors')"><span class="dot"></span>Python</button>
-          <button class="lang-tab" data-lang="mojo" onclick="switchLang(this,'errors')"><span class="dot"></span>Mojo</button>
-        </div>
-        <div class="lang-panel active" data-lang="python" data-group="errors">
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-          <pre><code><span class="kw">from</span> openai <span class="kw">import</span> OpenAI
-<span class="kw">from</span> openai <span class="kw">import</span> RateLimitError, APIConnectionError
-<span class="kw">import</span> time
+def main():
+    def main() raises:
+        var openai = Python.import_module(&quot;openai&quot;)
+        var json = Python.import_module(&quot;json&quot;)
+        var client = openai.OpenAI()
 
-client = OpenAI()
+        var response = client.chat.completions.create(
+            model=&quot;gpt-5-mini&quot;,
+            messages=Python.list(
+                Python.dict(role=&quot;system&quot;, content=&quot;You output valid JSON only. No markdown, no prose.&quot;),
+                Python.dict(role=&quot;user&quot;, content=&quot;List 3 fruits with a color and a price each.&quot;),
+            ),
+            response_format=Python.dict(type=&quot;json_object&quot;),   # guarantee valid JSON output
+        )
 
-<span class="kw">def</span> <span class="fn">get_reply</span>(messages, max_retries=<span class="num">3</span>):
-    <span class="kw">for</span> attempt <span class="kw">in</span> range(max_retries):
-        <span class="kw">try</span>:
+        # Parse via interop and work with the data programmatically
+        var data = json.loads(response.choices[0].message.content)
+
+        for var fruit in data[&quot;fruits&quot;]:
+            print(String(py=fruit[&quot;name&quot;]) + &quot; — &quot; + String(py=fruit[&quot;color&quot;]) + &quot; — $&quot; + String(py=fruit[&quot;price&quot;]))</code></pre> class="kw">try</span>:
             response = client.chat.completions.create(
                 model=<span class="str">"gpt-5-mini"</span>,
                 messages=messages,

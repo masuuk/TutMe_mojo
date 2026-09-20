@@ -10,20 +10,20 @@
 <label class="opt"><input type="radio" name="d25q1" value="d">Seven parameters: three translations, three rotations and a scale.</label>
 <div class="actions qactions"><button type="button" class="btn check">Check answer</button><button type="button" class="btn reset">Try again</button></div><p class="feedback"></p>
 <div class="explain" hidden><strong>Why:</strong> The 2D similarity model packs rotation θ and scale s into a = s·cos θ and b = s·sin θ, leaving two translations tx, ty — four parameters in total. Seven parameters is the 3D Helmert model.</div></div>
-<details class="solution"><summary>Solution</summary><p>Reference Mojo for geodetic → ECEF, ENU and a 4-parameter site calibration with residuals.</p><pre class="code">from math import sin, cos, sqrt, atan2, radians
+<details class="solution"><summary>Solution</summary><p>Reference Mojo for geodetic → ECEF, ENU and a 4-parameter site calibration with residuals.</p><pre class="code">from std.math import sin, cos, sqrt, atan2, pi
 
 @fieldwise_init
 struct Ellipsoid:
     var a: Float64      # semi-major axis (m)
     var f: Float64      # flattening
 
-def WGS84() -> Ellipsoid:
+def WGS84() -&gt; Ellipsoid:
     return Ellipsoid(a=6378137.0, f=1.0 / 298.257223563)
 
-def geodetic_to_ecef(lat: Float64, lon: Float64, h: Float64) -> (Float64, Float64, Float64):
+def geodetic_to_ecef(lat: Float64, lon: Float64, h: Float64) -&gt; Tuple[Float64, Float64, Float64]:
     var e2 = 2 * WGS84().f - WGS84().f ** 2
-    var phi = radians(lat)
-    var lam = radians(lon)
+    var phi = lat * pi / 180.0
+    var lam = lon * pi / 180.0
     var s = sin(phi)
     var n = WGS84().a / sqrt(1 - e2 * s * s)   # prime-vertical radius
     var x = (n + h) * cos(phi) * cos(lam)
@@ -31,31 +31,31 @@ def geodetic_to_ecef(lat: Float64, lon: Float64, h: Float64) -> (Float64, Float6
     var z = (n * (1 - e2) + h) * s
     return (x, y, z)
 
-def enu(dx: Float64, dy: Float64, dz: Float64, lat: Float64, lon: Float64) -> (Float64, Float64, Float64):
-    var phi = radians(lat)
-    var lam = radians(lon)
+def enu(dx: Float64, dy: Float64, dz: Float64, lat: Float64, lon: Float64) -&gt; Tuple[Float64, Float64, Float64]:
+    var phi = lat * pi / 180.0
+    var lam = lon * pi / 180.0
     var e = -sin(lam) * dx + cos(lam) * dy
     var n = -sin(phi) * cos(lam) * dx - sin(phi) * sin(lam) * dy + cos(phi) * dz
     var u = cos(phi) * cos(lam) * dx + cos(phi) * sin(lam) * dy + sin(phi) * dz
     return (e, n, u)
 
 # 4-parameter similarity: E = a*x - b*y + tx ; N = b*x + a*y + ty
-def apply_sim4(x: Float64, y: Float64, a: Float64, b: Float64, tx: Float64, ty: Float64) -> (Float64, Float64):
+def apply_sim4(x: Float64, y: Float64, a: Float64, b: Float64, tx: Float64, ty: Float64) -&gt; Tuple[Float64, Float64]:
     return (a * x - b * y + tx, b * x + a * y + ty)
 
 def main():
-    # Harare area check: geodetic -> ECEF round trip closes to &lt; 1 mm
+    # Harare area check: geodetic -&gt; ECEF round trip closes to &lt; 1 mm
     var (x, y, z) = geodetic_to_ecef(-17.8252, 31.0335, 1480.0)
-    print("ECEF (m):", x, y, z)
+    print(&quot;ECEF (m):&quot;, x, y, z)
 
     # Calibrated grid point (a, b, tx, ty from a least-squares fit of control points)
     var (E, N) = apply_sim4(x=501234.5, y=7987654.3, a=0.9999965, b=0.0000210, tx=102.45, ty=-57.82)
-    print("Local E, N:", E, N)
+    print(&quot;Local E, N:&quot;, E, N)
 
     # Residual QC: known local coords of a control point vs transformed
     var known_E = 501336.98
     var known_N = 7987596.44
-    print("residual dE, dN (m):", E - known_E, N - known_N)
+    print(&quot;residual dE, dN (m):&quot;, E - known_E, N - known_N)
     # |residual| at the few-mm level means the calibration is trustworthy.</pre></details>
 <div class="actions"><a class="btn" href="index.html">← Praxis</a><a class="btn primary" href="../applications/geomatics/gnss_surveying.html">Review book →</a></div></div></section></main><footer><div class="wrap">TutMe🔥 · A structured path from syntax → fundamentals → applications → practice.</div></footer>
 <script defer src="praxis.js"></script></body></html>

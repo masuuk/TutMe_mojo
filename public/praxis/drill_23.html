@@ -11,7 +11,7 @@
 <div class="actions qactions"><button type="button" class="btn check">Check answer</button><button type="button" class="btn reset">Try again</button></div><p class="feedback"></p>
 <div class="explain" hidden><strong>Why:</strong> 40 × 60 + 30 × 40 = 2400 + 1200 = 3600 — the same value the dual achieves, confirming strong duality.</div></div>
 <details class="solution"><summary>Solution</summary><p>Reference Mojo enumerating corners, checking feasibility, and reporting the optimum.</p><pre class="code">@fieldwise_init
-struct Corner:
+struct Corner(Copyable):
     var x1: Int
     var x2: Int
 
@@ -29,12 +29,12 @@ def main():
         for x2 in range(0, 101):
             var c = Corner(x1, x2)
             if feasible(c) and objective(c) &gt; best_z:
-                best = c
+                best = c.copy()
                 best_z = objective(c)
     print(best.x1, best.x2, best_z)   # 60 40 3600
 
     # Dual:  min 100y1 + 160y2 + 60y3
-    #        s.t. y1 + 2y2 + y3 >= 40; y1 + y2 >= 30; yi >= 0
+    #        s.t. y1 + 2y2 + y3 &gt;= 40; y1 + y2 &gt;= 30; yi &gt;= 0
     # Shadow prices y* = (20, 10, 0) -&gt; w* = 3600.</pre></details>
 <div class="actions"><a class="btn" href="index.html">← Praxis</a><a class="btn primary" href="../applications/operations_research/operations_research.html">Review book →</a></div></div></section></main><footer><div class="wrap">TutMe🔥 · A structured path from syntax → fundamentals → applications → practice.</div></footer>
 <script defer src="praxis.js"></script></body></html>

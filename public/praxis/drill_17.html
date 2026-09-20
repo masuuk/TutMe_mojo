@@ -15,10 +15,10 @@ def _pad[dtype: DType](data: List[Scalar[dtype]], size: Int, fill: Scalar[dtype]
     var out = List[Scalar[dtype]]()
     for i in range(size):
         out.append(data[i] if i &lt; len(data) else fill)
-    return out
+    return out^
 
 def resize[dtype: DType](data: List[Scalar[dtype]], size: Int, fill: Scalar[dtype] = 0) raises -&gt; List[Scalar[dtype]]:
-    """Resize a list of scalar values to a target length.
+    &quot;&quot;&quot;Resize a list of scalar values to a target length.
 
     Parameters:
         dtype: The element type of the data.
@@ -35,8 +35,8 @@ def resize[dtype: DType](data: List[Scalar[dtype]], size: Int, fill: Scalar[dtyp
         Error: if `size` is negative.
 
     Preconditions:
-        `size >= 0`.
-    """
-    return _pad(data, size, fill)</pre></details>
+        `size &gt;= 0`.
+    &quot;&quot;&quot;
+    return _pad(data, size, fill)^</pre></details>
 <div class="actions"><a class="btn" href="index.html">← Praxis</a><a class="btn primary" href="../mojo_v1/mojo_15_docstrings.html">Review chapter →</a></div></div></section></main><footer><div class="wrap">TutMe🔥 · A structured path from syntax → fundamentals → applications → practice.</div></footer>
 <script defer src="praxis.js"></script></body></html>

@@ -324,15 +324,15 @@ footer{
       <div class="tab" data-lang="python"><span class="sw"></span>mean.py</div>
     </div>
     <div class="panes">
-      <div class="pane active" data-lang="mojo"><pre><span class="tok-kw">def</span> <span class="tok-fn">mean</span>(values: List[Float64]) -&gt; Float64:
-    <span class="tok-kw">var</span> total: Float64 = <span class="tok-num">0.0</span>
-    <span class="tok-kw">for</span> v <span class="tok-kw">in</span> values:
+      <div class="pane active" data-lang="mojo"><pre><code>def mean(values: List[Float64]) -&gt; Float64:
+    var total: Float64 = 0.0
+    for v in values:
         total += v
-    <span class="tok-kw">return</span> total / Float64(len(values))
+    return total / Float64(len(values))
 
-<span class="tok-kw">def</span> <span class="tok-fn">main</span>():
-    <span class="tok-kw">var</span> data = List[Float64](<span class="tok-num">2.0</span>, <span class="tok-num">4.0</span>, <span class="tok-num">6.0</span>, <span class="tok-num">8.0</span>)
-    print(<span class="tok-str">"mean ="</span>, mean(data))  <span class="tok-com"># mean = 5.0</span></pre></div>
+def main():
+    var data: List[Float64] = [2.0, 4.0, 6.0, 8.0]
+    print(&quot;mean =&quot;, mean(data))  # mean = 5.0</code></pre></div>
       <div class="pane" data-lang="python"><pre><span class="tok-kw">def</span> <span class="tok-fn">mean</span>(values: list[float]) -&gt; float:
     <span class="tok-kw">return</span> sum(values) / len(values)
 

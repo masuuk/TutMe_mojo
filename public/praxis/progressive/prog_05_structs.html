@@ -327,21 +327,21 @@ footer a:hover{text-decoration:underline}
 </section>
 
 <section class="card level" data-level="4">
-<h2><span class="lvl-check">4</span>Level 4 — Stringable</h2>
+<h2><span class="lvl-check">4</span>Level 4 — Writable</h2>
 <div class="meta"><span class="tag">Intermediate+</span><span class="tag">Traits</span></div>
 <p><strong>Challenge:</strong> What is printed?</p>
-<pre><code><span class="kw">struct</span> <span class="tp">Temp</span>: <span class="tp">Stringable</span>:
-    <span class="kw">var</span> c: <span class="tp">Float64</span>
+<pre><code>struct Temp(Writable):
+    var c: Float64
 
-    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">out</span> self, c: <span class="tp">Float64</span>):
+    def __init__(out self, c: Float64):
         self.c = c
 
-    <span class="kw">def</span> <span class="fn">__str__</span>(self) -&gt; <span class="tp">String</span>:
-        <span class="kw">return</span> <span class="tp">String</span>(self.c) + <span class="st">"C"</span>
+    def write_to[T: Writer](self, mut writer: T):
+        writer.write(String(self.c) + &quot;C&quot;)
 
-<span class="kw">def</span> <span class="fn">main</span>():
-    <span class="kw">var</span> t = <span class="tp">Temp</span>(19.5)
-    <span class="fn">print</span>(t)</code></pre>
+def main():
+    var t = Temp(19.5)
+    print(t)</code></pre>
 <textarea id="a4" placeholder="Write the output or answer here..." onkeydown="onKey(event,4,'19.5C')"></textarea>
 <div class="btnrow">
 <button class="primary" onclick="check(4,'19.5C')">Check Answer</button>
@@ -349,12 +349,12 @@ footer a:hover{text-decoration:underline}
 <button class="ghost" id="hintbtn4" onclick="showHint(4)" style="display:none">💡 Hint</button>
 <span class="attempts" id="att4"></span>
 </div>
-<div id="h4" class="hint">Conforming to <code>Stringable</code> means <code>print</code> calls <code>__str__</code>. What does that method append to the number?</div>
+<div id="h4" class="hint">Conforming to <code>Writable</code> means implementing <code>write_to</code>, which <code>print</code> calls. What does that method append to the number?</div>
 <div id="f4" class="feedback"></div>
 <div id="s4" class="solution">
 <strong>Solution</strong>
 <pre><code>19.5C</code></pre>
-<p>Conforming to <code>Stringable</code> means implementing <code>__str__</code>, so <code>print(t)</code> uses it directly.</p>
+<p>Conforming to <code>Writable</code> means implementing <code>write_to</code>, so <code>print(t)</code> uses it directly.</p>
 </div>
 </section>
 
@@ -362,14 +362,14 @@ footer a:hover{text-decoration:underline}
 <h2><span class="lvl-check">5</span>Level 5 — Generic over a Trait</h2>
 <div class="meta"><span class="tag">Advanced</span><span class="tag">Generics</span></div>
 <p><strong>Challenge:</strong> What is printed?</p>
-<pre><code><span class="kw">def</span> <span class="fn">larger</span>[T: <span class="tp">Comparable</span>](a: <span class="tp">T</span>, b: <span class="tp">T</span>) -&gt; <span class="tp">T</span>:
-    <span class="kw">if</span> b &gt; a:
-        <span class="kw">return</span> b
-    <span class="kw">return</span> a
+<pre><code>def larger[T: Comparable &amp; ImplicitlyCopyable](a: T, b: T) -&gt; T:
+    if b &gt; a:
+        return b
+    return a
 
-<span class="kw">def</span> <span class="fn">main</span>():
-    <span class="fn">print</span>(<span class="fn">larger</span>[<span class="tp">Float64</span>](2.5, 7.5))
-    <span class="fn">print</span>(<span class="fn">larger</span>[<span class="tp">Int</span>](9, 4))</code></pre>
+def main():
+    print(larger[Float64](2.5, 7.5))
+    print(larger[Int](9, 4))</code></pre>
 <textarea id="a5" placeholder="Write the output or answer here..." onkeydown="onKey(event,5,'7.5\n9')"></textarea>
 <div class="btnrow">
 <button class="primary" onclick="check(5,'7.5\n9')">Check Answer</button>
@@ -427,7 +427,7 @@ footer a:hover{text-decoration:underline}
 <ul class="mastery">
 <li>Why must struct fields have explicit types?</li>
 <li>What does <code>@fieldwise_init</code> generate, and what does it not generate?</li>
-<li>What must a struct implement to conform to <code>Stringable</code>?</li>
+<li>What must a struct implement to conform to <code>Writable</code>?</li>
 <li>What does a trait constraint on a function's type parameter guarantee?</li>
 </ul>
 <textarea id="masteryNotes" placeholder="Jot your own explanations here — saved automatically as you type..." oninput="saveNotes()"></textarea>

@@ -222,16 +222,16 @@ show_growth(<span class="tok-num">10000.0</span>, <span class="tok-num">0.05</sp
         <div class="tab" data-lang="python" data-group="npv"><span class="sw"></span>npv.py</div>
       </div>
       <div class="panes" data-group="npv">
-        <div class="pane active" data-lang="mojo"><pre><span class="tok-kw">def</span> <span class="tok-fn">npv</span>(rate: Float64, cashflows: List[Float64]) -&gt; Float64:
-    <span class="tok-kw">var</span> total: Float64 = <span class="tok-num">0.0</span>
-    <span class="tok-kw">for</span> i <span class="tok-kw">in</span> <span class="tok-fn">range</span>(len(cashflows)):
-        total += cashflows[i] / pow(<span class="tok-num">1.0</span> + rate, Float64(i))
-    <span class="tok-kw">return</span> total
+        <div class="pane active" data-lang="mojo"><pre><code>def npv(rate: Float64, cashflows: List[Float64]) -&gt; Float64:
+    var total: Float64 = 0.0
+    for i in range(len(cashflows)):
+        total += cashflows[i] / pow(1.0 + rate, Float64(i))
+    return total
 
-<span class="tok-kw">def</span> <span class="tok-fn">main</span>():
-    <span class="tok-kw">var</span> flows = List[Float64](-<span class="tok-num">1000.0</span>, <span class="tok-num">300.0</span>, <span class="tok-num">420.0</span>, <span class="tok-num">680.0</span>)
-    <span class="tok-kw">var</span> result = npv(<span class="tok-num">0.10</span>, flows)
-    print(<span class="tok-str">"NPV = $"</span>, result)</pre></div>
+def main():
+    var flows: List[Float64] = [-1000.0, 300.0, 420.0, 680.0]
+    var result = npv(0.10, flows)
+    print(&quot;NPV = $&quot;, result)</code></pre></div>
         <div class="pane" data-lang="python"><pre><span class="tok-kw">def</span> <span class="tok-fn">npv</span>(rate: float, cashflows: list[float]) -&gt; float:
     total = <span class="tok-num">0.0</span>
     <span class="tok-kw">for</span> i, cf <span class="tok-kw">in</span> <span class="tok-fn">enumerate</span>(cashflows):
@@ -359,21 +359,21 @@ s = solve_2x2(<span class="tok-num">2.0</span>, <span class="tok-num">3.0</span>
         <div class="tab" data-lang="python" data-group="fibonacci"><span class="sw"></span>fibonacci.py</div>
       </div>
       <div class="panes" data-group="fibonacci">
-        <div class="pane active" data-lang="mojo"><pre><span class="tok-kw">def</span> <span class="tok-fn">fibonacci</span>(n: Int) -&gt; List[Int]:
-    <span class="tok-kw">var</span> seq = List[Int]()
-    <span class="tok-kw">var</span> a: Int = <span class="tok-num">0</span>
-    <span class="tok-kw">var</span> b: Int = <span class="tok-num">1</span>
-    <span class="tok-kw">for</span> _ <span class="tok-kw">in</span> <span class="tok-fn">range</span>(n):
+        <div class="pane active" data-lang="mojo"><pre><code>def fibonacci(n: Int) -&gt; List[Int]:
+    var seq = List[Int]()
+    var a: Int = 0
+    var b: Int = 1
+    for _ in range(n):
         seq.append(a)
-        <span class="tok-kw">var</span> temp = a + b
+        var temp = a + b
         a = b
         b = temp
-    <span class="tok-kw">return</span> seq
+    return seq^
 
-<span class="tok-kw">def</span> <span class="tok-fn">main</span>():
-    <span class="tok-kw">var</span> fib = fibonacci(<span class="tok-num">15</span>)
-    <span class="tok-kw">for</span> i <span class="tok-kw">in</span> <span class="tok-fn">range</span>(len(fib)):
-        print(<span class="tok-str">"fib["</span>, i, <span class="tok-str">"] ="</span>, fib[i])</pre></div>
+def main():
+    var fib = fibonacci(15)
+    for i in range(len(fib)):
+        print(&quot;fib[&quot;, i, &quot;] =&quot;, fib[i])</code></pre></div>
         <div class="pane" data-lang="python"><pre><span class="tok-kw">def</span> <span class="tok-fn">fibonacci</span>(n: int) -&gt; list[int]:
     seq = []
     a, b = 0, 1

@@ -13,8 +13,8 @@
 <details class="solution"><summary>Solution</summary><p>Reference code for numpy interop plus a libc `external_call`.</p><pre class="code">from std.python import Python
 from std.ffi import external_call, c_int
 
-def main():
-    var np = Python.import_module("numpy")
+def main() raises:
+    var np = Python.import_module(&quot;numpy&quot;)
     var ar = np.arange(15).reshape(3, 5)
     print(ar)             # 3x5 array
     print(ar.shape)       # (3, 5)
@@ -26,7 +26,7 @@ def main():
 
     # libc abs via the FFI
     var n = c_int(-17)
-    var r = external_call["abs", c_int](n)
+    var r = external_call[&quot;abs&quot;, c_int](n)
     print(r)              # 17</pre></details>
 <div class="actions"><a class="btn" href="index.html">← Praxis</a><a class="btn primary" href="../mojo_v1/mojo_11_interop.html">Review chapter →</a></div></div></section></main><footer><div class="wrap">TutMe🔥 · A structured path from syntax → fundamentals → applications → practice.</div></footer>
 <script defer src="praxis.js"></script></body></html>

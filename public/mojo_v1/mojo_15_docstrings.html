@@ -321,9 +321,9 @@ print(names.find("dave") is None) # True
         <button class="tab-btn active" data-tab="ch15-hidden-mojo">Mojo</button>
       </div>
       <div class="tab-content active" id="ch15-hidden-mojo">
-        <pre><span class="fn">@doc_hidden</span>
-<span class="kw">def</span> <span class="fn">_internal_helper</span>(data: <span class="type">UnsafePointer</span>[<span class="type">UInt8</span>]) -&gt; <span class="type">Int</span>:
-    <span class="kw">pass</span></pre>
+        <pre><code>@doc_hidden
+def _internal_helper(data: Pointer[UInt8, _]) -&gt; Int:
+    return 0</code></pre>
       </div>
     </div>
 

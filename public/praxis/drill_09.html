@@ -22,16 +22,15 @@ def double() -&gt; Int:
     r *= 2
     return c             # 42
 
-def double_ref(ref v: Int) -&gt; ref[origin_of(v)] Int:
-    v *= 2               # writable through the ref
-    return v             # lifetime tied to v's origin
+def double_value(mut v: Int):
+    v *= 2               # writable through the mut param
 
 def main():
     var a = 1
     add(a, 2)            # a becomes 3 (mut)
     print(a)             # 3
 
-    var s = String("owned value")
+    var s = String(&quot;owned value&quot;)
     consume(s^)          # s is transferred out
     # print(s)           # ERROR - no longer owned here
 
@@ -39,8 +38,7 @@ def main():
     print(r)
 
     var d = 10
-    ref dr = double_ref(d)     # aliases d; lifetime = d's origin
-    print(dr)                  # 20
-    print(d)                   # 20 (mutation went through the ref)</pre></details>
+    double_value(d)      # d becomes 20 (mutation went through mut)
+    print(d)             # 20</pre></details>
 <div class="actions"><a class="btn" href="index.html">← Praxis</a><a class="btn primary" href="../mojo_v1/mojo_07_ownership.html">Review chapter →</a></div></div></section></main><footer><div class="wrap">TutMe🔥 · A structured path from syntax → fundamentals → applications → practice.</div></footer>
 <script defer src="praxis.js"></script></body></html>

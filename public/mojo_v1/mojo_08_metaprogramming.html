@@ -457,22 +457,24 @@ Hello</pre>
         <button class="tab-btn" data-tab="ch8-sort-out">output</button>
       </div>
       <div class="tab-content active" id="ch8-sort-mojo">
-        <pre><span class="kw">def</span> <span class="fn">bubble_sort</span>[
-    T: <span class="type">ImplicitlyCopyable</span> &amp; <span class="type">Deinitable</span>,
-    F: <span class="kw">def</span>(T, T) -&gt; <span class="type">Bool</span>,   <span class="cmt">//</span>
-](compare_fn: F, <span class="kw">mut</span> values: <span class="type">List</span>[T]):
-    <span class="kw">for</span> end <span class="kw">in</span> <span class="fn">reversed</span>(<span class="fn">range</span>(<span class="fn">len</span>(values))):
-        <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(end):
-            <span class="kw">if</span> <span class="fn">compare_fn</span>(values[i], values[i + <span class="num">1</span>]):
-                values[i], values[i + <span class="num">1</span>] = values[i + <span class="num">1</span>], values[i]
+        <pre><code>def bubble_sort[
+    T: ImplicitlyCopyable &amp; Deinitable,
+    F: def(T, T) -&gt; Bool,   //
+](compare_fn: F, mut values: List[T]):
+    for end in reversed(range(len(values))):
+        for i in range(end):
+            if compare_fn(values[i], values[i + 1]):
+                values[i], values[i + 1] = values[i + 1], values[i]
 
-<span class="kw">def</span> <span class="fn">main</span>():
-    <span class="kw">var</span> values: <span class="type">List</span>[<span class="type">Int</span>] = [<span class="num">3</span>, <span class="num">1</span>, <span class="num">4</span>, <span class="num">1</span>, <span class="num">5</span>, <span class="num">9</span>]
-    <span class="fn">bubble_sort</span>(<span class="kw">lambda</span> (a: <span class="type">Int</span>, b: <span class="type">Int</span>) -&gt; <span class="type">Bool</span>: a &gt; b, values)
-    <span class="fn">print</span>(values.__str__())</pre>
+def main():
+    var values: List[Int] = [3, 1, 4, 1, 5, 9]
+    bubble_sort(lambda (a: Int, b: Int) -&gt; Bool: a &gt; b, values)
+    print(values)</code></pre>
       </div>
       <div class="tab-content" id="ch8-sort-out">
-        <pre>[1, 1, 3, 4, 5, 9]</pre>
+        <pre><code>def main():
+    [1, 1, 3, 4, 5, 9]
+</code></pre>
       </div>
     </div>
 
@@ -487,24 +489,25 @@ Hello</pre>
         <button class="tab-btn" data-tab="ch8-thin-out">output</button>
       </div>
       <div class="tab-content active" id="ch8-thin-mojo">
-        <pre><span class="kw">def</span> <span class="fn">inplace_transform</span>[
-    T: <span class="type">ImplicitlyCopyable</span> &amp; <span class="type">Deinitable</span>,
-    <span class="cmt">//,</span> f: <span class="kw">def</span>(T) <span class="fn">thin</span> -&gt; T   <span class="cmt"># compile-time function pointer</span>
-](<span class="kw">mut</span> list: <span class="type">List</span>[T]):
-    <span class="kw">for</span> index <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(list)):
-        list[index] = <span class="fn">f</span>(list[index])
+        <pre><code>def inplace_transform[
+    T: ImplicitlyCopyable &amp; Deinitable,
+    //, f: def(T) thin -&gt; T   # compile-time function pointer
+](mut list: List[T]):
+    for index in range(len(list)):
+        list[index] = f(list[index])
 
-<span class="kw">def</span> <span class="fn">main</span>():
-    <span class="kw">var</span> numbers: <span class="type">List</span>[<span class="type">Int</span>] = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>]
-    <span class="fn">inplace_transform</span>[<span class="kw">lambda</span> (x: <span class="type">Int</span>) -&gt; <span class="type">Int</span>: x * <span class="num">2</span>](numbers)
-    <span class="fn">print</span>(numbers.__str__())
+def main():
+    var numbers: List[Int] = [1, 2, 3, 4, 5]
+    inplace_transform[lambda (x: Int) -&gt; Int: x * 2](numbers)
+    print(numbers)
 
-    <span class="cmt"># var factor = 3</span>
-    <span class="cmt"># inplace_transform[lambda (x: Int): x ** factor](numbers)</span>
-    <span class="cmt"># ERROR: capturing 'factor' makes this a closure — not allowed as a parameter</span></pre>
+    # var factor = 3
+    # inplace_transform[lambda (x: Int): x ** factor](numbers)
+    # ERROR: capturing 'factor' makes this a closure — not allowed as a parameter</code></pre>
       </div>
-      <div class="tab-content" id="ch8-thin-out">
-        <pre>[2, 4, 6, 8, 10]</pre>
+      <div class="tab-conten<pre><code>def main():
+    [2, 4, 6, 8, 10]
+</code></pre>   <pre>[2, 4, 6, 8, 10]</pre>
       </div>
     </div>
 
@@ -578,8 +581,9 @@ Hello, Bob!
 
     <span class="fn">parallelize</span>(work, <span class="num">8</span>)
     <span class="fn">print</span>(results.__str__())</pre>
-      </div>
-      <div class="tab-content" id="ch8-par-out">
+      </di<pre><code>def main():
+    [0, 1, 4, 9, 16, 25, 36, 49]
+</code></pre>h8-par-out">
         <pre>[0, 1, 4, 9, 16, 25, 36, 49]</pre>
       </div>
     </div>

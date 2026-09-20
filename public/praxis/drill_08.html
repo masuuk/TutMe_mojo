@@ -11,7 +11,7 @@
 <div class="actions qactions"><button type="button" class="btn check">Check answer</button><button type="button" class="btn reset">Try again</button></div><p class="feedback"></p>
 <div class="explain" hidden><strong>Why:</strong> Conforming to the `Copyable` trait declares that the type provides a working copy, which the compiler uses to allow value copies.</div></div>
 <details class="solution"><summary>Solution</summary><p>Reference code: a copyable struct, a trait with a generic consumer, and operator overloading.</p><pre class="code">trait HasMagnitude:
-    def magnitude(self) -&gt; Float64
+    def magnitude(self) -&gt; Float64: ...
 
 def report[T: HasMagnitude](v: T) -&gt; Float64:
     return v.magnitude()

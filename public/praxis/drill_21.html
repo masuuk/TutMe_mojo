@@ -10,7 +10,7 @@
 <label class="opt"><input type="radio" name="d21q1" value="d">O(2ⁿ)</label>
 <div class="actions qactions"><button type="button" class="btn check">Check answer</button><button type="button" class="btn reset">Try again</button></div><p class="feedback"></p>
 <div class="explain" hidden><strong>Why:</strong> Clenshaw runs a single backward pass over the coefficients, giving O(n) work and better numerical stability than summing cosines individually.</div></div>
-<details class="solution"><summary>Solution</summary><p>Reference Mojo for the Clenshaw recurrence and a round-trip check.</p><pre class="code">from math import cos
+<details class="solution"><summary>Solution</summary><p>Reference Mojo for the Clenshaw recurrence and a round-trip check.</p><pre class="code">from std.math import cos
 
 def clenshaw_cos(c: List[Float64], theta: Float64) -&gt; Float64:
     var b0 = 0.0
@@ -29,7 +29,7 @@ def naive_cos_sum(c: List[Float64], theta: Float64) -&gt; Float64:
     return s
 
 def main():
-    var c = List[Float64](1.0, 0.5, 0.2, 0.1)
+    var c: List[Float64] = [1.0, 0.5, 0.2, 0.1]
     var th = 0.3
     print(clenshaw_cos(c, th))
     print(naive_cos_sum(c, th))     # agree to ~1e-15

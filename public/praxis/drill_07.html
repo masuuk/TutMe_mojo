@@ -16,7 +16,7 @@
 
     var x = 5
     print(x &gt; 0 and x &lt; 10)         # True (and chain)
-    print("even" if x % 2 == 0 else "odd")  # ternary -&gt; odd
+    print(&quot;even&quot; if x % 2 == 0 else &quot;odd&quot;)  # ternary -&gt; odd
 
     var total = 0
     var n = 1
@@ -25,7 +25,7 @@
         n += 1
     print(total)                    # 5050
 
-    var nums = List[Int](1, 2, 3, 4)
+    var nums = [1, 2, 3, 4]
     for ref v in nums:
         v = v * 2                   # in-place: [2, 4, 6, 8]
     print(nums)

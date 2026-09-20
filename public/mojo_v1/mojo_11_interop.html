@@ -139,13 +139,15 @@ table.cheat code{font-family:var(--font-mono);font-size:0.82em;color:#c084fc;}
         <button class="tab-btn" data-tab="ch11-np-out">output</button>
       </div>
       <div class="tab-content active" id="ch11-np-mojo">
-        <pre><span class="kw">from</span> std.python <span class="kw">import</span> Python
+        <pre><code>from std.python import Python
 
-<span class="kw">def</span> <span class="fn">main</span>() <span class="kw">raises</span>:
-    <span class="kw">var</span> np = Python.<span class="fn">import_module</span>(<span class="str">"numpy"</span>)
-    <span class="kw">var</span> ar = np.<span class="fn">arange</span>(<span class="num">15</span>).<span class="fn">reshape</span>(<span class="num">3</span>, <span class="num">5</span>)
-    <span class="fn">print</span>(ar)
-    <span class="fn">print</span>(ar.shape)</pre>
+
+def main():
+    def main() raises:
+        var np = Python.import_module(&quot;numpy&quot;)
+        var ar = np.arange(15).reshape(3, 5)
+        print(ar)
+        print(ar.shape)</code></pre>
       </div>
       <div class="tab-content" id="ch11-np-out">
         <pre>[[ 0  1  2  3  4]
@@ -926,7 +928,6 @@ result = mojo_module.sum_kwargs_ints(a=<span class="num">10</span>, b=<span clas
   <nav class="chapnav">
     <a href="mojo_10_errors.html" class="navbtn">← Ch 10 · Errors &amp; Context Managers</a>
     <a href="mojo_12_modules.html" class="navbtn">Ch 12 · Modules, Packages &amp; Toolchain →</a>
-    <a href="../data_science/ai_agents_python_vs_mojo.html" class="navbtn">🤝 Use interop in practice: AI Agents · Python vs Mojo</a>
   </nav>
 </div>
 </div>

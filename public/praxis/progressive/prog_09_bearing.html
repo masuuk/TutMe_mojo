@@ -234,12 +234,12 @@ footer a:hover{text-decoration:underline}
 <h2><span class="lvl-check">1</span>Level 1 — Grid Distance</h2>
 <div class="meta"><span class="tag">Beginner</span><span class="tag">Pythagoras</span></div>
 <p><strong>Challenge:</strong> What is printed?</p>
-<pre><code><span class="kw">from</span> math <span class="kw">import</span> <span class="fn">sqrt</span>
+<pre><code>from std.math import sqrt
 
-<span class="kw">def</span> <span class="fn">main</span>():
-    <span class="kw">var</span> dE = 3.0
-    <span class="kw">var</span> dN = 4.0
-    <span class="fn">print</span>(<span class="fn">sqrt</span>(dE * dE + dN * dN))</code></pre>
+def main():
+    var dE = 3.0
+    var dN = 4.0
+    print(sqrt(dE * dE + dN * dN))</code></pre>
 <textarea id="a1" placeholder="Write the output or answer here..." onkeydown="onKey(event,1,'5')"></textarea>
 <div class="btnrow">
 <button class="primary" onclick="check(1,'5')">Check Answer</button>
@@ -284,13 +284,13 @@ footer a:hover{text-decoration:underline}
 <h2><span class="lvl-check">3</span>Level 3 — Whole-circle Bearing</h2>
 <div class="meta"><span class="tag">Intermediate</span><span class="tag">atan2</span></div>
 <p><strong>Challenge:</strong> With ΔE = 90 and ΔN = 160, what bearing (degrees, 2 decimals) does atan2 give? North is 0°.</p>
-<pre><code><span class="kw">from</span> math <span class="kw">import</span> <span class="fn">atan2</span>
+<pre><code>from std.math import atan2
 
-<span class="kw">def</span> <span class="fn">main</span>():
-    <span class="kw">var</span> dE = 90.0
-    <span class="kw">var</span> dN = 160.0
-    <span class="kw">var</span> deg = <span class="fn">atan2</span>(dE, dN) * (180.0 / 3.141592653589793)
-    <span class="fn">print</span>(deg)</code></pre>
+def main():
+    var dE = 90.0
+    var dN = 160.0
+    var deg = atan2(dE, dN) * (180.0 / 3.141592653589793)
+    print(deg)</code></pre>
 <textarea id="a3" placeholder="Write the output or answer here..." onkeydown="onKey(event,3,'29.36')"></textarea>
 <div class="btnrow">
 <button class="primary" onclick="check(3,'29.36')">Check Answer</button>
@@ -302,7 +302,7 @@ footer a:hover{text-decoration:underline}
 <div id="f3" class="feedback"></div>
 <div id="s3" class="solution">
 <strong>Solution</strong>
-<pre><code>29.362604748</code></pre>
+<pre><code>29.357753542791276</code></pre>
 <p>atan2(east, north) measures clockwise from north: atan2(90,160) ≈ 29.36°, a north-easterly direction.</p>
 </div>
 </section>
@@ -311,13 +311,13 @@ footer a:hover{text-decoration:underline}
 <h2><span class="lvl-check">4</span>Level 4 — Axis Bearing</h2>
 <div class="meta"><span class="tag">Intermediate+</span><span class="tag">Quadrants</span></div>
 <p><strong>Challenge:</strong> What is printed for a line going due west (ΔE = −5, ΔN = 0)?</p>
-<pre><code><span class="kw">from</span> math <span class="kw">import</span> <span class="fn">atan2</span>
+<pre><code>from std.math import atan2
 
-<span class="kw">def</span> <span class="fn">main</span>():
-    <span class="kw">var</span> deg = <span class="fn">atan2</span>(-5.0, 0.0) * (180.0 / 3.141592653589793)
-    <span class="kw">if</span> deg &lt; 0.0:
+def main():
+    var deg = atan2(-5.0, 0.0) * (180.0 / 3.141592653589793)
+    if deg &lt; 0.0:
         deg += 360.0
-    <span class="fn">print</span>(deg)</code></pre>
+    print(deg)</code></pre>
 <textarea id="a4" placeholder="Write the output or answer here..." onkeydown="onKey(event,4,'270')"></textarea>
 <div class="btnrow">
 <button class="primary" onclick="check(4,'270')">Check Answer</button>

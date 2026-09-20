@@ -18,10 +18,10 @@ struct S:
     var b: String
 
 def show_fields():
-    comptime field_count = reflect[S].field_count()
-    comptime field_names = reflect[S].field_names()
-    comptime for i in range(field_count):
-        print(field_names[i])       # a, b
+    comptime names = reflect[S].field_names()
+    var runtime_names = materialize[names]()
+    for i in range(len(runtime_names)):
+        print(runtime_names[i])       # a, b
 
 def main():
     comptime times_ten = multiplier[10]
@@ -29,9 +29,9 @@ def main():
 
     # comptime-if picks a branch during compilation
     comptime if 4 &gt; 2:
-        print("branch A is compiled")
+        print(&quot;branch A is compiled&quot;)
     else:
-        print("branch B is compiled")
+        print(&quot;branch B is compiled&quot;)
 
     show_fields()                   # a, b</pre></details>
 <div class="actions"><a class="btn" href="index.html">← Praxis</a><a class="btn primary" href="../mojo_v1/mojo_08_metaprogramming.html">Review chapter →</a></div></div></section></main><footer><div class="wrap">TutMe🔥 · A structured path from syntax → fundamentals → applications → practice.</div></footer>
