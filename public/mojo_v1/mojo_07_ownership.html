@@ -541,13 +541,14 @@ Dana?</pre>
         <button class="tab-btn active" data-tab="ch7-alloc-mojo">Mojo</button>
       </div>
       <div class="tab-content active" id="ch7-alloc-mojo">
-        <pre><code>from std.memory.alloc import alloc
+        <pre><code>from std.memory import Layout, dealloc
 
 def main():
-    var ptr = alloc[Int](1)   # space for one Int (untracked origin)
+    var allocation = alloc(Layout[Int](count=1))
+    var ptr = allocation.unsafe_ptr()   # space for one Int (untracked origin)
     ptr.unsafe_write(42)              # initialize the memory
     print(ptr.unsafe_load())          # 42
-    ptr.free()                        # free it — ptr now dangles!</code></pre>
+    dealloc(allocation^)              # free it — ptr now dangles!</code></pre>
       </div>
     </div>
 

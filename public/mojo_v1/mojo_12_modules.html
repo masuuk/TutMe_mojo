@@ -604,11 +604,10 @@ optimized path</pre>
     <span class="kw">var</span> count = <span class="type">Int</span>(n)
     <span class="kw">var</span> results = List[Int64](length=count, fill=<span class="num">0</span>)
 
-    <span class="fn">@parameter</span>
-    <span class="kw">def</span> <span class="fn">fill</span>(i: <span class="type">Int</span>):
+    <span class="kw">def</span> <span class="fn">fill</span>(i: <span class="type">Int</span>) {mut results}:
         results[i] = Int64(i)
 
-    <span class="fn">parallelize</span>[fill](count)
+    <span class="fn">parallelize</span>(count, fill)
 
     <span class="kw">var</span> total = Int64(<span class="num">0</span>)
     <span class="kw">for</span> r <span class="kw">in</span> results:

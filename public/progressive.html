@@ -676,7 +676,7 @@ explain:'<code>continue</code> ends the current iteration without running the pr
 {
 title:'Boss level \u2014 fix the off-by-one',tag:'bug hunt',type:'choice',
 prompt:'The program should print all three items \u2014 a, d, a \u2014 but it prints only the last two. Which one-line fix to the for makes it print a, d, a?',
-code:'def main():\n    var items = List[String]("a", "d", "a")\n    for i in range(1, len(items)):\n        print(items[i])   # skips index 0',
+code:'def main():\n    var items = ["a", "d", "a"]\n    for i in range(1, len(items)):\n        print(items[i])   # skips index 0',
 options:[
 'for i in range(0, len(items)):',
 'for i in range(1, len(items) + 1):',
@@ -685,7 +685,7 @@ options:[
 ],
 correct:0,
 hint:'len(items) is 3, and valid indexes are 0, 1, 2. Which range visits exactly 0, 1, 2?',
-solutionCode:'def main():\n    var items = List[String]("a", "d", "a")\n    for i in range(0, len(items)):\n        print(items[i])   # a, d, a',
+solutionCode:'def main():\n    var items = ["a", "d", "a"]\n    for i in range(0, len(items)):\n        print(items[i])   # a, d, a',
 explain:'<code>len(items)</code> is 3, and valid indexes are 0, 1, 2. <code>range(0, len(items))</code> yields exactly those, so all three items print \u2014 <b>a, d, a</b>.<br>The original <code>range(1, len(items))</code> started at 1, skipping index 0.<br><b>B</b> runs to index 3 \u2014 out of bounds \u2192 error.<br><b>C</b> visits only index 1 \u2192 prints just "d".<br><b>D</b> stops at index 1 \u2192 prints "a, d", skipping the last item.'
 }
 ]
@@ -710,7 +710,7 @@ explain:'<code>@fieldwise_init</code> auto-generates a positional initializer, s
 {
 title:'Methods read self',tag:'methods',type:'choice',
 prompt:'What does this program print?',
-code:'from math import sqrt\n\n@fieldwise_init\nstruct Vec2:\n    var x: Float64\n    var y: Float64\n\n    def magnitude(self) -> Float64:\n        return sqrt(self.x * self.x + self.y * self.y)\n\ndef main():\n    var v = Vec2(3.0, 4.0)\n    print(v.magnitude())',
+code:'from std.math import sqrt\n\n@fieldwise_init\nstruct Vec2:\n    var x: Float64\n    var y: Float64\n\n    def magnitude(self) -> Float64:\n        return sqrt(self.x * self.x + self.y * self.y)\n\ndef main():\n    var v = Vec2(3.0, 4.0)\n    print(v.magnitude())',
 options:['5.0','7.0','25.0','An error: self is not defined'],
 correct:0,
 hint:'Classic 3\u20134\u20135 right triangle: sqrt(3\u00b2 + 4\u00b2) = sqrt(25) = 5.',

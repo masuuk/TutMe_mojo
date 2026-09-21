@@ -132,7 +132,7 @@ table.cheat code{font-size:0.82em;}
       </div>
       <div class="code-content">
         <button class="copy-btn">Copy</button>
-        <pre class="code-block active" id="mojo-quad"><code><span class="kw">from</span> math <span class="kw">import</span> sqrt
+        <pre class="code-block active" id="mojo-quad"><code><span class="kw">from</span> std.math <span class="kw">import</span> sqrt
 
 <span class="kw">def</span> <span class="fn">solve_quadratic</span>(a: Float64, b: Float64, c: Float64):
     <span class="kw">var</span> discriminant = b * b - <span class="num">4.0</span> * a * c
@@ -402,7 +402,7 @@ x, y = <span class="fn">solve</span>(eq1, eq2)
         <pre class="code-block active" id="mojo-fib"><code><span class="kw">def</span> <span class="fn">fibonacci</span>(n: Int) -&gt; <span class="type">List</span>[<span class="type">Int</span>]:
     <span class="kw">if</span> n &lt;= <span class="num">0</span>:
         <span class="kw">return</span> <span class="type">List</span>[<span class="type">Int</span>]()
-    <span class="kw">var</span> seq = <span class="type">List</span>[<span class="type">Int</span>](<span class="num">0</span>, <span class="num">1</span>)
+    <span class="kw">var</span> seq = [<span class="num">0</span>, <span class="num">1</span>]
     <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">2</span>, n):
         seq.<span class="fn">append</span>(seq[i - <span class="num">1</span>] + seq[i - <span class="num">2</span>])
     <span class="kw">return</span> seq

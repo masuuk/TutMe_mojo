@@ -140,7 +140,7 @@ td:first-child, th:first-child{color:var(--paper);font-family:'JetBrains Mono',m
       </div>
       <div class="panes" data-group="arch">
         <div class="pane active" data-lang="mojo"><pre><span class="tok-com"># Mojo — network struct with He initialization</span>
-<span class="tok-kw">from</span> math <span class="tok-kw">import</span> sqrt, sigmoid
+<span class="tok-kw">from</span> std.math <span class="tok-kw">import</span> sqrt, sigmoid
 
 <span class="tok-kw">struct</span> <span class="tok-ty">NeuralNetwork</span>:
     <span class="tok-kw">var</span> W1: <span class="tok-ty">List</span>[Float64]
@@ -203,7 +203,7 @@ td:first-child, th:first-child{color:var(--paper);font-family:'JetBrains Mono',m
       </div>
       <div class="panes" data-group="fwd">
         <div class="pane active" data-lang="mojo"><pre><span class="tok-com"># Mojo — forward pass with ReLU and sigmoid</span>
-<span class="tok-kw">from</span> math <span class="tok-kw">import</span> sigmoid
+<span class="tok-kw">from</span> std.math <span class="tok-kw">import</span> sigmoid
 
 <span class="tok-kw">def</span> <span class="tok-fn">matmul</span>(A: <span class="tok-ty">List</span>[Float64], B: <span class="tok-ty">List</span>[Float64],
            rows: Int, cols: Int, inner: Int) -&gt; <span class="tok-ty">List</span>[Float64]:

@@ -125,7 +125,7 @@ td:first-child, th:first-child{color:var(--paper);font-family:'JetBrains Mono',m
       </div>
       <div class="panes" data-group="auto">
         <div class="pane active" data-lang="mojo"><pre><span class="tok-com"># Mojo — built-in autodiff</span>
-<span class="tok-kw">from</span> math <span class="tok-kw">import</span> exp, log
+<span class="tok-kw">from</span> std.math <span class="tok-kw">import</span> exp, log
 
 <span class="tok-kw">@differentiable</span>
 <span class="tok-kw">def</span> <span class="tok-fn">quadratic</span>(x: Float64) -&gt; Float64:
@@ -199,7 +199,7 @@ dw, db = grad_fn(<span class="tok-num">1.0</span>, <span class="tok-num">0.0</sp
 
     <div class="code-block">
       <div class="head">vectorized autodiff</div>
-      <pre><span class="tok-kw">from</span> math <span class="tok-kw">import</span> exp
+      <pre><span class="tok-kw">from</span> std.math <span class="tok-kw">import</span> exp
 
 <span class="tok-kw">@differentiable</span>
 <span class="tok-kw">def</span> <span class="tok-fn">vector_relu</span>[N: Int](x: <span class="tok-ty">SIMD</span>[float32, N]) -&gt; <span class="tok-ty">SIMD</span>[float32, N]:

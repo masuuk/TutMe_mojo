@@ -226,7 +226,7 @@ torch.onnx.export(
 <span class="tok-fn">print</span>(<span class="tok-str">"Exported to classifier.onnx"</span>)</pre></div>
         <div class="pane" data-lang="mojo"><pre><span class="tok-com"># Step 2: Run inference in Mojo via MAX Engine</span>
 <span class="tok-kw">from</span> max.engine <span class="tok-kw">import</span> InferenceSession
-<span class="tok-kw">from</span> math import exp
+<span class="tok-kw">from</span> std.math import exp
 
 <span class="tok-kw">def</span> <span class="tok-fn">softmax</span>(logits: List[Float64]) -&gt; List[Float64]:
     <span class="tok-kw">var</span> max_val = logits[<span class="tok-num">0</span>]

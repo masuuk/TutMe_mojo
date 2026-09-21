@@ -128,7 +128,7 @@ code{font-family:var(--font-mono);font-size:0.88em;background:rgba(108,92,231,0.
         <pre class="code-block active" id="mojo"><code><span class="kw">from</span> tensor <span class="kw">import</span> Tensor, TensorSpec, TensorShape
 
 <span class="kw">def</span> <span class="fn">broadcast_shapes</span>(a: TensorShape, b: TensorShape) raises -&gt; TensorShape:
-    <span class="com">// Align dimensions from the right</span>
+    <span class="com"># Align dimensions from the right</span>
     <span class="kw">var</span> ndim = <span class="fn">max</span>(a.rank(), b.rank())
     <span class="kw">var</span> result = List[Int]()
 
@@ -144,13 +144,13 @@ code{font-family:var(--font-mono);font-size:0.88em;background:rgba(108,92,231,0.
     <span class="kw">return</span> TensorShape(result)
 
 
-<span class="com">// Example: (3, 1) + (1, 4) -&gt; (3, 4)</span>
+<span class="com"># Example: (3, 1) + (1, 4) -&gt; (3, 4)</span>
 <span class="kw">var</span> a = Tensor[Float32](TensorShape(<span class="num">3</span>, <span class="num">1</span>))
 <span class="kw">var</span> b = Tensor[Float32](TensorShape(<span class="num">1</span>, <span class="num">4</span>))
-<span class="kw">var</span> c = a + b  <span class="com">// shape: (3, 4) -- broadcast automatically</span>
+<span class="kw">var</span> c = a + b  <span class="com"># shape: (3, 4) -- broadcast automatically</span>
 
 
-<span class="com">// Reshape with compile-time dimensions</span>
+<span class="com"># Reshape with compile-time dimensions</span>
 <span class="kw">def</span> <span class="fn">flatten_batch</span>[N: Int, C: Int, H: Int, W: Int](
     t: Tensor[Float32]
 ) -&gt; Tensor[Float32]:
@@ -197,7 +197,7 @@ flat = t.reshape(<span class="num">32</span>, <span class="num">64</span> * <spa
         <button class="copy-btn">Copy</button>
         <pre class="code-block active" id="mojo2"><code><span class="kw">from</span> tensor <span class="kw">import</span> Tensor, LayoutTensor, NDBuffer
 
-<span class="com">// Mojo encodes stride pattern at compile time</span>
+<span class="com"># Mojo encodes stride pattern at compile time</span>
 <span class="kw">def</span> <span class="fn">row_major_index</span>(i: Int, j: Int, cols: Int) -&gt; Int:
     <span class="kw">return</span> i * cols + j
 
@@ -205,11 +205,11 @@ flat = t.reshape(<span class="num">32</span>, <span class="num">64</span> * <spa
     <span class="kw">return</span> j * rows + i
 
 
-<span class="com">// Strided tensor view -- no data copy</span>
+<span class="com"># Strided tensor view -- no data copy</span>
 <span class="kw">def</span> <span class="fn">transpose_view</span>(
     t: Tensor[Float32]
 ) -&gt; Tensor[Float32]:
-    <span class="com">// Swaps strides, not data</span>
+    <span class="com"># Swaps strides, not data</span>
     <span class="kw">var</span> new_strides = (t.stride(<span class="num">1</span>), t.stride(<span class="num">0</span>))
     <span class="kw">return</span> Tensor[Float32](
         data=t.data(),
@@ -218,7 +218,7 @@ flat = t.reshape(<span class="num">32</span>, <span class="num">64</span> * <spa
     )
 
 
-<span class="com">// Compute optimal stride for alignment</span>
+<span class="com"># Compute optimal stride for alignment</span>
 <span class="kw">def</span> <span class="fn">aligned_stride</span>(
     shape: TensorShape,
     elem_size: Int,
@@ -250,11 +250,11 @@ flat = t.reshape(<span class="num">32</span>, <span class="num">64</span> * <spa
       </div>
       <div class="code-content">
         <button class="copy-btn">Copy</button>
-        <pre class="code-block active" id="mojo3"><code><span class="kw">from</span> sys.intrinsics <span class="kw">import</span> (
+        <pre class="code-block active" id="mojo3"><code><span class="kw">from</span> std.sys.intrinsics <span class="kw">import</span> (
     simd_load, simd_store, simd_add, simd_mul
 )
 
-<span class="com">// SIMD vectorized element-wise add kernel</span>
+<span class="com"># SIMD vectorized element-wise add kernel</span>
 <span class="kw">def</span> <span class="fn">simd_add_kernel</span>(
     a: Pointer[Float32],
     b: Pointer[Float32],
@@ -264,20 +264,20 @@ flat = t.reshape(<span class="num">32</span>, <span class="num">64</span> * <spa
     <span class="kw">var</span> i = <span class="num">0</span>
     <span class="kw">var</span> simd_width = <span class="num">8</span>
 
-    <span class="com">// Vectorized loop</span>
+    <span class="com"># Vectorized loop</span>
     <span class="kw">while</span> i + simd_width &lt;= n:
         <span class="kw">var</span> va = simd_load[DType.float32, <span class="num">8</span>](a + i)
         <span class="kw">var</span> vb = simd_load[DType.float32, <span class="num">8</span>](b + i)
         simd_store(result + i, simd_add(va, vb))
         i += simd_width
 
-    <span class="com">// Scalar tail</span>
+    <span class="com"># Scalar tail</span>
     <span class="kw">while</span> i &lt; n:
         result[i] = a[i] + b[i]
         i += <span class="num">1</span>
 
 
-<span class="com">// ReLU kernel with SIMD</span>
+<span class="com"># ReLU kernel with SIMD</span>
 <span class="kw">def</span> <span class="fn">simd_relu_kernel</span>(
     input: Pointer[Float32],
     output: Pointer[Float32],
@@ -337,14 +337,14 @@ output = np.maximum(a, <span class="num">0</span>)
         <button class="copy-btn">Copy</button>
         <pre class="code-block active" id="mojo4"><code><span class="kw">from</span> tensor <span class="kw">import</span> Tensor
 
-<span class="com">// Memory layout analysis</span>
+<span class="com"># Memory layout analysis</span>
 <span class="kw">def</span> <span class="fn">analyze_layout</span>(t: Tensor[Float32]):
     <span class="kw">print</span>(<span class="str">"Shape:"</span>, t.shape)
     <span class="kw">print</span>(<span class="str">"Strides:"</span>, t.strides())
     <span class="kw">print</span>(<span class="str">"Element size:"</span>, t.element_size(), <span class="str">"bytes"</span>)
     <span class="kw">print</span>(<span class="str">"Total bytes:"</span>, t.nbytes())
 
-    <span class="com">// Check if contiguous</span>
+    <span class="com"># Check if contiguous</span>
     <span class="kw">var</span> is_contiguous = <span class="kw">True</span>
     <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(t.rank() - <span class="num">1</span>):
         <span class="kw">if</span> t.stride(i) != t.shape[i + <span class="num">1</span>] * t.stride(i + <span class="num">1</span>):
@@ -353,14 +353,14 @@ output = np.maximum(a, <span class="num">0</span>)
     <span class="kw">print</span>(<span class="str">"Contiguous:"</span>, is_contiguous)
 
 
-<span class="com">// Pre-allocate output for fused operations</span>
+<span class="com"># Pre-allocate output for fused operations</span>
 <span class="kw">def</span> <span class="fn">fused_matmul_add</span>(
     A: Tensor[Float32],
     B: Tensor[Float32],
     bias: Tensor[Float32],
-    output: Tensor[Float32]  <span class="com">// pre-allocated</span>
+    output: Tensor[Float32]  <span class="com"># pre-allocated</span>
 ):
-    <span class="com">// C = A @ B + bias (fused, no temp allocation)</span>
+    <span class="com"># C = A @ B + bias (fused, no temp allocation)</span>
     matmul(A, B, output)
     <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(output.shape[<span class="num">0</span>]):
         <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(output.shape[<span class="num">1</span>]):

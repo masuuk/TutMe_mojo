@@ -125,28 +125,28 @@ code{font-family:var(--font-mono);font-size:0.88em;background:rgba(108,92,231,0.
       </div>
       <div class="code-content">
         <button class="copy-btn">Copy</button>
-        <pre class="code-block active" id="mojo"><code><span class="com">// Mojo's autodiff uses the ADT (Automatic Differentiation Type) system</span>
+        <pre class="code-block active" id="mojo"><code><span class="com"># Mojo's autodiff uses the ADT (Automatic Differentiation Type) system</span>
 <span class="kw">from</span> autodiff <span class="kw">import</span> gradient, Value
 
 <span class="kw">def</span> <span class="fn">quadratic</span>(x: Value) -&gt; Value:
-    <span class="com">// f(x) = 3x² + 2x + 1</span>
+    <span class="com"># f(x) = 3x² + 2x + 1</span>
     <span class="kw">return</span> <span class="num">3.0</span> * x * x + <span class="num">2.0</span> * x + <span class="num">1.0</span>
 
 <span class="kw">def</span> <span class="fn">rosenbrock</span>(x: Value, y: Value) -&gt; Value:
-    <span class="com">// f(x,y) = (1-x)² + 100(y-x²)²</span>
+    <span class="com"># f(x,y) = (1-x)² + 100(y-x²)²</span>
     <span class="kw">var</span> a = <span class="num">1.0</span> - x
     <span class="kw">var</span> b = y - x * x
     <span class="kw">return</span> a * a + <span class="num">100.0</span> * b * b
 
 
-<span class="com">// Compute gradients</span>
+<span class="com"># Compute gradients</span>
 <span class="kw">var</span> df_dx = gradient(quadratic)
-<span class="kw">print</span>(df_dx(<span class="num">2.0</span>))  <span class="com">// f'(2) = 12 + 2 = 14.0</span>
+<span class="kw">print</span>(df_dx(<span class="num">2.0</span>))  <span class="com"># f'(2) = 12 + 2 = 14.0</span>
 
-<span class="com">// Multi-variable gradient</span>
+<span class="com"># Multi-variable gradient</span>
 <span class="kw">var</span> grad = gradient(rosenbrock)
 <span class="kw">var</span> (dx, dy) = grad(<span class="num">1.0</span>, <span class="num">1.0</span>)
-<span class="kw">print</span>(dx, dy)  <span class="com">// (0.0, 0.0) — minimum at (1,1)</span></code></pre>
+<span class="kw">print</span>(dx, dy)  <span class="com"># (0.0, 0.0) — minimum at (1,1)</span></code></pre>
         <pre class="code-block" id="python"><code><span class="kw">import</span> torch
 
 x = torch.tensor(<span class="num">2.0</span>, requires_grad=<span class="kw">True</span>)
@@ -216,15 +216,15 @@ grad_fn = <span class="kw">lambda</span> x: F.jacobian(quad, x)
         <span class="kw">for</span> key <span class="kw">in</span> grads:
             <span class="kw">var</span> g = grads[key]
 
-            <span class="com">// Update biased moments</span>
+            <span class="com"># Update biased moments</span>
             <span class="kw">self</span>.m[key] = <span class="kw">self</span>.beta1 * <span class="kw">self</span>.m.get(key, <span class="num">0.0</span>) + (<span class="num">1.0</span> - <span class="kw">self</span>.beta1) * g
             <span class="kw">self</span>.v[key] = <span class="kw">self</span>.beta2 * <span class="kw">self</span>.v.get(key, <span class="num">0.0</span>) + (<span class="num">1.0</span> - <span class="kw">self</span>.beta2) * g * g
 
-            <span class="com">// Bias correction</span>
+            <span class="com"># Bias correction</span>
             <span class="kw">var</span> m_hat = <span class="kw">self</span>.m[key] / (<span class="num">1.0</span> - <span class="kw">self</span>.beta1 ** <span class="fn">Float64</span>(<span class="kw">self</span>.t))
             <span class="kw">var</span> v_hat = <span class="kw">self</span>.v[key] / (<span class="num">1.0</span> - <span class="kw">self</span>.beta2 ** <span class="fn">Float64</span>(<span class="kw">self</span>.t))
 
-            <span class="com">// Update parameters</span>
+            <span class="com"># Update parameters</span>
             params[key] -= <span class="kw">self</span>.lr * m_hat / (sqrt(v_hat) + <span class="kw">self</span>.eps)
 
 
@@ -260,7 +260,7 @@ grad_fn = <span class="kw">lambda</span> x: F.jacobian(quad, x)
       <div class="code-content">
         <button class="copy-btn">Copy</button>
         <pre class="code-block active" id="mojo3"><code><span class="kw">from</span> autodiff <span class="kw">import</span> gradient, Value
-<span class="kw">from</span> math <span class="kw">import</span> sqrt, exp
+<span class="kw">from</span> std.math <span class="kw">import</span> sqrt, exp
 
 <span class="kw">def</span> <span class="fn">linear_regression</span>(
     x_data: List[Float64],
@@ -268,13 +268,13 @@ grad_fn = <span class="kw">lambda</span> x: F.jacobian(quad, x)
     lr: Float64 = <span class="num">0.01</span>,
     epochs: Int = <span class="num">1000</span>
 ) -&gt; (Float64, Float64):
-    <span class="com">// Learn y = w*x + b</span>
+    <span class="com"># Learn y = w*x + b</span>
     <span class="kw">var</span> w = <span class="num">0.0</span>
     <span class="kw">var</span> b = <span class="num">0.0</span>
     <span class="kw">var</span> n = <span class="fn">Float64</span>(<span class="fn">len</span>(x_data))
 
     <span class="kw">for</span> epoch <span class="kw">in</span> <span class="fn">range</span>(epochs):
-        <span class="com">// Forward pass: compute MSE loss</span>
+        <span class="com"># Forward pass: compute MSE loss</span>
         <span class="kw">var</span> loss = <span class="num">0.0</span>
         <span class="kw">var</span> dw = <span class="num">0.0</span>
         <span class="kw">var</span> db = <span class="num">0.0</span>
@@ -288,7 +288,7 @@ grad_fn = <span class="kw">lambda</span> x: F.jacobian(quad, x)
 
         loss /= n
 
-        <span class="com">// Update parameters</span>
+        <span class="com"># Update parameters</span>
         w -= lr * dw
         b -= lr * db
 
@@ -298,7 +298,7 @@ grad_fn = <span class="kw">lambda</span> x: F.jacobian(quad, x)
     <span class="kw">return</span> (w, b)
 
 
-<span class="com">// Generate synthetic data: y = 3x + 1 + noise</span>
+<span class="com"># Generate synthetic data: y = 3x + 1 + noise</span>
 <span class="kw">var</span> x_data = List[Float64]()
 <span class="kw">var</span> y_data = List[Float64]()
 <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">100</span>):
@@ -353,7 +353,7 @@ w, b = linear_regression(x, y)</code></pre>
       </div>
       <div class="code-content">
         <button class="copy-btn">Copy</button>
-        <pre class="code-block active" id="mojo4"><code><span class="kw">from</span> math <span class="kw">import</span> log, exp, abs
+        <pre class="code-block active" id="mojo4"><code><span class="kw">from</span> std.math <span class="kw">import</span> log, exp, abs
 
 <span class="kw">def</span> <span class="fn">mse_loss</span>(pred: List[Float64], target: List[Float64]) -&gt; Float64:
     <span class="kw">var</span> total = <span class="num">0.0</span>

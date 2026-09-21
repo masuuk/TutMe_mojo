@@ -123,7 +123,7 @@ code{font-family:var(--font-mono);font-size:0.88em;background:rgba(108,92,231,0.
       <div class="code-content">
         <button class="copy-btn">Copy</button>
         <pre class="code-block active" id="mojo-simd"><code><span class="com"># SIMD: process 8 floats simultaneously</span>
-<span class="kw">from</span> math <span class="kw">import</span> sqrt
+<span class="kw">from</span> std.math <span class="kw">import</span> sqrt
 
 <span class="kw">def</span> <span class="fn">simd_dot</span>(a: Pointer[Float32],
              b: Pointer[Float32],
@@ -231,8 +231,8 @@ code{font-family:var(--font-mono);font-size:0.88em;background:rgba(108,92,231,0.
 
     <span class="com"># Each thread sums its chunk</span>
     <span class="kw">for</span> t <span class="kw">in</span> parallelize(num_tasks):
-        <span class="kw">var</span> start = t * (n // num_tasks)
-        <span class="kw">var</span> end = (t + <span class="num">1</span>) * (n // num_tasks)
+        <span class="kw">var</span> start = t * (n # num_tasks)
+        <span class="kw">var</span> end = (t + <span class="num">1</span>) * (n # num_tasks)
         <span class="kw">var</span> local_sum = <span class="num">0</span>
         <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(start, end):
             local_sum += data[i]

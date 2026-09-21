@@ -126,8 +126,8 @@ code{font-family:var(--font-mono);font-size:0.88em;background:rgba(108,92,231,0.
       </div>
       <div class="code-content">
         <button class="copy-btn">Copy</button>
-        <pre class="code-block active" id="mojo"><code><span class="kw">from</span> math <span class="kw">import</span> sqrt, exp, log, pi
-<span class="kw">from</span> random <span class="kw">import</span> random_float64
+        <pre class="code-block active" id="mojo"><code><span class="kw">from</span> std.math <span class="kw">import</span> sqrt, exp, log, pi
+<span class="kw">from</span> std.random <span class="kw">import</span> random_float64
 
 <span class="kw">struct</span> <span class="type">Normal</span>:
     <span class="kw">var</span> mean: Float64
@@ -142,7 +142,7 @@ code{font-family:var(--font-mono);font-size:0.88em;background:rgba(108,92,231,0.
         <span class="kw">return</span> exp(-<span class="num">0.5</span> * z * z) / (<span class="kw">self</span>.std * sqrt(<span class="num">2.0</span> * pi))
 
     <span class="kw">def</span> <span class="fn">sample</span>(<span class="kw">self</span>) -&gt; Float64:
-        <span class="com">// Box-Muller transform</span>
+        <span class="com"># Box-Muller transform</span>
         <span class="kw">var</span> u1 = random_float64()
         <span class="kw">var</span> u2 = random_float64()
         <span class="kw">var</span> z = sqrt(-<span class="num">2.0</span> * log(u1)) * cos(<span class="num">2.0</span> * pi * u2)
@@ -153,8 +153,8 @@ code{font-family:var(--font-mono);font-size:0.88em;background:rgba(108,92,231,0.
 
 
 <span class="kw">var</span> dist = Normal(mean=<span class="num">0.0</span>, std=<span class="num">1.0</span>)
-<span class="kw">print</span>(dist.pdf(<span class="num">1.0</span>))  <span class="com">// ~0.242</span>
-<span class="kw">print</span>(dist.sample())    <span class="com">// random value ~ N(0, 1)</span></code></pre>
+<span class="kw">print</span>(dist.pdf(<span class="num">1.0</span>))  <span class="com"># ~0.242</span>
+<span class="kw">print</span>(dist.sample())    <span class="com"># random value ~ N(0, 1)</span></code></pre>
         <pre class="code-block" id="python"><code><span class="kw">import</span> numpy <span class="kw">as</span> np
 <span class="kw">from</span> scipy <span class="kw">import</span> stats
 
@@ -186,20 +186,20 @@ dist = stats.norm(loc=<span class="num">0.0</span>, scale=<span class="num">1.0<
       <div class="code-content">
         <button class="copy-btn">Copy</button>
         <pre class="code-block active" id="mojo2"><code><span class="kw">def</span> <span class="fn">mle_normal</span>(data: List[Float64]) -&gt; (Float64, Float64):
-    <span class="com">// MLE for normal distribution parameters</span>
+    <span class="com"># MLE for normal distribution parameters</span>
     <span class="kw">var</span> n = <span class="fn">len</span>(data)
     <span class="kw">var</span> mu_hat = sum(data) / <span class="fn">Float64</span>(n)
 
     <span class="kw">var</span> sigma_sq = <span class="num">0.0</span>
     <span class="kw">for</span> x <span class="kw">in</span> data:
         sigma_sq += (x - mu_hat) ** <span class="num">2.0</span>
-    sigma_sq /= <span class="fn">Float64</span>(n)  <span class="com">// MLE uses n, not n-1</span>
+    sigma_sq /= <span class="fn">Float64</span>(n)  <span class="com"># MLE uses n, not n-1</span>
 
     <span class="kw">return</span> (mu_hat, sqrt(sigma_sq))
 
 
 <span class="kw">def</span> <span class="fn">mle_exponential</span>(data: List[Float64]) -&gt; Float64:
-    <span class="com">// MLE for exponential rate parameter</span>
+    <span class="com"># MLE for exponential rate parameter</span>
     <span class="kw">var</span> n = <span class="fn">len</span>(data)
     <span class="kw">var</span> total = sum(data)
     <span class="kw">return</span> <span class="fn">Float64</span>(n) / total
@@ -207,7 +207,7 @@ dist = stats.norm(loc=<span class="num">0.0</span>, scale=<span class="num">1.0<
 
 <span class="kw">var</span> data = List[Float64]()
 
-<span class="com">// Generate sample data</span>
+<span class="com"># Generate sample data</span>
 <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10000</span>):
     data.append(Normal(<span class="num">5.0</span>, <span class="num">2.0</span>).sample())
 
@@ -245,7 +245,7 @@ lambda_hat = <span class="num">1.0</span> / np.mean(exp_data)
       </div>
       <div class="code-content">
         <button class="copy-btn">Copy</button>
-        <pre class="code-block active" id="mojo3"><code><span class="kw">from</span> math <span class="kw">import</span> sqrt, abs
+        <pre class="code-block active" id="mojo3"><code><span class="kw">from</span> std.math <span class="kw">import</span> sqrt, abs
 
 <span class="kw">struct</span> <span class="type">TTestResult</span>:
     <span class="kw">var</span> t_statistic: Float64
@@ -269,18 +269,18 @@ lambda_hat = <span class="num">1.0</span> / np.mean(exp_data)
 
     <span class="kw">var</span> t = (x_bar - mu0) / (s / sqrt(<span class="fn">Float64</span>(n)))
 
-    <span class="com">// Approximate p-value using t-distribution</span>
+    <span class="com"># Approximate p-value using t-distribution</span>
     <span class="kw">var</span> p = approximate_t_pvalue(abs(t), n - <span class="num">1</span>)
 
     <span class="kw">return</span> TTestResult(
         t_statistic=t,
-        p_value=p * <span class="num">2.0</span>,  <span class="com">// two-tailed</span>
+        p_value=p * <span class="num">2.0</span>,  <span class="com"># two-tailed</span>
         df=n - <span class="num">1</span>,
         significant=(p * <span class="num">2.0</span>) &lt; alpha
     )
 
 
-<span class="com">// Example: test if sample mean differs from 50</span>
+<span class="com"># Example: test if sample mean differs from 50</span>
 <span class="kw">var</span> data = List[Float64]()
 <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">100</span>):
     data.append(Normal(<span class="num">52.0</span>, <span class="num">10.0</span>).sample())
@@ -319,7 +319,7 @@ result = stats.ttest_1samp(data, popmean=<span class="num">50.0</span>)
         <pre class="code-block active" id="mojo4"><code><span class="kw">struct</span> <span class="type">RunningStats</span>:
     <span class="kw">var</span> n: Int
     <span class="kw">var</span> mean: Float64
-    <span class="kw">var</span> m2: Float64  <span class="com">// sum of squared deviations</span>
+    <span class="kw">var</span> m2: Float64  <span class="com"># sum of squared deviations</span>
     <span class="kw">var</span> min_val: Float64
     <span class="kw">var</span> max_val: Float64
 

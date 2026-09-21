@@ -290,8 +290,7 @@ cf = [-1000.0, 300.0, 400.0, 500.0, 600.0]
 <span class="tok-n">print</span>(<span class="tok-s">f"NPV = {npv(0.10, cf):.2f}"</span>)   <span class="tok-c"># NPV = 388.77 → NPV &gt; 0 : invest</span></code></pre>
 
   <p><strong>Mojo 1.x</strong> &mdash; the same loop, typed, compiled. Mojo&rsquo;s <code>**</code> powers take a <code>Float64</code> exponent, so cast <code>t</code> (an <code>Int</code>) before raising:</p>
-<pre><code><span class="tok-k">from</span> math <span class="tok-k">import</span> pow
-<span class="tok-k">from</span> collections <span class="tok-k">import</span> List
+<pre><code><span class="tok-k">from</span> std.math <span class="tok-k">import</span> pow
 
 def npv(rate: Float64, cash_flows: List[Float64]) -&gt; Float64:
     var total: Float64 = 0.0
@@ -396,8 +395,7 @@ payment, schedule = amortization_schedule(100000, 0.06, 30)
   <p>Month-1 interest is <span class="money">500.00</span> because the monthly rate on <span class="money">100,000</span> is exactly <span class="money">0.01</span> &mdash; the loan&rsquo;s single biggest interest bill. Only <span class="money">99.55</span> of the first payment touches the principal; on the final payment <span class="money">596.57</span> does. The loan&rsquo;s true cost: <strong>$115,838.19 in interest on $100,000 borrowed</strong> &mdash; more than the loan itself.</p>
 
   <p><strong>Mojo 1.x</strong> &mdash; carrying each row in a <code>struct</code> is exactly what a compiled scheduler would emit (the Applications-track lesson *Amortisation Schedules* does the same):</p>
-<pre><code><span class="tok-k">from</span> math <span class="tok-k">import</span> pow
-<span class="tok-k">from</span> collections <span class="tok-k">import</span> List
+<pre><code><span class="tok-k">from</span> std.math <span class="tok-k">import</span> pow
 
 struct AmortRow:
     var period: Int

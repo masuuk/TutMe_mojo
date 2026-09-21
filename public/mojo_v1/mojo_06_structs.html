@@ -741,7 +741,8 @@ me.name = <span class="str">"John"</span>   <span class="cmt"># reinitialize the
         <button class="tab-btn active" data-tab="ch6-node-mojo">Mojo</button>
       </div>
       <div class="tab-content active" id="ch6-node-mojo">
-        <pre><span class="kw">struct</span> <span class="type">Node</span>[ElementType: <span class="type">ImplicitlyCopyable</span> &amp; <span class="type">Writable</span> &amp; <span class="type">Deinitable</span>](
+        <pre><span class="kw">from</span> std.memory <span class="kw">import</span> <span class="type">Layout</span>
+<span class="kw">struct</span> <span class="type">Node</span>[ElementType: <span class="type">ImplicitlyCopyable</span> &amp; <span class="type">Writable</span> &amp; <span class="type">Deinitable</span>](
     <span class="type">Movable</span>
 ):
     <span class="kw">comptime</span> NodePointer = <span class="type">Pointer</span>[<span class="type">Self</span>, <span class="type">MutUntrackedOrigin</span>]
@@ -750,7 +751,7 @@ me.name = <span class="str">"John"</span>   <span class="cmt"># reinitialize the
 
     <span class="op">@staticmethod</span>
     <span class="kw">def</span> <span class="fn">make_node</span>(value: <span class="type">Self</span>.ElementType) -&gt; <span class="type">Self</span>.NodePointer:
-        <span class="kw">var</span> node_ptr = <span class="fn">alloc</span>[<span class="type">Self</span>](<span class="num">1</span>)        <span class="cmt"># 1. allocate space</span>
+        <span class="kw">var</span> node_ptr = <span class="fn">alloc</span>(<span class="type">Layout</span>[<span class="type">Self</span>](count=<span class="num">1</span>)).<span class="fn">unsafe_leak</span>()   <span class="cmt"># 1. allocate space</span>
         node_ptr.<span class="fn">unsafe_write</span>(<span class="type">Self</span>(value))  <span class="cmt"># 2-3. init &amp; move in</span>
         <span class="kw">return</span> node_ptr                     <span class="cmt"># 4. return pointer</span>
 

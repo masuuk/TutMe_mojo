@@ -190,7 +190,7 @@ huge = <span class="tok-num">10</span> ** <span class="tok-num">100</span>  <spa
       </div>
       <div class="panes" data-group="simd">
         <div class="pane active" data-lang="mojo"><pre><span class="tok-com"># Mojo — SIMD is a built-in type</span>
-<span class="tok-kw">from</span> math <span class="tok-kw">import</span> sqrt
+<span class="tok-kw">from</span> std.math <span class="tok-kw">import</span> sqrt
 
 <span class="tok-com"># SIMD[T, width] — vector of `width` elements of type T</span>
 <span class="tok-kw">var</span> a = <span class="tok-ty">SIMD</span>[<span class="tok-ty">Float32</span>, <span class="tok-num">8</span>](<span class="tok-num">1.0</span>, <span class="tok-num">2.0</span>, <span class="tok-num">3.0</span>, <span class="tok-num">4.0</span>,
@@ -366,8 +366,7 @@ print(<span class="tok-fn">mean</span>(int_vals))    <span class="tok-com"># 20<
 <span class="tok-kw">comptime</span> msg = <span class="tok-str">"Hello"</span> + <span class="tok-str">", "</span> + <span class="tok-str">"World"</span>  <span class="tok-com"># resolved at compile time</span>
 
 <span class="tok-com"># Conditional compilation</span>
-<span class="tok-kw">@parameter</span>
-<span class="tok-kw">if</span> <span class="tok-ty">DType</span>.<span class="tok-ty">float32</span>.is_floating_point():
+<span class="tok-kw">comptime if</span> <span class="tok-ty">DType</span>.<span class="tok-ty">float32</span>.is_floating_point():
     <span class="tok-kw">comptime</span> default_dt = <span class="tok-ty">DType</span>.<span class="tok-ty">float32</span>
 <span class="tok-kw">else</span>:
     <span class="tok-kw">comptime</span> default_dt = <span class="tok-ty">DType</span>.<span class="tok-ty">float64</span>

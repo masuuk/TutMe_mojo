@@ -244,16 +244,16 @@
         <div class="code-content">
           <button class="copy-btn">📋 Copy</button>
           
-          <pre class="code-block active" id="mojo"><code><span class="com">// Compute Mean Squared Error with parallel vectorization</span>
+          <pre class="code-block active" id="mojo"><code><span class="com"># Compute Mean Squared Error with parallel vectorization</span>
 <span class="kw">from</span> tensor <span class="kw">import</span> Tensor, Float32
-<span class="kw">from</span> algorithm <span class="kw">import</span> ParallelFor
+<span class="kw">from</span> std.algorithm <span class="kw">import</span> ParallelFor
 
 <span class="kw">def</span> <span class="fn">mse</span>(a: Tensor[Float32], b: Tensor[Float32]) -&gt; Float32:
     <span class="kw">assert</span> a.shape == b.shape
     <span class="kw">var</span> diff = a - b
     <span class="kw">var</span> squared = diff ** <span class="num">2.0</span>
     
-    <span class="com">// Parallel reduction across SIMD lanes</span>
+    <span class="com"># Parallel reduction across SIMD lanes</span>
     <span class="kw">var</span> total = Float32(<span class="num">0.0</span>)
     ParallelFor(squared.size, <span class="kw">lambda</span> i:
         atomic_add(total, squared[i])

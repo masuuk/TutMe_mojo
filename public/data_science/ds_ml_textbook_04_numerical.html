@@ -129,7 +129,7 @@ pre .kw{color:#c084fc;}pre .fn{color:#60a5fa;}pre .str{color:#4ade80;}pre .num{c
       </div>
       <div class="tab-content active" id="ch4-la-mojo">
         <pre><span class="kw">from</span> tensor <span class="kw">import</span> Tensor
-<span class="kw">from</span> math <span class="kw">import</span> sqrt
+<span class="kw">from</span> std.math <span class="kw">import</span> sqrt
 
 <span class="kw">def</span> <span class="fn">linalg_demo</span>():
     <span class="cmt"># Dot product</span>
@@ -197,7 +197,7 @@ norm = np.linalg.norm(M)
         <button class="tab-btn" data-tab="ch4-stats-py">Python</button>
       </div>
       <div class="tab-content active" id="ch4-stats-mojo">
-        <pre><span class="kw">from</span> math <span class="kw">import</span> sqrt
+        <pre><span class="kw">from</span> std.math <span class="kw">import</span> sqrt
 
 <span class="kw">def</span> <span class="fn">mean</span>(data: List[Float64]) -&gt; Float64:
     <span class="kw">var</span> total: Float64 = <span class="num">0.0</span>
@@ -238,7 +238,7 @@ data = np.array([<span class="num">2.1</span>, <span class="num">4.5</span>, <sp
         <button class="tab-btn" data-tab="ch4-rng-py">Python</button>
       </div>
       <div class="tab-content active" id="ch4-rng-mojo">
-        <pre><span class="kw">from</span> random <span class="kw">import</span> random_float64, random_uniform, random_normal, seed
+        <pre><span class="kw">from</span> std.random <span class="kw">import</span> random_float64, random_uniform, random_normal, seed
 
 <span class="kw">def</span> <span class="fn">rng_demo</span>():
     seed(<span class="num">42</span>)
@@ -291,8 +291,8 @@ weights = np.random.randn(<span class="num">5</span>)
         <button class="tab-btn" data-tab="ch4-bench-py">Python</button>
       </div>
       <div class="tab-content active" id="ch4-bench-mojo">
-        <pre><span class="kw">from</span> time <span class="kw">import</span> now
-<span class="kw">from</span> random <span class="kw">import</span> random_float64
+        <pre><span class="kw">from</span> std.time <span class="kw">import</span> now
+<span class="kw">from</span> std.random <span class="kw">import</span> random_float64
 
 <span class="kw">def</span> <span class="fn">sse_benchmark</span>(n: Int) -&gt; Float64:
     <span class="kw">var</span> a = Tensor[Float64](n)

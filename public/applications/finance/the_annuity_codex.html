@@ -630,7 +630,7 @@
 <span class="com"># $1,000 at 6% for 10 years</span>
 <span class="fn">print</span>(<span class="str">f"FV = ${fv_single(1000, 0.06, 10):,.2f}"</span>)   <span class="com"># FV = $1,790.85</span></pre>
 
-<pre class="mojo" data-label="mojo 1.0 — future value"><span class="kw">from</span> math <span class="kw">import</span> pow
+<pre class="mojo" data-label="mojo 1.0 — future value"><span class="kw">from</span> std.math <span class="kw">import</span> pow
 
 <span class="kw">def</span> <span class="fn">fv_single</span>(pv: Float64, r: Float64, n: Int) -&gt; Float64:
     <span class="str">"""FV = PV · (1 + r)^n"""</span>
@@ -742,7 +742,7 @@ r, n = <span class="num">0.07</span> / <span class="num">12</span>, <span class=
 <span class="fn">print</span>(<span class="str">f"FVIFA = {fvifa(r, n):,.4f}"</span>)              <span class="com"># 520.9267</span>
 <span class="fn">print</span>(<span class="str">f"FV    = ${fv_annuity(200, r, n):,.2f}"</span>)  <span class="com"># $104,185.34</span></pre>
 
-<pre class="mojo" data-label="mojo 1.0 — fvifa &amp; fv_annuity"><span class="kw">from</span> math <span class="kw">import</span> pow
+<pre class="mojo" data-label="mojo 1.0 — fvifa &amp; fv_annuity"><span class="kw">from</span> std.math <span class="kw">import</span> pow
 
 <span class="kw">def</span> <span class="fn">fvifa</span>(r: Float64, n: Int) -&gt; Float64:
     <span class="str">"""[ (1 + r)^n - 1 ] / r"""</span>
@@ -843,7 +843,7 @@ fv_due = <span class="fn">fv_annuity</span>(<span class="num">200</span>, r, n, 
 <span class="fn">print</span>(<span class="str">f"PVIFA = {pvifa(0.05, 20):,.4f}"</span>)                <span class="com"># 12.4622</span>
 <span class="fn">print</span>(<span class="str">f"PV    = ${pv_annuity(50000, 0.05, 20):,.2f}"</span>)  <span class="com"># $623,110.50</span></pre>
 
-<pre class="mojo" data-label="mojo 1.0 — pvifa &amp; pv_annuity"><span class="kw">from</span> math <span class="kw">import</span> pow
+<pre class="mojo" data-label="mojo 1.0 — pvifa &amp; pv_annuity"><span class="kw">from</span> std.math <span class="kw">import</span> pow
 
 <span class="kw">def</span> <span class="fn">pvifa</span>(r: Float64, n: Int) -&gt; Float64:
     <span class="str">"""[ 1 - (1 + r)^-n ] / r"""</span>
@@ -958,7 +958,7 @@ n = years * freq
 
     <p>And here is that module, function for function, in Mojo 1.x. The shape is identical — the differences are all compile-time guarantees: typed arguments and returns, <code>pow</code> with an explicit exponent, and no boxing of numbers on the heap:</p>
 
-<pre class="mojo"><span class="kw">from</span> math <span class="kw">import</span> pow
+<pre class="mojo"><span class="kw">from</span> std.math <span class="kw">import</span> pow
 
 <span class="kw">def</span> <span class="fn">fvifa</span>(r: Float64, n: Int) -&gt; Float64:
     <span class="str">"""Future Value Interest Factor of Annuity."""</span>
@@ -1044,7 +1044,7 @@ pv = npf.<span class="fn">pv</span>(rate=<span class="num">0.07/12</span>, nper=
 
     <p>The amortization loop is where Mojo 1.x earns its keep: 360 rows for one mortgage is trivial, but a bank running sensitivity sweeps — thousands of rate scenarios × millions of loans — turns this exact loop into the hot path. Ported, it compiles to straight-line Float64 arithmetic with no interpreter between the rows:</p>
 
-<pre class="mojo"><span class="kw">from</span> math <span class="kw">import</span> pow
+<pre class="mojo"><span class="kw">from</span> std.math <span class="kw">import</span> pow
 
 <span class="kw">def</span> <span class="fn">amortization</span>(pv: Float64, annual_rate: Float64, years: Int, freq: Int = <span class="num">12</span>):
     <span class="kw">var</span> r = annual_rate / Float64(freq)

@@ -241,9 +241,8 @@ test = np.random.lognormal(<span class="tok-num">3.0</span>, <span class="tok-nu
   and the whole experiment (sample → quantile → evaluate on millions of draws) compiles to one
   pass with no interpreter in the loop:</p>
 
-  <pre class="mojo"><code><span class="tok-k">from</span> collections <span class="tok-k">import</span> List
-<span class="tok-k">from</span> random <span class="tok-k">import</span> random_float64, seed
-<span class="tok-k">from</span> math <span class="tok-k">import</span> sqrt, log, cos, exp, PI
+  <pre class="mojo"><span class="tok-k">from</span> std.random <span class="tok-k">import</span> random_float64, seed
+<span class="tok-k">from</span> std.math <span class="tok-k">import</span> sqrt, log, cos, exp, PI
 
 <span class="tok-k">def</span> <span class="tok-f">lognormal</span>(mu: Float64, sigma: Float64, n: Int) -&gt; List[Float64]:
     <span class="tok-k">var</span> xs = List[Float64]()
@@ -305,8 +304,7 @@ tau = c_fp / (c_fp + c_fn)            <span class="tok-c"># 0.158 — not 0.5!</
 
 expected_cost = np.mean(C[y_true, decide(p_pred)])  <span class="tok-c"># the metric to report</span></code></pre>
 
-  <pre class="mojo"><code><span class="tok-k">from</span> collections <span class="tok-k">import</span> List
-
+  <pre class="mojo">
 <span class="tok-k">def</span> <span class="tok-f">threshold</span>(c_fp: Float64, c_fn: Float64) -&gt; Float64:
     <span class="tok-k">return</span> c_fp / (c_fp + c_fn)
 
@@ -457,9 +455,8 @@ expected_cost = np.mean(C[y_true, decide(p_pred)])  <span class="tok-c"># the me
 
 <span class="tok-c"># theta -= lr * (d-bar Jacobian) @ grad  — plug into autograd manually</span></code></pre>
 
-  <pre class="mojo"><code><span class="tok-k">from</span> collections <span class="tok-k">import</span> List
-<span class="tok-k">from</span> random <span class="tok-k">import</span> normal_float64, seed
-<span class="tok-k">from</span> math <span class="tok-k">import</span> sqrt
+  <pre class="mojo"><span class="tok-k">from</span> std.random <span class="tok-k">import</span> normal_float64, seed
+<span class="tok-k">from</span> std.math <span class="tok-k">import</span> sqrt
 
 <span class="tok-k">def</span> <span class="tok-f">perturbed_grad</span>(y_hat: List[Float64],
                      solve: SolverFn, eps: Float64,

@@ -252,7 +252,7 @@ kernel((n//<span class="tok-num">256</span>,), (<span class="tok-num">256</span>
     <span class="tok-kw">var</span> sum: Float32 = <span class="tok-num">0.0</span>
 
     <span class="tok-com"># Loop over tiles</span>
-    <span class="tok-kw">var</span> num_tiles = (K + TILE - <span class="tok-num">1</span>) // TILE
+    <span class="tok-kw">var</span> num_tiles = (K + TILE - <span class="tok-num">1</span>) # TILE
     <span class="tok-kw">for</span> t <span class="tok-kw">in</span> range(num_tiles):
         <span class="tok-com"># Load tile into shared memory</span>
         <span class="tok-kw">var</span> a_col = t * TILE + thread_idx.x
@@ -281,7 +281,7 @@ kernel((n//<span class="tok-num">256</span>,), (<span class="tok-num">256</span>
         C[row * N + col] = sum
 
 <span class="tok-com"># Launch: grid of tiles, block of TILE x TILE threads</span>
-<span class="tok-kw">var</span> grid = ((N + TILE - <span class="tok-num">1</span>) // TILE, (M + TILE - <span class="tok-num">1</span>) // TILE)
+<span class="tok-kw">var</span> grid = ((N + TILE - <span class="tok-num">1</span>) # TILE, (M + TILE - <span class="tok-num">1</span>) // TILE)
 ctx.enqueue_function[matmul_kernel](
     Int32(M), Int32(N), Int32(K), d_A, d_B, d_C,
     grid_dim=grid, block_dim=(TILE, TILE),

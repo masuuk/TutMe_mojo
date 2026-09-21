@@ -11,7 +11,7 @@
 <div class="actions qactions"><button type="button" class="btn check">Check answer</button><button type="button" class="btn reset">Try again</button></div><p class="feedback"></p>
 <div class="explain" hidden><strong>Why:</strong> In Mojo 1.x, a package directory is marked by a `__init__.mojo` file, which can re-export the public API.</div></div>
 <details class="solution"><summary>Solution</summary><p>Reference layout and code for modules, packages, compile-time defines, and the target.</p><pre class="code"># main.mojo — in a real project `square` would live in math.mojo
-# and be imported with `from math import square`.
+# and be imported with `from std.math import square`.
 
 def square(x: Int) -&gt; Int:
     return x * x

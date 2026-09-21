@@ -125,7 +125,6 @@ td:first-child, th:first-child{color:var(--paper);font-family:'JetBrains Mono',m
       </div>
       <div class="panes" data-group="load1">
         <div class="pane active" data-lang="mojo"><pre><span class="tok-kw">import</span> sys
-<span class="tok-kw">from</span> collections <span class="tok-kw">import</span> Dict, Optional
 
 <span class="tok-com"># Mojo — loading CSV with buffered I/O and SIMD parsing</span>
 <span class="tok-kw">def</span> <span class="tok-fn">load_csv</span>(path: String) -&gt; <span class="tok-ty">Dict</span>[String, <span class="tok-ty">List</span>[Float64]]:
@@ -270,7 +269,7 @@ result = stream_process(<span class="tok-str">"huge_dataset.csv"</span>)
       </div>
       <div class="panes" data-group="clean">
         <div class="pane active" data-lang="mojo"><pre><span class="tok-com"># Mojo — data cleaning with SIMD-accelerated operations</span>
-<span class="tok-kw">from</span> math <span class="tok-kw">import</span> sqrt, isnan
+<span class="tok-kw">from</span> std.math <span class="tok-kw">import</span> sqrt, isnan
 
 <span class="tok-kw">struct</span> <span class="tok-ty">DataCleaner</span>:
     <span class="tok-kw">var</span> mean: Float64

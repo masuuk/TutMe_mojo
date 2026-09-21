@@ -122,7 +122,7 @@ code{font-family:var(--font-mono);font-size:0.88em;background:rgba(108,92,231,0.
       <div class="code-content">
         <button class="copy-btn">Copy</button>
         <pre class="code-block active" id="mojo-arena"><code><span class="com"># Memory Arena — bump-allocate, bulk-free</span>
-<span class="kw">from</span> memory <span class="kw">import</span> Arena
+<span class="kw">from</span> std.memory <span class="kw">import</span> Arena
 
 <span class="kw">struct</span> <span class="type">BumpAllocator</span>:
     <span class="kw">var</span> arena: Arena
@@ -297,7 +297,7 @@ code{font-family:var(--font-mono);font-size:0.88em;background:rgba(108,92,231,0.
       <div class="code-content">
         <button class="copy-btn">Copy</button>
         <pre class="code-block active" id="mojo-ring"><code><span class="com"># Ring Buffer — fixed-size circular buffer</span>
-<span class="kw">from</span> std.memory <span class="kw">import</span> alloc
+<span class="kw">from</span> std.memory <span class="kw">import</span> alloc, Layout
 
 <span class="kw">struct</span> <span class="type">RingBuffer</span>[T: <span class="type">AnyType</span>]:
     <span class="kw">var</span> data: Pointer[T]
@@ -311,7 +311,7 @@ code{font-family:var(--font-mono);font-size:0.88em;background:rgba(108,92,231,0.
         <span class="kw">self</span>.head = <span class="num">0</span>
         <span class="kw">self</span>.tail = <span class="num">0</span>
         <span class="kw">self</span>.count = <span class="num">0</span>
-        <span class="kw">self</span>.data = alloc[T](capacity)
+        <span class="kw">self</span>.data = alloc(Layout[T](count=capacity)).<span class="fn">unsafe_leak</span>()
 
     <span class="kw">def</span> <span class="fn">push</span>(<span class="kw">mut</span> <span class="kw">self</span>, value: <span class="type">T</span>):
         <span class="kw">if</span> <span class="kw">self</span>.count == <span class="kw">self</span>.capacity:

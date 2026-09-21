@@ -219,7 +219,8 @@ df = pd.DataFrame({<span class="str">"a"</span>: [<span class="num">1</span>,<sp
       </div>
       <div class="code-content">
         <button class="copy-btn">Copy</button>
-        <pre class="code-block active" id="mojo-c"><code><span class="com"># Declare the external C functions</span>
+        <pre class="code-block active" id="mojo-c"><code><span class="kw">from</span> std.memory <span class="kw">import</span> Layout, dealloc
+<span class="com"># Declare the external C functions</span>
 <span class="kw">def</span> <span class="fn">c_add</span>(a: Int32, b: Int32) -&gt; Int32
     <span class="str">"libc_math"</span>.<span class="fn">add</span>
 
@@ -232,11 +233,12 @@ df = pd.DataFrame({<span class="str">"a"</span>: [<span class="num">1</span>,<sp
     <span class="kw">print</span>(<span class="str">"C says:"</span>, result)  <span class="com"># 42</span>
 
     <span class="com"># Pass Mojo pointers to native code</span>
-    <span class="kw">var</span> buf = Pointer[Int32].alloc(<span class="num">5</span>)
+    <span class="kw">var</span> allocation = alloc(Layout[Int32](count=<span class="num">5</span>))
+    <span class="kw">var</span> buf = allocation.unsafe_ptr()
     buf[<span class="num">0</span>] = <span class="num">5</span>; buf[<span class="num">1</span>] = <span class="num">3</span>; buf[<span class="num">2</span>] = <span class="num">1</span>; buf[<span class="num">3</span>] = <span class="num">4</span>; buf[<span class="num">4</span>] = <span class="num">2</span>
     <span class="fn">c_sort</span>(buf, <span class="num">5</span>)
     <span class="kw">print</span>(buf[<span class="num">0</span>], buf[<span class="num">1</span>], buf[<span class="num">2</span>], buf[<span class="num">3</span>], buf[<span class="num">4</span>])  <span class="com"># 1 2 3 4 5</span>
-    buf.free()</code></pre>
+    dealloc(allocation^)</code></pre>
         <pre class="code-block" id="c-native"><code><span class="com">// C side: libc_math.c</span>
 <span class="kw">int</span> <span class="fn">add</span>(int a, int b) {
     return a + b;

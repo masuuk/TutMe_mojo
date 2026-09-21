@@ -140,7 +140,7 @@ pre .kw{color:#c084fc;}pre .fn{color:#60a5fa;}pre .str{color:#4ade80;}pre .num{c
         <button class="tab-btn" data-tab="ch7-python-vec">Python (NumPy)</button>
       </div>
       <div class="tab-content active" id="ch7-mojo-vec">
-<pre><span class="kw">from</span> math <span class="kw">import</span> sqrt
+<pre><span class="kw">from</span> std.math <span class="kw">import</span> sqrt
 
 <span class="kw">def</span> <span class="fn">dot_product_simd</span>(
     a: Tensor[Float32], b: Tensor[Float32]
@@ -199,7 +199,7 @@ pre .kw{color:#c084fc;}pre .fn{color:#60a5fa;}pre .str{color:#4ade80;}pre .num{c
         <button class="tab-btn" data-tab="ch7-python-simd">Python (C intrinsics)</button>
       </div>
       <div class="tab-content active" id="ch7-mojo-simd">
-<pre><span class="kw">from</span> math <span class="kw">import</span> sqrt
+<pre><span class="kw">from</span> std.math <span class="kw">import</span> sqrt
 
 <span class="kw">def</span> <span class="fn">softmax_simd</span>(mut logits: Tensor[Float32]):
     <span class="kw">var</span> n = logits.num_elements()
@@ -268,7 +268,7 @@ pre .kw{color:#c084fc;}pre .fn{color:#60a5fa;}pre .str{color:#4ade80;}pre .num{c
         <button class="tab-btn" data-tab="ch7-python-par">Python (multiprocessing)</button>
       </div>
       <div class="tab-content active" id="ch7-mojo-par">
-<pre><span class="kw">from</span> algorithm <span class="kw">import</span> parallelize
+<pre><span class="kw">from</span> std.algorithm <span class="kw">import</span> parallelize
 
 <span class="kw">def</span> <span class="fn">parallel_matmul</span>(
     A: Tensor[Float32],
@@ -328,7 +328,7 @@ pre .kw{color:#c084fc;}pre .fn{color:#60a5fa;}pre .str{color:#4ade80;}pre .num{c
         <button class="tab-btn" data-tab="ch7-python-mem">Python</button>
       </div>
       <div class="tab-content active" id="ch7-mojo-mem">
-<pre><span class="kw">from</span> memory <span class="kw">import</span> memcpy, stack_allocation
+<pre><span class="kw">from</span> std.memory <span class="kw">import</span> unsafe_memcpy, stack_allocation
 
 <span class="cmt"># Small fixed-size buffer on the stack</span>
 <span class="kw">def</span> <span class="fn">compute_with_stack_buf</span>(
@@ -340,7 +340,7 @@ pre .kw{color:#c084fc;}pre .fn{color:#60a5fa;}pre .str{color:#4ade80;}pre .num{c
 
     <span class="cmt"># Copy input into stack buffer</span>
     <span class="kw">var</span> n = min(input.num_elements(), BUF_SIZE)
-    memcpy(buf, input.data(), n)
+    unsafe_memcpy(buf, input.data(), n)
 
     <span class="cmt"># Process on stack — cache-friendly</span>
     <span class="kw">var</span> total: Float32 = <span class="num">0.0</span>
@@ -378,7 +378,7 @@ pre .kw{color:#c084fc;}pre .fn{color:#60a5fa;}pre .str{color:#4ade80;}pre .num{c
         <button class="tab-btn" data-tab="ch7-python-prof">Python</button>
       </div>
       <div class="tab-content active" id="ch7-mojo-prof">
-<pre><span class="kw">from</span> time <span class="kw">import</span> now
+<pre><span class="kw">from</span> std.time <span class="kw">import</span> now
 
 <span class="kw">def</span> <span class="fn">benchmark</span>():
     <span class="kw">var</span> N = <span class="num">1000000</span>

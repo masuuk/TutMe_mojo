@@ -568,8 +568,7 @@ prob.solve()
 
   <p>Here is where Mojo 1.x stops borrowing from Python and takes over completely. A pure 0/1 knapsack needs no branch-and-bound solver — the dynamic program is exact, and in Mojo it compiles to a tight nested loop over one contiguous <code>Tensor</code> table. No solver process, no interpreter, no dependencies; backtrack through the table to recover <em>which</em> items to pack:</p>
 
-<pre class="code mojo"><span class="kw">from</span> collections <span class="kw">import</span> List
-<span class="kw">from</span> tensor <span class="kw">import</span> Tensor
+<pre class="code mojo"><span class="kw">from</span> tensor <span class="kw">import</span> Tensor
 
 <span class="kw">def</span> <span class="fn">knapsack</span>(values: List[Float64], weights: List[Float64], capacity: Int) -&gt; (Float64, List[Int]):
     <span class="kw">var</span> n = len(values)
@@ -592,8 +591,8 @@ prob.solve()
     <span class="kw">return</span> (dp[n, capacity], taken)
 
 <span class="kw">def</span> <span class="fn">main</span>():
-    <span class="kw">var</span> v = List[Float64](<span class="num">10.0</span>, <span class="num">6.0</span>, <span class="num">9.0</span>, <span class="num">5.0</span>, <span class="num">4.0</span>)   <span class="com"># tent, stove, food, radio, tool</span>
-    <span class="kw">var</span> w = List[Float64](<span class="num">2.0</span>, <span class="num">1.0</span>, <span class="num">3.0</span>, <span class="num">2.0</span>, <span class="num">1.0</span>)
+    <span class="kw">var</span> v = [<span class="num">10.0</span>, <span class="num">6.0</span>, <span class="num">9.0</span>, <span class="num">5.0</span>, <span class="num">4.0</span>]   <span class="com"># tent, stove, food, radio, tool</span>
+    <span class="kw">var</span> w = [<span class="num">2.0</span>, <span class="num">1.0</span>, <span class="num">3.0</span>, <span class="num">2.0</span>, <span class="num">1.0</span>]
     <span class="kw">var</span> (best, picked) = knapsack(v, w, <span class="num">5</span>)
     <span class="kw">print</span>(best)      <span class="com"># 20.0 — tent + stove + tool, same as PuLP</span>
     <span class="kw">print</span>(picked)    <span class="com"># [0, 1, 4]</span></pre>
@@ -648,13 +647,12 @@ subject to  Σⱼ xᵢⱼ = 1            for every customer i
 
   <p>Mojo 1.x ports Dijkstra natively — and this is the pattern for all of Section 6. No <code>heapq</code>, no boxed floats in tuples: typed <code>List</code>s, one allocation, and a compiled inner loop. The linear-scan minimum is O(V²); swap it for a binary heap over <code>List[Int]</code> on sparse graphs, or <code>parallelize</code> the relaxation pass on dense ones:</p>
 
-<pre class="code mojo"><span class="kw">from</span> collections <span class="kw">import</span> List
-
+<pre class="code mojo">
 <span class="com"># graph[i] = List[Tuple[neighbor, weight]]</span>
 <span class="kw">def</span> <span class="fn">dijkstra</span>(graph: List[List[Tuple[Int, Int]]], start: Int) -&gt; List[Float64]:
     <span class="kw">var</span> n = len(graph)
-    <span class="kw">var</span> d = List[Float64](n, <span class="num">1e18</span>)       <span class="com"># tentative distances, all "infinity"</span>
-    <span class="kw">var</span> settled = List[Bool](n, <span class="kw">False</span>)
+    <span class="kw">var</span> d = List[Float64](length=n, fill=<span class="num">1e18</span>)       <span class="com"># tentative distances, all "infinity"</span>
+    <span class="kw">var</span> settled = List[Bool](length=n, fill=<span class="kw">False</span>)
     d[start] = <span class="num">0.0</span>
 
     <span class="kw">for</span> _ <span class="kw">in</span> range(n):
@@ -852,7 +850,7 @@ EV(wait)   = $0   →  choose expand.</pre>
 
   <p>This is the canonical Mojo workload. The error shrinks as 1/√n, so sample throughput <em>is</em> accuracy budget — and a compiled loop has all of it. The Python loop above runs a few million darts per second; the Mojo port below runs the same experiment with no interpreter, no boxes, and a <code>seed</code> call that makes the run reproducible. Split the accumulation across cores with <code>parallelize</code> (one seed stream per core) and the gap widens further:</p>
 
-<pre class="code mojo"><span class="kw">from</span> random <span class="kw">import</span> random_float64, seed
+<pre class="code mojo"><span class="kw">from</span> std.random <span class="kw">import</span> random_float64, seed
 
 <span class="kw">def</span> <span class="fn">estimate_pi</span>(n: Int) -&gt; Float64:
     <span class="kw">var</span> inside = <span class="num">0</span>
@@ -892,8 +890,8 @@ EV(wait)   = $0   →  choose expand.</pre>
 
   <p>The Mojo 1.x port is line-for-line the same event loop — but compiled. Discrete-event simulation is the textbook case for it: a long-running loop with cheap arithmetic per iteration is exactly what an interpreter penalizes most. Exponential draws come from the inverse CDF (<code>−ln(1−u)/rate</code>); crank <code>hours</code> from 2,000 to 2,000,000 for tighter confidence at barely any wall-clock cost:</p>
 
-<pre class="code mojo"><span class="kw">from</span> random <span class="kw">import</span> random_float64, seed
-<span class="kw">from</span> math <span class="kw">import</span> log
+<pre class="code mojo"><span class="kw">from</span> std.random <span class="kw">import</span> random_float64, seed
+<span class="kw">from</span> std.math <span class="kw">import</span> log
 
 <span class="kw">def</span> <span class="fn">expovariate</span>(rate: Float64) -&gt; Float64:
     <span class="kw">return</span> -log(<span class="num">1.0</span> - random_float64(<span class="num">0.0</span>, <span class="num">1.0</span>)) / rate

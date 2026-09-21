@@ -647,7 +647,7 @@ print(f"n   = {n:.8f}")      # 0.00167922
 print(f"b   = {b:.4f} m")    # 6356752.3142 m</code></pre>
 
             <p>The same four constants, typed and compiled in Mojo 1.x:</p>
-            <pre class="ide mojo"><code>from math import sqrt
+            <pre class="ide mojo"><code>from std.math import sqrt
 
 def main():
     var a = 6378137.0                # WGS84 semi-major axis (m)
@@ -763,7 +763,7 @@ print(math.degrees(chi))                              # -17.8275589...  (χ sits
 print(math.degrees(inverse_conformal_latitude(chi, n)))  # -17.829  (round-trips exactly)</code></pre>
 
             <p>The same two functions in Mojo 1.x — plain <code>Float64</code> arithmetic, no objects, ready to <code>parallelize</code> over a batch of stations:</p>
-            <pre class="ide mojo"><code>from math import sin, radians, degrees
+            <pre class="ide mojo"><code>from std.math import sin, radians, degrees
 
 def conformal_latitude(phi: Float64, n: Float64) -> Float64:
     var n2 = n * n
@@ -854,7 +854,7 @@ for j, a in enumerate(krueger_alpha(n), start=1):
 # α1 = 8.3773182062e-04   α2 = 7.6085277736e-07   α3 = 1.1976455033e-09 ...</code></pre>
 
             <p>And the Mojo 1.x port — six scalars, no allocation, ideal inside a batch forward projection:</p>
-            <pre class="ide mojo"><code>from math import sin, cos, sinh, cosh
+            <pre class="ide mojo"><code>from std.math import sin, cos, sinh, cosh
 
 struct Alpha:
     var a1: Float64; var a2: Float64; var a3: Float64
@@ -926,7 +926,7 @@ print(f"β1 = {beta[0]:.10e}")                                  # 8.3773216406e-
 print(f"round-trip error = {abs(back - zp):.2e}")              # ~3e-17 — machine precision</code></pre>
 
             <p>The Mojo port with the complex arithmetic written out explicitly — Mojo has no <code>cmath</code>, so the complex sine becomes its real/imaginary pair, exactly the shape a SIMD-batched projection loop uses:</p>
-            <pre class="ide mojo"><code>from math import sqrt, sin, cos, sinh, cosh
+            <pre class="ide mojo"><code>from std.math import sqrt, sin, cos, sinh, cosh
 
 def complex_sin(x: Float64, y: Float64) -> (Float64, Float64):
     # sin(x + iy) = sin(x)cosh(y) + i·cos(x)sinh(y)
@@ -1067,7 +1067,7 @@ print(f"recovered in {iters} iterations, error = {abs(zp - zp0):.2e}")
 
             <p>The Mojo 1.x port — the complex arithmetic written as explicit real/imaginary pairs, exactly the shape a batch inverse uses when it runs over millions of points:</p>
 
-            <pre class="ide mojo"><code>from math import sin, cos, sqrt, sinh, cosh
+            <pre class="ide mojo"><code>from std.math import sin, cos, sqrt, sinh, cosh
 
 def csin(x: Float64, y: Float64) -> (Float64, Float64):
     # sin(x + iy) = sin(x)cosh(y) + i·cos(x)sinh(y)
@@ -1157,7 +1157,7 @@ print(clenshaw_cos(c, theta),
 
             <p>The Mojo 1.x port — two scalars and one loop; this is the innermost kernel of the whole projection, and the compiler turns it into a dependency-free chain of FMAs:</p>
 
-            <pre class="ide mojo"><code>from math import cos
+            <pre class="ide mojo"><code>from std.math import cos
 
 def clenshaw_cos(c: List[Float64], theta: Float64) -> Float64:
     var y2 = 0.0
@@ -1284,7 +1284,7 @@ print(f"Easting: {E:.3f} m, Northing: {N:.3f} m")</code></pre>
 
             <p style="max-width:70ch;">The Mojo 1.x port is line-for-line the same mathematics — typed <code>Float64</code> end to end, so the ellipsoid constants can't silently degrade to single precision and the trig pipeline compiles to straight-line SIMD code:</p>
 
-            <pre class="ide mojo"><code>from math import sqrt, sin, cos, atan2, atanh, sinh, cosh, radians
+            <pre class="ide mojo"><code>from std.math import sqrt, sin, cos, atan2, atanh, sinh, cosh, radians
 
 def conformal_latitude(phi: Float64, f: Float64) -> Float64:
     var e2 = 2.0 * f - f * f

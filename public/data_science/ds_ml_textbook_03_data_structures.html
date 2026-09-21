@@ -144,8 +144,7 @@ pre .kw{color:#c084fc;}pre .fn{color:#60a5fa;}pre .str{color:#4ade80;}pre .num{c
         <button class="tab-btn" data-tab="ch3-arrays-py">Python</button>
       </div>
       <div class="tab-content active" id="ch3-arrays-mojo">
-        <pre><span class="kw">from</span> collections <span class="kw">import</span> List
-
+        <pre>
 <span class="kw">def</span> <span class="fn">array_demo</span>():
     <span class="cmt"># Dynamic list — can grow and shrink</span>
     <span class="kw">var</span> scores = List[Float64]()
@@ -199,7 +198,7 @@ coordinates = (<span class="num">1.0</span>, <span class="num">2.0</span>, <span
         <button class="tab-btn" data-tab="ch3-tensor-py">Python (NumPy)</button>
       </div>
       <div class="tab-content active" id="ch3-tensor-mojo">
-        <pre><span class="kw">from</span> math <span class="kw">import</span> sqrt
+        <pre><span class="kw">from</span> std.math <span class="kw">import</span> sqrt
 
 <span class="kw">def</span> <span class="fn">tensor_basics</span>():
     <span class="cmt"># Create a 2x3 tensor of zeros</span>
@@ -317,7 +316,7 @@ result = a * <span class="num">3.14</span> + <span class="num">1.0</span>
       </div>
       <div class="tab-content active" id="ch3-broadcast-mojo">
         <pre><span class="kw">from</span> tensor <span class="kw">import</span> Tensor
-<span class="kw">from</span> math <span class="kw">import</span> sqrt
+<span class="kw">from</span> std.math <span class="kw">import</span> sqrt
 
 <span class="kw">def</span> <span class="fn">linear_algebra_demo</span>():
     <span class="cmt"># Broadcasting: scalar + tensor</span>

@@ -128,7 +128,6 @@ td:first-child, th:first-child{color:var(--paper);font-family:'JetBrains Mono',m
       </div>
       <div class="panes" data-group="pipeline">
         <div class="pane active" data-lang="mojo"><pre><span class="tok-com"># Mojo — same pipeline, fewer lines</span>
-<span class="tok-kw">from</span> collections <span class="tok-kw">import</span> Dict
 
 <span class="tok-kw">struct</span> <span class="tok-ty">Record</span>:
     <span class="tok-kw">var</span> id: Int
@@ -190,8 +189,8 @@ batches = [<span class="tok-str">"batch1.json"</span>, <span class="tok-str">"ba
       </div>
       <div class="panes" data-group="mosql">
         <div class="pane active" data-lang="mojo"><pre><span class="tok-com"># Mojo — SIMD-accelerated normalization (native syntax)</span>
-<span class="tok-kw">from</span> algorithm <span class="tok-kw">import</span> vectorize
-<span class="tok-kw">from</span> math <span class="tok-kw">import</span> sqrt
+<span class="tok-kw">from</span> std.algorithm <span class="tok-kw">import</span> vectorize
+<span class="tok-kw">from</span> std.math <span class="tok-kw">import</span> sqrt
 
 <span class="tok-kw">def</span> <span class="tok-fn">normalize_simd</span>(data: List[Float64]) -&gt; List[Float64]:
     <span class="tok-kw">var</span> n = len(data)
@@ -211,14 +210,13 @@ batches = [<span class="tok-str">"batch1.json"</span>, <span class="tok-str">"ba
     result.resize(n, <span class="tok-num">0.0</span>)
 
     <span class="tok-com"># Vectorized division — processes 4-8 elements per cycle</span>
-    <span class="tok-kw">@parameter</span>
-    <span class="tok-kw">def</span> <span class="tok-fn">div_normalize</span>[<span class="tok-ty">simd_width</span>: Int](idx: Int):
+    <span class="tok-kw">def</span> <span class="tok-fn">div_normalize</span>(idx: Int) {mut result, imm data, imm mean, imm std}:
         result[idx] = (data[idx] - mean) / std
 
-    vectorize[div_normalize, <span class="tok-num">8</span>](n)
+    vectorize[<span class="tok-num">8</span>](n, div_normalize)
     <span class="tok-kw">return</span> result
 
-<span class="tok-com"># The @parameter + vectorize pattern tells the compiler</span>
+<span class="tok-com"># The vectorize + unified closure pattern tells the compiler</span>
 <span class="tok-com"># to unroll the loop by 8 elements, using SIMD registers</span>
 <span class="tok-com"># directly. No manual SIMD intrinsics required.</span></pre></div>
         <div class="pane" data-lang="python"><pre><span class="tok-com"># Python — normalization with NumPy</span>

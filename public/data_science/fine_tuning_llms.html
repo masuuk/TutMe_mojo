@@ -248,7 +248,7 @@ qlora = <span class="tok-num">0.5</span>*P + <span class="tok-num">12</span>*(<s
 <span class="tok-c"># gradient flows ONLY through B and A; W is a constant.</span></code></pre>
 
   <pre class="mojo"><code><span class="tok-k">from</span> tensor <span class="tok-k">import</span> Tensor
-<span class="tok-k">from</span> random <span class="tok-k">import</span> normal_float64, seed
+<span class="tok-k">from</span> std.random <span class="tok-k">import</span> normal_float64, seed
 
 <span class="tok-c"># the forward pass as pure arithmetic — dtype and shapes are</span>
 <span class="tok-c"># compile-time facts, and the r-inner-product is a tight loop.</span>
@@ -320,15 +320,14 @@ q, s = quantize_nf4(w)
 <span class="tok-k">print</span>(<span class="tok-s">"nf4 relative error:"</span>,
       np.abs(dequant_nf4(q, s) - w).mean() / np.abs(w).mean())</code></pre>
 
-  <pre class="mojo"><code><span class="tok-k">from</span> collections <span class="tok-k">import</span> List
-<span class="tok-k">from</span> math <span class="tok-k">import</span> abs, max
+  <pre class="mojo"><span class="tok-k">from</span> std.math <span class="tok-k">import</span> abs, max
 
 <span class="tok-c"># block-wise absmax quantize to 4-bit codes — the kernel that</span>
 <span class="tok-c"># makes serving-side quantization a single compiled pass.</span>
 <span class="tok-k">def</span> <span class="tok-f">quantize_absmax</span>(w: List[Float64], b: Int,
                      out_q: List[Int], out_scale: List[Float64]):
     <span class="tok-k">var</span> n = len(w)
-    <span class="tok-k">var</span> n_blocks = n // b
+    <span class="tok-k">var</span> n_blocks = n # b
     <span class="tok-k">for</span> blk <span class="tok-k">in</span> range(n_blocks):
         <span class="tok-k">var</span> lo = blk * b
         <span class="tok-k">var</span> hi = lo + b
@@ -535,8 +534,7 @@ few-shot prompting (3–5 examples in context)
         <span class="tok-k">print</span>(<span class="tok-s">f"decision cost = {sum(cost(o,t) for o,t in zip(outputs,targets))/len(targets):.3f}"</span>)
     <span class="tok-c"># also: regression probe (MMLU-style) + worst-group cost (equity)</span></code></pre>
 
-  <pre class="mojo"><code><span class="tok-k">from</span> collections <span class="tok-k">import</span> List
-
+  <pre class="mojo">
 <span class="tok-k">def</span> <span class="tok-f">exact_match</span>(outs: List[String],
                   tgts: List[String]) -&gt; Float64:
     <span class="tok-k">var</span> hits = <span class="tok-num">0</span>

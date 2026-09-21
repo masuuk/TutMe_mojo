@@ -451,12 +451,12 @@ def dot(a: List[Float64],
     var pa = a.unsafe_ptr()
     var pb = b.unsafe_ptr()
     var acc = SIMD[DType.float64, LANES](0)
-    for i in range(n // LANES):
+    for i in range(n # LANES):
         acc += pa.unsafe_load[LANES](i * LANES) \
              * pb.unsafe_load[LANES](i * LANES)
     var total = acc.reduce_add()
     # scalar tail
-    for i in range(n // LANES * LANES, n):
+    for i in range(n # LANES * LANES, n):
         total += pa.unsafe_load(i) * pb.unsafe_load(i)
     return total
 
@@ -621,8 +621,7 @@ def gd(X, y, eta=0.01, iters=1000):
     for it in range(1000):
         # resid = X·theta − y  (prediction error)
         matvec(X, theta, resid)
-        @parameter
-        for i in range(resid.num_elements()):
+        comptime for i in range(resid.num_elements()):
             resid[i] -= y[i]
         # grad = Xᵀ·resid / m ; theta −= η·grad
         vecmat(X, resid, theta, 0.01 / m)
@@ -664,7 +663,7 @@ def call_mc(S, K, r, sigma, T, n, rng):
   </div>
   <div class="card">
     <span class="lang">🔥 Mojo</span>
-<pre>from math import sqrt, exp
+<pre>from std.math import sqrt, exp
 
 def pi_mc(n: Int, seed: UInt64) -> Float64:
     var rng = Random(seed)
@@ -990,14 +989,12 @@ def train_step(X, y, W1, b1, W2, b2, eta):
     var z2 = matvec_bias(a1, W2, b2)
     # backward: d2 = ∇ of MSE at the output
     var d2 = z2
-    @parameter
-    for i in range(d2.num_elements()):
+    comptime for i in range(d2.num_elements()):
         d2[i] = 2.0 * (z2[i] - y[i]) / M
     var gW2 = outer(a1, d2)          # ∂L/∂W2 = d2·a1ᵀ
     # chain rule one layer down, masked by ReLU grad
     var d1 = matvec_T(W2, d2)
-    @parameter
-    for i in range(d1.num_elements()):
+    comptime for i in range(d1.num_elements()):
         d1[i] *= relu_grad(z1[i])    # z1[i] > 0
     var gW1 = outer(X, d1)           # ∂L/∂W1 = d1·Xᵀ
     # SGD step: θ ← θ − η·∇J

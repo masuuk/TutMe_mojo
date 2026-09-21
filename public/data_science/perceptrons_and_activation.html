@@ -813,8 +813,7 @@ p.fit(X, y)
     <span class="tok-k">print</span>(<span class="tok-s">f&quot;{xi} -&gt; {p.predict(xi)}&quot;</span>)</code></pre>
                 </div>
                 <div class="code-tab-content" data-tab-content="mojo">
-                    <pre><code><span class="tok-k">from</span> math <span class="tok-k">import</span> sqrt, exp, min, max
-<span class="tok-k">from</span> collections <span class="tok-k">import</span> List
+                    <pre><code><span class="tok-k">from</span> std.math <span class="tok-k">import</span> sqrt, exp, min, max
 
 <span class="tok-k">struct</span> <span class="tok-n">Perceptron</span>:
     <span class="tok-k">var</span> lr: Float64
@@ -948,7 +947,6 @@ plot_decision_boundary(X, y, p)</code></pre>
                 <div class="code-tab-content" data-tab-content="mojo">
                     <pre><code><span class="tok-c"># Mojo uses Python interop for matplotlib</span>
 <span class="tok-k">from</span> python <span class="tok-k">import</span> Python
-<span class="tok-k">from</span> collections <span class="tok-k">import</span> List
 
 <span class="tok-k">def</span> <span class="tok-f">plot_decision_boundary</span>(
     X: List[List[Float64]], 
@@ -1306,8 +1304,7 @@ z = np.array([-<span class="tok-num">6.0</span>, -<span class="tok-num">2.0</spa
 <span class="tok-c">#  r′(z&gt;0) = 1 exactly — ReLU gradient never decays</span></code></pre>
                 </div>
                 <div class="code-tab-content" data-tab-content="mojo">
-                    <pre><code><span class="tok-k">from</span> math <span class="tok-k">import</span> exp, tanh, max
-<span class="tok-k">from</span> collections <span class="tok-k">import</span> List
+                    <pre><code><span class="tok-k">from</span> std.math <span class="tok-k">import</span> exp, tanh, max
 
 <span class="tok-k">def</span> <span class="tok-f">main</span>():
     <span class="tok-k">var</span> z = List[Float64]([-<span class="tok-num">6.0</span>, -<span class="tok-num">2.0</span>, -<span class="tok-num">0.5</span>, <span class="tok-num">0.0</span>, <span class="tok-num">0.5</span>, <span class="tok-num">2.0</span>, <span class="tok-num">6.0</span>])

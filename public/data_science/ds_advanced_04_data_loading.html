@@ -123,7 +123,7 @@ code{font-family:var(--font-mono);font-size:0.88em;background:rgba(108,92,231,0.
       <div class="code-content">
         <button class="copy-btn">Copy</button>
         <pre class="code-block active" id="mojo-stream"><code><span class="com"># Stream-parse a large CSV without loading it all into memory</span>
-<span class="kw">from</span> sys.io <span class="kw">import</span> FileHandle
+<span class="kw">from</span> std.sys.io <span class="kw">import</span> FileHandle
 
 <span class="kw">def</span> <span class="fn">count_rows</span>(path: String) raises -&gt; Int:
     <span class="kw">var</span> f = FileHandle(path, <span class="str">"r"</span>)
@@ -193,8 +193,7 @@ df = pd.read_csv(<span class="str">"huge.csv"</span>)  <span class="com"># OOM r
       <div class="code-content">
         <button class="copy-btn">Copy</button>
         <pre class="code-block active" id="mojo-async"><code><span class="com"># Async file reading with double buffering</span>
-<span class="kw">from</span> sys.io <span class="kw">import</span> FileHandle
-<span class="kw">from</span> collections <span class="kw">import</span> Dict
+<span class="kw">from</span> std.sys.io <span class="kw">import</span> FileHandle
 
 <span class="kw">struct</span> <span class="type">AsyncReader</span>:
     <span class="kw">var</span> path: String
@@ -326,7 +325,7 @@ df = pd.read_csv(<span class="str">"huge.csv"</span>)  <span class="com"># OOM r
       <div class="code-content">
         <button class="copy-btn">Copy</button>
         <pre class="code-block active" id="mojo-formats"><code><span class="com"># Reading binary formats with zero-copy</span>
-<span class="kw">from</span> sys.io <span class="kw">import</span> FileHandle
+<span class="kw">from</span> std.sys.io <span class="kw">import</span> FileHandle
 
 <span class="com"># Binary tensor format: [num_elements: u32][data: f32 * N]</span>
 <span class="kw">def</span> <span class="fn">read_binary_tensor</span>(path: String) raises -&gt; Tensor[Float32]:

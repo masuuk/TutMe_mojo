@@ -206,8 +206,8 @@ Hello</pre>
       </div>
       <div class="tab-content active" id="ch8-writable-mojo">
         <pre><span class="kw">def</span> <span class="fn">repeat</span>[
-    MsgType: <span class="type">Writable</span>,   <span class="cmt">// trait constraint...</span>
-    <span class="cmt">//,</span>                  <span class="cmt">// ...and infer-only</span>
+    MsgType: <span class="type">Writable</span>,   <span class="cmt"># trait constraint...</span>
+    <span class="cmt">//,</span>                  <span class="cmt"># ...and infer-only</span>
     count: <span class="type">Int</span>
 ](msg: MsgType):
     <span class="kw">comptime for</span> _ <span class="kw">in</span> <span class="fn">range</span>(count):
@@ -459,7 +459,7 @@ Hello</pre>
       <div class="tab-content active" id="ch8-sort-mojo">
         <pre><code>def bubble_sort[
     T: ImplicitlyCopyable &amp; Deinitable,
-    F: def(T, T) -&gt; Bool,   //
+    F: def(T, T) -&gt; Bool,   #
 ](compare_fn: F, mut values: List[T]):
     for end in reversed(range(len(values))):
         for i in range(end):
@@ -580,7 +580,7 @@ Hello, Bob!
         results[i] = i * i
 
     <span class="fn">parallelize</span>(work, <span class="num">8</span>)
-    <span class="fn">print</span>(results.__str__())</pre>
+    <span class="fn">print</span>(results)</pre>
       </di<pre><code>def main():
     [0, 1, 4, 9, 16, 25, 36, 49]
 </code></pre>h8-par-out">

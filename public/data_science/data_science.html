@@ -420,7 +420,7 @@ r2 = model.score(Xte, yte)                    <span class="tok-com"># evaluate �
 xs = np.array([<span class="tok-num">1e-1</span>, <span class="tok-num">1e-2</span>, <span class="tok-num">1e-3</span>, <span class="tok-num">1e-4</span>, <span class="tok-num">1e-5</span>])
 <span class="tok-kw">print</span>(sinc_squeeze(xs))   <span class="tok-com"># → [0.998 0.99998 0.9999998 ...] creeping toward 1.0</span></code></pre>
     <p>Scalar-for-scalar in <strong>Mojo 1.x</strong> — a typed <code>sinc_squeeze</code> over a static array, compiled and branch-safe at <code>x = 0</code>:</p>
-  <pre class="mojo"><code><span class="tok-kw">from</span> math <span class="tok-kw">import</span> sin
+  <pre class="mojo"><code><span class="tok-kw">from</span> std.math <span class="tok-kw">import</span> sin
 
 <span class="tok-kw">def</span> <span class="tok-fn">sinc_squeeze</span>(x: Float64) -&gt; Float64:
     <span class="tok-kw">if</span> x == <span class="tok-num">0.0</span>:
@@ -475,7 +475,7 @@ stationary = stationary / stationary.sum()
 <span class="tok-kw">print</span>(np.round(stationary, <span class="tok-num">3</span>))      <span class="tok-com"># → [0.4 0.6] steady state</span></code></pre>
     <p>For a Markov steady state you never need the full eigendecomposition — <strong>power iteration</strong> (multiply by A, then normalize) converges to the leading (λ = 1) eigenvector, and it ports naturally to compiled <strong>Mojo 1.x</strong>:</p>
   <pre class="mojo"><code><span class="tok-kw">from</span> tensor <span class="tok-kw">import</span> Tensor
-<span class="tok-kw">from</span> math <span class="tok-kw">import</span> sqrt
+<span class="tok-kw">from</span> std.math <span class="tok-kw">import</span> sqrt
 
 <span class="tok-kw">def</span> <span class="tok-fn">main</span>():
     <span class="tok-kw">var</span> A = Tensor[DType.float64](<span class="tok-num">2</span>, <span class="tok-num">2</span>)
@@ -587,7 +587,7 @@ x = np.linalg.solve(A, b)                        <span class="tok-com"># solve A
 <span class="tok-kw">print</span>(np.linalg.eigvals(A))                     <span class="tok-com"># eigenvalues</span>
 <span class="tok-kw">print</span>(np.linalg.norm(scores))                   <span class="tok-com"># L2 norm</span></code></pre>
     <p>The z-score (broadcast mean/std), <code>exp</code>, and a 2×2 <code>A·x = b</code> solve, done with explicit loops in <strong>Mojo 1.x</strong> — compiled, so the loop is the fast path, not the slow one:</p>
-  <pre class="mojo"><code><span class="tok-kw">from</span> math <span class="tok-kw">import</span> exp, sqrt
+  <pre class="mojo"><code><span class="tok-kw">from</span> std.math <span class="tok-kw">import</span> exp, sqrt
 
 <span class="tok-kw">def</span> <span class="tok-fn">main</span>():
     <span class="tok-kw">var</span> scores = [<span class="tok-num">72.0</span>, <span class="tok-num">85.0</span>, <span class="tok-num">90.0</span>, <span class="tok-num">61.0</span>]
@@ -682,8 +682,7 @@ meta = pd.DataFrame({<span class="tok-str">"course"</span>: [<span class="tok-st
 joined = df.merge(meta, on=<span class="tok-str">"course"</span>)      <span class="tok-com"># SQL-style join on a key</span>
 <span class="tok-kw">print</span>(joined)</code></pre>
     <p>The <strong>GroupBy → mean / max / count</strong> aggregation is a tight loop over rows grouped by a key — trivial to compile in <strong>Mojo 1.x</strong>. Two small <code>Dict</code>-of-accumulators give you the same per-course summary:</p>
-  <pre class="mojo"><code><span class="tok-kw">from</span> collections <span class="tok-kw">import</span> Dict
-
+  <pre class="mojo">
 <span class="tok-kw">def</span> <span class="tok-fn">main</span>():
     <span class="tok-kw">var</span> courses = [<span class="tok-str">"math"</span>, <span class="tok-str">"math"</span>, <span class="tok-str">"math"</span>,
                     <span class="tok-str">"physics"</span>, <span class="tok-str">"physics"</span>, <span class="tok-str">"physics"</span>]
@@ -731,8 +730,8 @@ treated = rng.normal(<span class="tok-num">55</span>, <span class="tok-num">10</
       <span class="tok-str">"median"</span>, round(np.median(control), <span class="tok-num">2</span>),
       <span class="tok-str">"sd"</span>, round(control.std(ddof=<span class="tok-num">1</span>), <span class="tok-num">2</span>))</code></pre>
     <p>Mean, median, and sample (n−1) standard deviation are a dozen lines in <strong>Mojo 1.x</strong> — sort for the median, accumulate for mean and variance:</p>
-  <pre class="mojo"><code><span class="tok-kw">from</span> math <span class="tok-kw">import</span> sqrt
-<span class="tok-kw">from</span> algorithm <span class="tok-kw">import</span> sort
+  <pre class="mojo"><code><span class="tok-kw">from</span> std.math <span class="tok-kw">import</span> sqrt
+<span class="tok-kw">from</span> std.algorithm <span class="tok-kw">import</span> sort
 
 <span class="tok-kw">def</span> <span class="tok-fn">describe</span>(s: List[Float64]):
     <span class="tok-kw">var</span> n = <span class="tok-kw">float64</span>(s.size)
@@ -746,7 +745,7 @@ treated = rng.normal(<span class="tok-num">55</span>, <span class="tok-num">10</
     var_ /= (n - <span class="tok-num">1</span>)                 <span class="tok-com"># ddof = 1 → sample variance</span>
     <span class="tok-kw">var</span> sorted_s = s.copy()
     sort(sorted_s)
-    <span class="tok-kw">var</span> mid = sorted_s.size // <span class="tok-num">2</span>
+    <span class="tok-kw">var</span> mid = sorted_s.size # <span class="tok-num">2</span>
     <span class="tok-kw">var</span> median: Float64
     <span class="tok-kw">if</span> sorted_s.size % <span class="tok-num">2</span> == <span class="tok-num">1</span>:
         median = sorted_s[mid]
@@ -773,7 +772,7 @@ r, p = stats.pearsonr(hours, score)     <span class="tok-com"># correlation + it
 t, p2 = stats.ttest_ind(control, treated)  <span class="tok-com"># two-sample t-test</span>
 <span class="tok-kw">print</span>(<span class="tok-str">f"t = {t:.2f}, p = {p2:.3f}"</span>)</code></pre>
     <p>Pearson's <em>r</em> is a rolling sum — a natural <strong>Mojo 1.x</strong> computation. The special-function t-test / p-value, by contrast, rides the interop bridge to <code>scipy</code>:</p>
-  <pre class="mojo"><code><span class="tok-kw">from</span> math <span class="tok-kw">import</span> sqrt
+  <pre class="mojo"><code><span class="tok-kw">from</span> std.math <span class="tok-kw">import</span> sqrt
 <span class="tok-kw">from</span> python <span class="tok-kw">import</span> Python
 
 <span class="tok-kw">def</span> <span class="tok-fn">pearson</span>(x: List[Float64], y: List[Float64]) -&gt; Float64:
@@ -829,7 +828,7 @@ plt.tight_layout()
 plt.show()</code></pre>
     <p>Mojo 1.x has no mature plotting stack — so the <em>data</em> is prepared natively (compiled loops, zero-copy into NumPy) and handed to <code>matplotlib</code> over the interop bridge for the actual drawing:</p>
   <pre class="mojo"><code><span class="tok-kw">from</span> python <span class="tok-kw">import</span> Python
-<span class="tok-kw">from</span> random <span class="tok-kw">import</span> Random
+<span class="tok-kw">from</span> std.random <span class="tok-kw">import</span> Random
 
 <span class="tok-kw">def</span> <span class="tok-fn">main</span>() raises:
     <span class="tok-kw">var</span> np = Python.import_module(<span class="tok-str">"numpy"</span>)
@@ -1021,7 +1020,7 @@ w, b = perceptron(X, y)
 <span class="tok-kw">print</span>(w, b)
 <span class="tok-kw">print</span>([<span class="tok-num">1</span> <span class="tok-kw">if</span> w @ xi + b <span class="tok-fn">&gt;</span> <span class="tok-num">0</span> <span class="tok-kw">else</span> <span class="tok-num">0</span> <span class="tok-kw">for</span> xi <span class="tok-kw">in</span> X])   <span class="tok-com"># [0, 1, 1, 1] ✓</span></code></pre>
     <p>Written from scratch in <strong>Mojo 1.x</strong> — typed, compiled weights, no NumPy in sight:</p>
-  <pre class="mojo"><code><span class="tok-kw">from</span> math <span class="tok-kw">import</span> sqrt
+  <pre class="mojo"><code><span class="tok-kw">from</span> std.math <span class="tok-kw">import</span> sqrt
 
 <span class="tok-kw">def</span> <span class="tok-fn">perceptron</span>(X: List[List[Float64]], y: List[Float64],
                epochs: Int = <span class="tok-num">10</span>, lr: Float64 = <span class="tok-num">0.1</span>) -&gt; (List[Float64], Float64):
@@ -1067,7 +1066,7 @@ x = np.array([-<span class="tok-num">2.</span>, -<span class="tok-num">1.</span>
 <span class="tok-kw">print</span>(sigmoid(x).round(<span class="tok-num">3</span>))   <span class="tok-com"># [0.119 0.269 0.5 0.731 0.881]</span>
 <span class="tok-kw">print</span>(relu(x))                 <span class="tok-com"># [0. 0. 0. 1. 2.]</span></code></pre>
     <p>Compiled in <strong>Mojo 1.x</strong> — no library dependency, every activation is a typed loop that compiles to vectorised machine code:</p>
-  <pre class="mojo"><code><span class="tok-kw">from</span> math <span class="tok-kw">import</span> exp
+  <pre class="mojo"><code><span class="tok-kw">from</span> std.math <span class="tok-kw">import</span> exp
 
 <span class="tok-kw">def</span> <span class="tok-fn">sigmoid</span>(x: Float64) -&gt; Float64:
     <span class="tok-kw">return</span> <span class="tok-num">1.0</span> / (<span class="tok-num">1.0</span> + exp(-x))
@@ -1164,7 +1163,7 @@ logits = np.array([<span class="tok-num">2.0</span>, <span class="tok-num">0.5</
 <span class="tok-com"># T=1.0 → [0.756 0.174 0.052 0.019]</span>
 <span class="tok-com"># T=5.0 → [0.382 0.267 0.201 0.149]  approaching uniform</span></code></pre>
     <p>Softmax from scratch in <strong>Mojo 1.x</strong> — numerically stable (the <code>z − max</code> trick) and typed, so the compiler can vectorise the <code>exp</code> loop over the SIMD width:</p>
-  <pre class="mojo"><code><span class="tok-kw">from</span> math <span class="tok-kw">import</span> exp
+  <pre class="mojo"><code><span class="tok-kw">from</span> std.math <span class="tok-kw">import</span> exp
 
 <span class="tok-kw">def</span> <span class="tok-fn">softmax</span>(z: List[Float64], temperature: Float64 = <span class="tok-num">1.0</span>) -&gt; List[Float64]:
     <span class="tok-kw">var</span> mz = z[<span class="tok-num">0</span>] / temperature

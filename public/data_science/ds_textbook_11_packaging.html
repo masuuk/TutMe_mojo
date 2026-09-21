@@ -215,8 +215,7 @@ mojo run src/main.mojo</pre>
       </div>
       <div class="panes" data-group="deps">
         <div class="pane active" data-lang="mojo"><pre><span class="tok-kw">from</span> max.engine <span class="tok-kw">import</span> InferenceSession
-<span class="tok-kw">from</span> math import sqrt, sin, cos
-<span class="tok-kw">from</span> collections import Dict
+<span class="tok-kw">from</span> std.math import sqrt, sin, cos
 
 <span class="tok-kw">def</span> <span class="tok-fn">load_model</span>(path: String) -&gt; InferenceSession:
     <span class="tok-kw">var</span> session = InferenceSession(path)
@@ -242,7 +241,7 @@ mojo run src/main.mojo</pre>
         <div class="tab" data-lang="python" data-group="test"><span class="sw"></span>test_data_loader.py</div>
       </div>
       <div class="panes" data-group="test">
-        <div class="pane active" data-lang="mojo"><pre><span class="tok-kw">from</span> testing import test, assert_equal, assert_true
+        <div class="pane active" data-lang="mojo"><pre><span class="tok-kw">from</span> std.testing import test, assert_equal, assert_true
 
 <span class="tok-com"># Simple assertion test</span>
 <span class="tok-kw">@test</span>
@@ -326,7 +325,7 @@ mojo test --filter csv</pre>
       </div>
       <div class="panes" data-group="bench">
         <div class="pane active" data-lang="mojo"><pre><span class="tok-kw">from</span> benchmark <span class="tok-kw">import</span> keep_running, benchmark_function
-<span class="tok-kw">from</span> random import randn
+<span class="tok-kw">from</span> std.random import randn
 
 <span class="tok-kw">def</span> <span class="tok-fn">standardize</span>(data: List[Float64]) -&gt; List[Float64]:
     <span class="tok-kw">var</span> n = len(data)

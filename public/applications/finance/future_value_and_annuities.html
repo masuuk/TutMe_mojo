@@ -962,22 +962,15 @@ factor = fvif(<span class="number">7</span>, <span class="number">10</span>)
                     <div class="code-section">
                         <h4><span class="python-icon">⚡</span> Mojo Code</h4>
                         <div class="code-block">
-                            <pre><code><span class="keyword">from</span> math <span class="keyword">import</span> pow
+                            <pre><code><span class="keyword">from</span> std.math <span class="keyword">import</span> pow
 
 <span class="keyword">def</span> <span class="function">fvif</span>(rate: Float64, n: Int) -&gt; Float64:
     <span class="string">"""Future Value Interest Factor."""</span>
     <span class="keyword">var</span> r = rate / <span class="number">100.0</span>
     <span class="keyword">return</span> pow(<span class="number">1.0</span> + r, Float64(n))
 
-<span class="keyword">def</span> <span class="function">main</spa<pre><code>from std.math import pow
-
-def fvif(rate: Float64, n: Int) -&gt; Float64:
-    &quot;&quot;&quot;Future Value Interest Factor.&quot;&quot;&quot;
-    var r = rate / 100.0
-    return pow(1.0 + r, Float64(n))
-
-def main():
-    print(&quot;FVIF =&quot;, fvif(7.0, 10))   # 1.96715…</code></pre>/span>
+<span class="keyword">def</span> <span class="function">main</span>():
+    <span class="keyword">print</span>(<span class="string">&quot;FVIF =&quot;</span>, <span class="function">fvif</span>(<span class="number">7.0</span>, <span class="number">10</span>))   <span class="comment"># 1.96715…</span></code></pre>
                     <span class="nav-title">Future Value</span>
                 </a>
                 <a href="#annuities" class="next">
@@ -1021,7 +1014,7 @@ result = fv_annuity(<span class="number">500</span>, <span class="number">6</spa
                     <div class="code-section">
                         <h4><span class="python-icon">⚡</span> Mojo Code</h4>
                         <div class="code-block">
-                            <pre><code><span class="keyword">from</span> math <span class="keyword">import</span> pow
+                            <pre><code><span class="keyword">from</span> std.math <span class="keyword">import</span> pow
 
 <span class="keyword">def</span> <span class="function">fv_annuity</span>(pmt: Float64, rate: Float64, n: Int) -&gt; Float64:
     <span class="string">"""Future Value of Ordinary Annuity."""</span>
@@ -1076,7 +1069,7 @@ result = fv_annuity_due(<span class="number">500</span>, <span class="number">6<
                     <div class="code-section">
                         <h4><span class="python-icon">⚡</span> Mojo Code</h4>
                         <div class="code-block">
-                            <pre><code><span class="keyword">from</span> math <span class="keyword">import</span> pow
+                            <pre><code><span class="keyword">from</span> std.math <span class="keyword">import</span> pow
 
 <span class="keyword">def</span> <span class="function">fv_annuity_due</span>(pmt: Float64, rate: Float64, n: Int) -&gt; Float64:
     <span class="string">"""FV of Annuity Due (payments at period start)."""</span>
@@ -1130,7 +1123,7 @@ result = present_value(<span class="number">50000</span>, <span class="number">7
                     <div class="code-section">
                         <h4><span class="python-icon">⚡</span> Mojo Code</h4>
                         <div class="code-block">
-                            <pre><code><span class="keyword">from</span> math <span class="keyword">import</span> pow
+                            <pre><code><span class="keyword">from</span> std.math <span class="keyword">import</span> pow
 
 <span class="keyword">def</span> <span class="function">present_value</span>(fv: Float64, rate: Float64, years: Int) -&gt; Float64:
     <span class="string">"""Present value (discounting)."""</span>
@@ -1223,8 +1216,7 @@ market  = [<span class="number">0.01</span>, -<span class="number">0.02</span>, 
                     <div class="code-section">
                         <h4><span class="python-icon">⚡</span> Mojo Code</h4>
                         <div class="code-block">
-                            <pre><code><span class="keyword">from</span> collections <span class="keyword">import</span> List
-
+                            <pre>
 <span class="keyword">def</span> <span class="function">beta</span>(asset: List[Float64], market: List[Float64]) -&gt; Float64:
     <span class="string">"""Beta = Cov(asset, market) / Var(market)."""</span>
     <span class="keyword">var</span> n = <span class="function">len</span>(asset)

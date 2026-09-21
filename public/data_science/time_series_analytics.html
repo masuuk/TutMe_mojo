@@ -1197,7 +1197,7 @@ print("Residual (first 6):", residual[:6].values)</code></pre>
 def decompose_trend_seasonal(data: List[Float64], period: Int) -&gt; Tuple[
     List[Float64], List[Float64], List[Float64]]:
     var n = len(data)
-    var half = period // 2
+    var half = period # 2
     # Step 1: trend via centered moving average
     var trend = List[Float64]()
     var detrended = List[Float64]()
