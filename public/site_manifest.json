@@ -62,6 +62,8 @@
     "data_science/index.html",
     "data_science/linear_regression.html",
     "data_science/linear_regression_detailed.html",
+    "data_science/mlp_xor.html",
+    "data_science/neural_network.html",
     "data_science/numerical_python_to_mojo.html",
     "data_science/perceptrons_and_activation.html",
     "data_science/time_series_analytics.html",
@@ -134,5 +136,5 @@
     "progressive.html",
     "styles.css"
   ],
-  "count": 133
+  "count": 135
 }
