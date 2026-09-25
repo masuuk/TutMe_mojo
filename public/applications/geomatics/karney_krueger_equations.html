@@ -541,7 +541,8 @@
         <a href="../index.html" style="color:#9fd3ff;text-decoration:none;">🧩 Applications lessons</a>
         <a href="index.html" style="color:#9fd3ff;text-decoration:none;">🌐 Geomatics</a>
         <a href="../../index.html" style="color:#9fd3ff;text-decoration:none;">🏠 Home</a>
-        <a href="gnss_surveying.html" style="color:#9fd3ff;text-decoration:none;margin-left:auto;border:1px solid rgba(159,211,255,0.4);border-radius:999px;padding:4px 14px;">← Part 1: GNSS Surveying</a>
+        <a href="geo_computations.html" style="color:#9fd3ff;text-decoration:none;margin-left:auto;border:1px solid rgba(159,211,255,0.4);border-radius:999px;padding:4px 14px;">🧮 Mojo Computations</a>
+        <a href="gnss_surveying.html" style="color:#9fd3ff;text-decoration:none;border:1px solid rgba(159,211,255,0.4);border-radius:999px;padding:4px 14px;">← Part 1: GNSS Surveying</a>
     </nav>
 
     <div class="container">
@@ -549,7 +550,7 @@
         <header>
             <h1>THE KARNEY-KRUGER EQUATIONS</h1>
             <div class="subtitle">Part 2 · Transverse Mercator Projection — Mathematical Derivation, Conformal Mapping Theory, and Practice</div>
-            <div class="author">Continues <a href="gnss_surveying.html" style="color:#9fd3ff;">Part 1 — GNSS Surveying: Frames, Transformations, Site Calibration, Georeferencing</a></div>
+            <div class="author">Continues <a href="gnss_surveying.html" style="color:#9fd3ff;">Part 1 — GNSS Surveying: Frames, Transformations, Site Calibration, Georeferencing</a> · <a href="geo_computations.html" style="color:#9fd3ff;">Mojo Computations Lab</a></div>
         </header>
 
         <div class="toc">
@@ -576,7 +577,7 @@
 
             <p>The <strong>Karney-Krüger equations</strong> are the most accurate formulation of the Transverse Mercator projection in geodesy: <strong>nanometer-level round trips</strong> within 3900 km of the central meridian. The projection maps the ellipsoid onto a cylinder tangent along a central meridian; scale distortion grows with distance from it, and the challenge is modeling that distortion accurately without sacrificing speed.</p>
 
-            <p style="max-width:78ch;"><strong>Where Part 1 ended.</strong> The first part of this course, <a href="gnss_surveying.html">GNSS Surveying</a>, carried a survey from GNSS observations through geodetic and ECEF frames, Helmert transformations, site calibration and georeferencing to a quality-controlled workflow — treating the map projection as a single entry in a transformation-selection table. This part opens that entry: the complete theory, constants and code behind every UTM and LO grid coordinate a surveyor meets.</p>
+            <p style="max-width:78ch;"><strong>Where Part 1 ended.</strong> The first part of this course, <a href="gnss_surveying.html">GNSS Surveying</a>, carried a survey from GNSS observations through geodetic and ECEF frames, Helmert transformations, site calibration and georeferencing to a quality-controlled workflow — treating the map projection as a single entry in a transformation-selection table. This part opens that entry: the complete theory, constants and code behind every UTM and LO grid coordinate a surveyor meets. For the shorter code-first companion that ties the two parts together, see <a href="geo_computations.html">Geomatics Computations in Mojo</a>.</p>
 
             <div class="key-insight">
                 Karney's key innovation was expanding the series in the <strong>third flattening n</strong> (≈ 1/297) instead of eccentricity squared e² (≈ 1/150), producing approximately 4× faster convergence and enabling unprecedented accuracy.
@@ -683,7 +684,7 @@ def main():
             </div>
 
             <div class="note">
-                <p><strong>Cross-reference:</strong> in <a href="gnss_surveying.html#transforms">Part 1, Chapter 2</a> this projection is the "Geographic ↔ projected coordinates" row of the transformation-selection table, and in the eight-step surveying workflow it is <a href="gnss_surveying.html#workflow">step 04 — Transform</a>, between establishing the reference frame and site localisation.</p>
+                <p><strong>Cross-reference:</strong> in <a href="gnss_surveying.html#transforms">Part 1, Chapter 2</a> this projection is the "Geographic ↔ projected coordinates" row of the transformation-selection table, and in the eight-step surveying workflow it is <a href="gnss_surveying.html#workflow">step 04 — Transform</a>, between establishing the reference frame and site localisation. The compact planar-coordinate bridge is <a href="geo_computations.html#coordinates">Geomatics Computations &sect;3</a>.</p>
             </div>
         </section>
 
@@ -1434,7 +1435,7 @@ def main() raises:
             </div>
 
             <div class="note">
-                <p><strong>Where next:</strong> with the projection mastered, return to <a href="gnss_surveying.html">Part 1 — GNSS Surveying</a> to see it take its place in the full field-to-office pipeline: site-calibration residuals, georeferencing QC and RMSE reporting in <a href="gnss_surveying.html#workflow">Chapter 6</a>. The two parts together form one continuous surveying course.</p>
+                <p><strong>Where next:</strong> with the projection mastered, return to <a href="gnss_surveying.html">Part 1 — GNSS Surveying</a> to see it take its place in the full field-to-office pipeline: site-calibration residuals, georeferencing QC and RMSE reporting in <a href="gnss_surveying.html#workflow">Chapter 6</a>. For the focused Mojo implementation lab, continue with <a href="geo_computations.html">Geomatics Computations</a> and its <a href="geo_computations.html#practice">practice problems</a>. The two parts and the lab together form one continuous surveying course.</p>
             </div>
         </section>
 

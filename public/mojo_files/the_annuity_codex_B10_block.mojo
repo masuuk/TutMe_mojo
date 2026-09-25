@@ -1,0 +1,3 @@
+# The same lottery, paid at the start of each year
+var pv_due = pv_annuity(50000.0, 0.05, 20, due=True)
+print("PV due = $", pv_due)   # 654266.02...

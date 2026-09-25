@@ -1,0 +1,3 @@
+# Same stream, paid at the start of each period instead
+var fv_due = fv_annuity(200.0, r, n, due=True)
+print("FV due = $", fv_due)   # 104793.09...

@@ -4,6 +4,7 @@
     "applications/finance/index.html",
     "applications/finance/npv_amortisation.html",
     "applications/finance/the_annuity_codex.html",
+    "applications/geomatics/geo_computations.html",
     "applications/geomatics/gnss_surveying.html",
     "applications/geomatics/index.html",
     "applications/geomatics/karney_krueger_equations.html",
@@ -136,5 +137,5 @@
     "progressive.html",
     "styles.css"
   ],
-  "count": 135
+  "count": 136
 }

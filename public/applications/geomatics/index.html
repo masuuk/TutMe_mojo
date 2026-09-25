@@ -181,6 +181,7 @@ a{color:inherit;text-decoration:none}
   background:var(--accent);
 }
 .part-card.p2{--accent:#ecc56c}
+.part-card.p3{--accent:#12b5a6}
 .part-card .part-tag{
   align-self:flex-start;display:inline-flex;align-items:center;gap:.45rem;
   border-radius:999px;padding:.4rem .95rem;
@@ -375,6 +376,7 @@ details.faq .answer{padding:0 1.35rem 1.2rem;color:var(--muted);font-size:.92rem
       <a href="#faq">FAQ</a>
     </div>
     <div class="nav-cta">
+      <a class="btn btn-ghost btn-sm" href="geo_computations.html">🧮 Mojo Computations</a>
       <a class="btn btn-ghost btn-sm" href="karney_krueger_equations.html">Part 2 &middot; Karney&ndash;Krueger</a>
       <a class="btn btn-primary btn-sm" href="gnss_surveying.html">Start Part 1</a>
     </div>
@@ -395,6 +397,7 @@ details.faq .answer{padding:0 1.35rem 1.2rem;color:var(--muted);font-size:.92rem
       <div class="hero-actions">
         <a class="btn btn-primary" href="gnss_surveying.html">Start with Part 1: GNSS &rarr;</a>
         <a class="btn btn-ghost" href="karney_krueger_equations.html">Jump to Part 2: Karney&ndash;Krueger</a>
+        <a class="btn btn-ghost" href="geo_computations.html">Open the Mojo computations lab</a>
       </div>
       <div class="hero-meta">
         <span class="chip">geodetic <b>&harr;</b> ECEF <b>&harr;</b> ENU</span>
@@ -418,7 +421,8 @@ details.faq .answer{padding:0 1.35rem 1.2rem;color:var(--muted);font-size:.92rem
         <div class="eyebrow">The course</div>
         <h2>Two parts. One survey, start to finish.</h2>
         <p>Each part stands on its own, but they are written as one course: Part 2 picks up exactly
-        where Part 1&rsquo;s frame chain ends, and hands its projection back to Part 1&rsquo;s workflow at the close.</p>
+        where Part 1&rsquo;s frame chain ends, and hands its projection back to Part 1&rsquo;s workflow at the close.
+        A focused Mojo lab connects the mathematics to code-first practice.</p>
       </div>
       <div class="parts">
         <div class="part-card">
@@ -452,6 +456,21 @@ details.faq .answer{padding:0 1.35rem 1.2rem;color:var(--muted);font-size:.92rem
             <a href="karney_krueger_equations.html#s10"><span class="n">10</span><span class="t">Southern African Grids &middot; LO 31</span></a>
           </div>
           <a class="btn btn-primary" href="karney_krueger_equations.html">Open Part 2 &rarr;</a>
+        </div>
+        <div class="part-card p3">
+          <span class="part-tag">Implementation lab</span>
+          <h3>Geomatics Computations in Mojo</h3>
+          <p class="part-sub">A focused Mojo 1.x companion for the building blocks behind both parts:
+          coordinates and directions, traverses, intersections, resection, transformations,
+          least squares, levelling and GNSS uncertainty.</p>
+          <span class="part-status"><span class="sdot"></span> 15 sections &middot; Mojo 1.x</span>
+          <div class="part-links">
+            <a href="geo_computations.html#coordinates"><span class="n">01</span><span class="t">Coordinates &amp; Direction Computations</span></a>
+            <a href="geo_computations.html#traverse"><span class="n">02</span><span class="t">Traverses, Intersections &amp; Resection</span></a>
+            <a href="geo_computations.html#least-squares"><span class="n">03</span><span class="t">Least-Squares Adjustment</span></a>
+            <a href="geo_computations.html#gnss"><span class="n">04</span><span class="t">GNSS &amp; 3D Survey Computations</span></a>
+          </div>
+          <a class="btn btn-primary" href="geo_computations.html">Open the Mojo lab &rarr;</a>
         </div>
       </div>
     </div>
@@ -584,7 +603,7 @@ details.faq .answer{padding:0 1.35rem 1.2rem;color:var(--muted);font-size:.92rem
       <div class="faq-list">
         <details class="faq" open>
           <summary>Which part should I start with?<span class="arrow"></span></summary>
-          <div class="answer">Working surveyors usually start with Part 1 &mdash; GNSS Surveying &mdash; since frames and calibration pay off immediately. If your problem is specifically grids and projections, Part 2 stands alone; it re-derives the ellipsoid facts it needs and cross-links back where it borrows from Part 1.</div>
+          <div class="answer">Working surveyors usually start with Part 1 &mdash; GNSS Surveying &mdash; since frames and calibration pay off immediately. If your problem is specifically grids and projections, Part 2 stands alone; it re-derives the ellipsoid facts it needs and cross-links back where it borrows from Part 1. For a code-first bridge between them, use the <a href="geo_computations.html">Mojo Computations lab</a>.</div>
         </details>
         <details class="faq">
           <summary>How do the two parts connect?<span class="arrow"></span></summary>
@@ -629,6 +648,7 @@ details.faq .answer{padding:0 1.35rem 1.2rem;color:var(--muted);font-size:.92rem
       <div class="footer-links">
         <a href="gnss_surveying.html">Part 1 &middot; GNSS Surveying</a>
         <a href="karney_krueger_equations.html">Part 2 &middot; Karney&ndash;Krueger Equations</a>
+        <a href="geo_computations.html">Implementation lab &middot; Mojo Computations</a>
         <a href="#pipeline">The Pipeline</a>
         <a href="#faq">FAQ</a>
       </div>

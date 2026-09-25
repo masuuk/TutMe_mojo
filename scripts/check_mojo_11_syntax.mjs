@@ -3,9 +3,10 @@
 // Static check only (no mojo compiler on PATH). Flags syntax that Mojo 1.1 removed
 // (hard parse errors) plus patterns that were renamed/deprecated for 1.1.
 import { readFileSync, readdirSync, statSync } from "fs";
-import { join, basename } from "path";
+import { dirname, join, resolve } from "path";
+import { fileURLToPath } from "url";
 
-const ROOT = new URL("..", import.meta.url).pathname; // repo root
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const HTML_DIR = join(ROOT, "public");
 const WANT_JSON = process.argv.includes("--json");
 

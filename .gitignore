@@ -2,6 +2,7 @@
 desktop.ini
 Thumbs.db
 ehthumbs.db
+*Zone.Identifier
 
 # Node
 node_modules/
